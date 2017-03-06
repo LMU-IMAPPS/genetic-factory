@@ -9,17 +9,13 @@ class FactorySimulator:
     products = []
     workStations = {}
 
-    currentFieldStatus = [
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0]
-    ]
+    currentFieldStatus = [[False]* 10000] * 10000
 
     def generate_products(self, path_to_json):
         with open(path_to_json) as data_file:
             data = json.load(data_file)
             for item in data['products']:
-                self.products.append(Product(item['positionX'],item['positionY']))
+                self.products.append(Product(item['positionX'],item['positionY'],item["workstationRoute"], self.workStations))
 
     def generate_work_stations(self, path_to_json):
         with open(path_to_json) as data_file:
@@ -33,8 +29,8 @@ class FactorySimulator:
                 self.workStations[item['type']].append(Workstation(item['type']))
 
     def __init__(self, path_to_products_json, path_to_workstations_json):
-        self.generate_products(path_to_products_json)
         self.generate_work_stations(path_to_workstations_json)
+        self.generate_products(path_to_products_json)
         pprint(self.products)
         pprint(self.workStations)
         pprint(self.workStations.values())
@@ -48,7 +44,7 @@ class FactorySimulator:
             madeChange = False
             isDone = True
             for p in self.products:
-                result = p.run()
+                result = p.run(self.currentFieldStatus)
                 if not result == StepResult.BLOCKED:
                     madeChange = True
                 if not result == StepResult.DONE:
