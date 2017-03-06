@@ -14,7 +14,7 @@ class FactorySimulator:
     ]
 
     def generate_products(self, path_to_json):
-        ''' Generates products from the specified JSON file '''
+        """ Generates products from the specified JSON file """
         products = []
         with open(path_to_json) as data_file:
             data = json.load(data_file)
@@ -23,7 +23,7 @@ class FactorySimulator:
         return products
 
     def generate_work_stations(self, path_to_json):
-        ''' Generates workstations from the specified JSON file '''
+        """ Generates workstations from the specified JSON file """
         workStations = {}
         with open(path_to_json) as data_file:
             data = json.load(data_file)
@@ -43,14 +43,14 @@ class FactorySimulator:
         """pprint(self.workStations)"""
 
     def count_workstations(self):
-        ''' Counts the workstations saved in FactorySimulator '''
+        """ Counts the workstations saved in FactorySimulator """
         count = 0
         for item in self.workStations.values():
             count += len(item)
         return count
 
     def set_position_for_workstations(self, workstation_positions):
-        ''' Update workstation positions with Tupel (Type, x, y) - typically from evolutionary algorithm '''
+        """ Update workstation positions with Tupel (Type, x, y) - typically from evolutionary algorithm """
         # Check if length is matchig
         if self.count_workstations() == len(workstation_positions):
             # iterate over input
@@ -63,7 +63,7 @@ class FactorySimulator:
             raise Exception("Too many positions in workstation_positions")
 
     def setup(self, workstation_positions):
-        ''' Sets up the factory '''
+        """ Sets up the factory """
         self.set_position_for_workstations(workstation_positions)
 
     def run(self):
