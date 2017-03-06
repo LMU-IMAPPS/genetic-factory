@@ -1,0 +1,22 @@
+{
+    
+   "workStations": [
+        {
+          "type": "A",
+          "size": "10"
+        },
+        {
+          "type": "B",
+          "size": "10"
+        },
+        {
+          "type": "C",
+          "size": "10"
+        },
+        {
+          "type": "D",
+          "size": "10"
+        }
+    ]
+
+}

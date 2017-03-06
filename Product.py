@@ -4,6 +4,6 @@ class Product:
         self.positionX = positionX
         self.positionY = positionY
 
-    def nextStep():
+    #def nextStep():
         # proceed one field calculated according to routing algorithm
         # update postion to new position
