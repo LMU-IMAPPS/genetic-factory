@@ -14,6 +14,7 @@ class FactorySimulator:
     ]
 
     def generate_products(self, path_to_json):
+        ''' Generates products from the specified JSON file '''
         products = []
         with open(path_to_json) as data_file:
             data = json.load(data_file)
@@ -22,6 +23,7 @@ class FactorySimulator:
         return products
 
     def generate_work_stations(self, path_to_json):
+        ''' Generates workstations from the specified JSON file '''
         workStations = {}
         with open(path_to_json) as data_file:
             data = json.load(data_file)
@@ -37,16 +39,18 @@ class FactorySimulator:
     def __init__(self, path_to_products_json, path_to_workstations_json):
         self.products = self.generate_products(path_to_products_json)
         self.workStations = self.generate_work_stations(path_to_workstations_json)
-        pprint(self.products)
-        pprint(self.workStations)
+        """pprint(self.products)"""
+        """pprint(self.workStations)"""
 
     def count_workstations(self):
+        ''' Counts the workstations saved in FactorySimulator '''
         count = 0
         for item in self.workStations.values():
             count += len(item)
         return count
 
     def set_position_for_workstations(self, workstation_positions):
+        ''' Update workstation positions with Tupel (Type, x, y) - typically from evolutionary algorithm '''
         # Check if length is matchig
         if self.count_workstations() == len(workstation_positions):
             # iterate over input
@@ -55,11 +59,11 @@ class FactorySimulator:
                 workstation = self.workStations[item[0]].pop(0)
                 workstation.setPosition(item[1], item[2])
                 self.workStations[item[0]].append(workstation)
-        # for workstations ... setPosition
         else:
             raise Exception("Too many positions in workstation_positions")
 
     def setup(self, workstation_positions):
+        ''' Sets up the factory '''
         self.set_position_for_workstations(workstation_positions)
 
     def run(self):
