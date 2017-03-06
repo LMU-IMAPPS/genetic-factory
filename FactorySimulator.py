@@ -1,7 +1,9 @@
 import json
 from pprint import pprint
 from Product import Product
+from Product import StepResult
 from Workstation import Workstation
+import sys
 
 class FactorySimulator:
     products = []
@@ -39,6 +41,23 @@ class FactorySimulator:
 
     #def setup(self, position_list):
         # for workstations ... setPosition
+
+    def run(self):
+        counter = 0;
+        while (True):
+            madeChange = False
+            isDone = True
+            for p in self.products:
+                result = p.run()
+                if not result == StepResult.BLOCKED:
+                    madeChange = True
+                if not result == StepResult.DONE:
+                    isDone = False
+            if isDone:
+                return counter
+            if not madeChange:
+                return sys.maxsize
+            counter += 1;
 
 
 Factory = FactorySimulator('Products.json', 'Workstations.json')
