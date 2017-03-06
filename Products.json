@@ -1,0 +1,21 @@
+{
+    
+    [
+        {
+            "positionX": 0,
+            "positionY": 1,
+            "workstationRoute": "ABCBE"
+        },
+        {
+            "positionX": 1,
+            "positionY": 1,
+            "workstationRoute": "DCAB"
+        },
+        {
+            "positionX": 2,
+            "positionY": 1,
+            "workstationRoute": "AEC"
+        }
+    ]
+
+}
