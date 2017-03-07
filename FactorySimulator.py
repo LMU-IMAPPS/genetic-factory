@@ -52,7 +52,6 @@ class FactorySimulator:
         """pprint(self.products)"""
         """pprint(self.workStations)"""
 
-
     def count_workstations(self):
         """ Counts the workstations saved in FactorySimulator """
         count = 0
