@@ -112,6 +112,7 @@ class FactorySimulator:
 
     def run(self, viz_type):
         returnVal = []
+
         def innerRun():
             returnVal.append(self.privateRun(viz_type))
 
@@ -125,4 +126,3 @@ position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5
 Factory.setup(position_list)
 viz_type = 1 #0 for none, 1 for Workstation Position only, 2 for all steps
 print(Factory.run(viz_type))
-
