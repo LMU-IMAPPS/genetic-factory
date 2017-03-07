@@ -29,7 +29,7 @@ class View(Frame):
         tY = 0
         for i in range(round(600/size)):
             for j in range(round(1000/size)):
-                View.canvas.create_rectangle(i*size +tX,j*size+tY,(i*size)+size+tY,(j*size)+size+tY)
+                self.canvas.create_rectangle(i*size + tX, j*size+tY, (i*size)+size+tY, (j*size)+size+tY)
                 
     def getSize(self, works):
         size = 0
@@ -37,15 +37,17 @@ class View(Frame):
         maxX = 0
         minY = 10000
         maxY = 0
-        for w in works:
-            if(w.positionX < minX):
-                minX = w.positionX
-            if(w.positionX > maxX):
-                maxX = w.positionX
-            if(w.positionY < minY):
-                minY = w.positionY
-            if(w.positionY > maxY):
-                maxY = w.positionY
+        print(works.values())
+        for w_v in works.values():
+            for w in w_v:
+                if w.positionX < minX:
+                    minX = w.positionX
+                if w.positionX > maxX:
+                    maxX = w.positionX
+                if w.positionY < minY:
+                    minY = w.positionY
+                if w.positionY > maxY:
+                    maxY = w.positionY
                 
         if(1000.0/(1+(maxX-minX)) > 600.0/(1+(maxY-minY))):
             size = 600.0/(1+(maxY-minY))
@@ -55,7 +57,7 @@ class View(Frame):
         return size   
                 
     def drawWorkstations(self, works, size):
-        for w_v in works.values:
+        for w_v in works.values():
             for w in w_v:
                 View.canvas.create_rectangle(w.positionX*size , w.positionY*size, w.positionX*size+size,w.positionY*size+size, fill="pink")
                 View.canvas.create_text((w.positionX*size + (size/2),w.positionY*size+ (size/2)), text = w.type)
@@ -77,12 +79,12 @@ class View(Frame):
         pass
 
     def nextTimeStep(self, listP, listW):
-        size = self.getSize(list)
+        size = self.getSize(listW)
         self.drawGrid(size)
         self.updateProducts(listP, size, listW)
 
 # Beispielhafte Funktionsweise
-"""def main():
+'''def main():
     list = []
     for i in range(10):
         w = Workstation('A')
@@ -94,8 +96,7 @@ class View(Frame):
         w = Product(i, i + 1)
         list_p.append(w)
 
-    root = Tk()
-    ex = View(root,list_p, list)
+
 
     #w = Workstation('A')
     #w.setPosition(50,30)
@@ -116,4 +117,4 @@ class View(Frame):
 
 
 if __name__ == '__main__':
-    main()  """
+    main()'''

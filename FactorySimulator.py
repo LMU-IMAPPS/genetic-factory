@@ -1,8 +1,11 @@
 import json
+from tkinter import Tk, Canvas, Frame, BOTH
+from View import View
 from pprint import pprint
 from Product import Product
 from Product import StepResult
 from Workstation import Workstation
+import time
 import sys
 
 class FactorySimulator:
@@ -43,6 +46,11 @@ class FactorySimulator:
         self.currentFieldStatus = self.initFieldStatus()
         """pprint(self.products)"""
         """pprint(self.workStations)"""
+        self.viewRoot = Tk()
+        self.View = View(self.viewRoot, self.products, self.workStations)
+        self.viewRoot.geometry("1000x600+300+50")
+        self.viewRoot.mainloop(0)
+
 
     def count_workstations(self):
         """ Counts the workstations saved in FactorySimulator """
@@ -91,6 +99,11 @@ class FactorySimulator:
                 pprint("Blocked")
                 return sys.maxsize
             counter += 1;
+            self.View.nextTimeStep(self.products, self.workStations)
+            self.viewRoot.mainloop(counter)
+
+            time.sleep(1)
+
 
 
 
@@ -100,4 +113,6 @@ Factory = FactorySimulator('Products.json', 'Workstations.json')
 position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6),  ('D', 1, 5)]
 Factory.setup(position_list)
 Factory.run()
+
+
 
