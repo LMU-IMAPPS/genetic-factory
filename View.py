@@ -6,6 +6,9 @@ from Product import Product
 class View(Frame):
     list_old = []
 
+    width = None
+    height = None
+
     def __init__(self, parent, products, work):
         Frame.__init__(self, parent)
         canvas = None
@@ -28,8 +31,8 @@ class View(Frame):
     def drawGrid(self, size):
         tX = 0
         tY = 0
-        for i in range(round(600/size)):
-            for j in range(round(1000/size)):
+        for i in range(round(1000/size)):
+            for j in range(round(600/size)):
                 self.canvas.create_rectangle(i*size + tX, j*size+tY, (i*size)+size+tY, (j*size)+size+tY)
                 
     def getSize(self, works):
@@ -49,11 +52,14 @@ class View(Frame):
                     minY = w.positionY
                 if w.positionY > maxY:
                     maxY = w.positionY
-                
-        if(1000.0/(1+(maxX-minX)) > 600.0/(1+(maxY-minY))):
+
+        self.width = maxX-minX
+        self.height = maxY - minY
+
+        if(1000.0/(3+(maxX-minX)) > 600.0/(1+(maxY-minY))):
             size = 600.0/(1+(maxY-minY))
         else:
-            size = 1000.0/(1+(maxX-minX))
+            size = 1000.0/(3+(maxX-minX))
         
         return size   
                 
