@@ -7,6 +7,13 @@ from Product import StepResult
 from Workstation import Workstation
 import time
 import sys
+from enum import Enum
+
+class visibitltyStatus(Enum):
+    NONE = 0
+    WorkstationPos = 1
+    ALL = 2
+
 
 
 class FactorySimulator:
@@ -19,7 +26,7 @@ class FactorySimulator:
             r.append([False] * self.ARRAYSIZE)
         return r
 
-    def generate_products(self, path_to_json, workStations):
+    def generate_products(self, path_to_json):
         """ Generates products from the specified JSON file """
         products = []
         with open(path_to_json) as data_file:
@@ -72,18 +79,19 @@ class FactorySimulator:
         else:
             raise Exception("Too many positions in workstation_positions")
 
-    def setup(self, workstation_positions):
+    def setup(self, workstation_positions, vs):
         """ Sets up the factory """
         self.set_position_for_workstations(workstation_positions)
-        self.View = View(self.viewRoot, self.products, self.workStations)
-        self.viewRoot.geometry("1000x600+300+50")
+        if vs != visibitltyStatus.NONE:
+            self.View = View(self.viewRoot, self.products, self.workStations)
+            self.viewRoot.geometry("1000x600+300+50")
         self.productReset()
 
     def productReset(self):
         for p in self.products:
             p.reset()
 
-    def privateRun(self, vizualisationType):
+    def privateRun(self, vs):
         counter = 0
         while True:
             print(counter)
@@ -96,7 +104,7 @@ class FactorySimulator:
                 if not result == StepResult.DONE:
                     isDone = False
             if isDone:
-                if vizualisationType != 0:
+                if vs != visibitltyStatus.NONE:
                     self.View.nextTimeStep(self.products, self.workStations)
                     self.viewRoot.update()
                 pprint("Done")
@@ -105,7 +113,7 @@ class FactorySimulator:
                 pprint("Blocked")
                 return sys.maxsize
             counter += 1
-            if vizualisationType == 2:
+            if vs == visibitltyStatus.ALL:
                 self.View.nextTimeStep(self.products, self.workStations)
                 self.viewRoot.update()
                 time.sleep(0.1)
@@ -123,6 +131,6 @@ class FactorySimulator:
 
 Factory = FactorySimulator('Products.json', 'Workstations.json')
 position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5)]
-Factory.setup(position_list)
-viz_type = 2 #0 for none, 1 for Workstation Position only, 2 for all steps
+viz_type = visibitltyStatus.ALL
+Factory.setup(position_list, viz_type)
 print(Factory.run(viz_type))
