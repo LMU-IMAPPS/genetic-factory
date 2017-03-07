@@ -121,7 +121,7 @@ class Product:
             newDis = self.calculateDistance(station)
             if newDis < distance:
                 distance = newDis
-                clostetWorkstion = station
+                closestWorkstion = station
         return closestWorkstion
 
     def calculateDistance(self, station):
