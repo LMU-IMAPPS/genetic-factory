@@ -24,5 +24,5 @@ def genertateJson(filname, numProducts, baseCourseLength, startingPositions, sta
             json.write('\"\n}')
         json.write("]\n}")
 
-genertateJson("test.txt", 25, 3, [(0, 0), (0, 10), (10, 0), (10, 10)], 'ABCDEFGHI', courseLengthDeviation=1)
+genertateJson("test.ignore", 25, 3, [(0, 0), (0, 10), (10, 0), (10, 10)], 'ABCDEFGHI', courseLengthDeviation=1)
 
