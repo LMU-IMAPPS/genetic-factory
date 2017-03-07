@@ -61,9 +61,9 @@ class View(Frame):
     def drawProduct(self, products, size):
         View.list_old.clear()
         for p in products:
-            View.canvas.create_oval(p.positionX * size + 3, p.positionY * size + 3, p.positionX * size - 3 + size, p.positionY * size - 3 + size, outline="white", fill="blue", width=0)
-            View.list_old.append((p.positionX, p.positionY))
-
+        if not p.isDone:
+                View.canvas.create_oval(p.positionX * size + 3, p.positionY * size + 3, p.positionX * size - 3 + size, p.positionY * size - 3 + size, outline="white", fill="blue", width=0)
+                View.list_old.append((p.positionX, p.positionY))
         pass
 
     def updateProducts(self, products, size, works):
