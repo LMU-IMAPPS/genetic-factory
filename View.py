@@ -13,6 +13,7 @@ class View(Frame):
         
         self.initUI()
         size = self.getSize(work)
+        self.drawGrid(size)
         self.drawWorkstations(work, size)
         self.drawProduct(products, size)
         
@@ -64,6 +65,7 @@ class View(Frame):
         pass
     
     def drawProduct(self, products, size):
+        View.list_old.clear()
         for p in products:
             View.canvas.create_oval(p.positionX*size+3, p.positionY*size+3, p.positionX *size-3+size, p.positionY*size-3+size, outline="white", fill="blue", width=0)
             View.list_old.append((p.positionX, p.positionY))
@@ -71,16 +73,19 @@ class View(Frame):
         pass
 
     def updateProducts(self, products, size, works):
+        print(products)
+        print(size)
+        print(works)
         for p in View.list_old:
-            View.canvas.create_oval(p[0]* size +1, p[1] * size+1, p[0] * size-1 + size, p[1] * size-1 + size, outline="gray", fill="white", width=0)
-        print (View.list_old)
+            View.canvas.create_oval(p[0] * size + 1, p[1] * size+1, p[0] * size-1 + size, p[1] * size-1 + size, outline="gray", fill="white", width=0)
+        print(View.list_old)
         self.drawWorkstations(works, size)
         self.drawProduct(products, size)
         pass
 
     def nextTimeStep(self, listP, listW):
+        print(listW['A'])
         size = self.getSize(listW)
-        self.drawGrid(size)
         self.updateProducts(listP, size, listW)
 
 # Beispielhafte Funktionsweise

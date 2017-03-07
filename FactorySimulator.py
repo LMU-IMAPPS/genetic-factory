@@ -85,6 +85,7 @@ class FactorySimulator:
     def run(self):
         counter = 0
         while True:
+            print(counter)
             madeChange = False
             isDone = True
             for p in self.products:
@@ -100,9 +101,9 @@ class FactorySimulator:
                 pprint("Blocked")
                 return sys.maxsize
             counter += 1
-            self.View.nextTimeStep(self.products, self.workStations)
+            #self.View.nextTimeStep(self.products, self.workStations)
 
-            time.sleep(1)
+            #time.sleep(1)
 
 
 
