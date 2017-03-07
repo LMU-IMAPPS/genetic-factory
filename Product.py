@@ -1,10 +1,12 @@
 from enum import Enum
 import sys
 
+
 class StepResult(Enum):
     MOVED = 1
     BLOCKED = 2
     DONE = 3
+
 
 class Direction(Enum):
     UP = (0, 1)
@@ -22,6 +24,7 @@ class Direction(Enum):
 
     def yAxis(self):
         return self.value[1]
+
 
 class Product:
 
@@ -57,19 +60,18 @@ class Product:
             return StepResult.MOVED
         return StepResult.BLOCKED
 
-
     def findDirection(self):
         if (self.positionX < self.targetX):
             if (self.positionY < self.targetY):
                 return Direction.UPRIGHT
             if (self.positionY > self.targetY):
-                return  Direction.DOWNRIGHT
+                return Direction.DOWNRIGHT
             return Direction.RIGHT
         if (self.positionX > self.targetX):
             if (self.positionY < self.targetY):
                 return Direction.UPLEFT
             if (self.positionY > self.targetY):
-                return  Direction.DOWNLEFT
+                return Direction.DOWNLEFT
             return Direction.LEFT
         if (self.positionY < self.targetY):
             return Direction.UP
@@ -77,7 +79,7 @@ class Product:
             return Direction.DOWN
         return Direction.STAY
 
-    def __init__(self, positionX, positionY,workStationRoute, workStations):
+    def __init__(self, positionX, positionY, workStationRoute, workStations):
         self.positionX = positionX
         self.positionY = positionY
         self.workStationRoute = list(workStationRoute)
@@ -96,7 +98,6 @@ class Product:
         self.targetX = nextTarget.positionX
         self.targetY = nextTarget.positionY
 
-
     def findClosest(self, workStationList):
         clostetWorkstion = None
         distance = sys.maxsize
@@ -114,7 +115,6 @@ class Product:
         y2 = y * y
         return x2 + y2
 
-
-    #def nextStep():
+    # def nextStep():
         # proceed one field calculated according to routing algorithm
         # update postion to new position
