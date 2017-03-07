@@ -68,6 +68,11 @@ class FactorySimulator:
         """ Sets up the factory """
         self.set_position_for_workstations(workstation_positions)
 
+    def productReset(self):
+        for p in self.products:
+            p.reset()
+
+
     def run(self):
         counter = 0;
         while (True):
@@ -86,13 +91,13 @@ class FactorySimulator:
                 pprint("Blocked")
                 return sys.maxsize
             counter += 1;
-            for p in self.products:
-                pprint(str(p.positionX) + " " + str(p.positionY))
+
+
 
 
 
 Factory = FactorySimulator('Products.json', 'Workstations.json')
-position_list = [('A', 7, 10), ('B', 5, 10), ('C', 7, 0), ('A', 7, 7),  ('D', 5, 5)]
+position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6),  ('D', 1, 5)]
 Factory.setup(position_list)
 Factory.run()
 
