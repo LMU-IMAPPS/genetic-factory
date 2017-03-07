@@ -54,6 +54,7 @@ class FactorySimulator:
         self.products = self.generate_products(path_to_products_json, self.workStations)
         self.currentFieldStatus = self.initFieldStatus()
         self.counter = 0
+        self.vs = vs
         if vs != visibitltyStatus.NONE:
             self.viewRoot = Tk()
 
@@ -80,10 +81,10 @@ class FactorySimulator:
         else:
             raise Exception("Too many positions in workstation_positions")
 
-    def setup(self, workstation_positions, vs):
+    def setup(self, workstation_positions):
         """ Sets up the factory """
         self.set_position_for_workstations(workstation_positions)
-        if vs != visibitltyStatus.NONE:
+        if self.vs != visibitltyStatus.NONE:
             self.View = View(self.viewRoot, self.products, self.workStations)
             self.viewRoot.geometry("1000x600+300+50")
         self.productReset()
@@ -119,14 +120,14 @@ class FactorySimulator:
                 self.viewRoot.update()
                 time.sleep(0.1)
 
-    def run(self, vs):
+    def run(self):
         returnVal = None
 
         def innerRun():
             nonlocal returnVal
-            returnVal = self.privateRun(vs)
+            returnVal = self.privateRun(self.vs)
 
-        if vs != visibitltyStatus.NONE:
+        if self.vs != visibitltyStatus.NONE:
             self.viewRoot.after(1000, innerRun)
             self.viewRoot.mainloop()
         else:
@@ -137,5 +138,5 @@ viz_type = visibitltyStatus.NONE
 Factory = FactorySimulator('Products.json', 'Workstations.json', viz_type)
 position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5)]
 
-Factory.setup(position_list, viz_type)
-print(Factory.run(viz_type))
+Factory.setup(position_list)
+print(Factory.run())
