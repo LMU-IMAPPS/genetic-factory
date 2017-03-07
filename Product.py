@@ -28,11 +28,11 @@ class Product:
     def run(self, currentFieldStatus):
         if self.isDone:
             return StepResult.DONE
-        if not self.isInitalized:
+        if not self.isInitialized:
             if not currentFieldStatus[self.positionX][self.positionY]:
                 self.findTarget()
                 currentFieldStatus[self.positionX][self.positionY] = True
-                self.isInitalized = True
+                self.isInitialized = True
                 return StepResult.MOVED
             else:
                 return StepResult.BLOCKED
@@ -57,6 +57,12 @@ class Product:
             return StepResult.MOVED
         return StepResult.BLOCKED
 
+    def reset(self):
+        self.positionY = self.iniPostionY
+        self.positionX = self.iniPostionX
+        self.isDone = False
+        self.isInitialized = False
+        self.workStationRoute = list(self.iniWorkstationRoute)
 
     def findDirection(self):
         if (self.positionX < self.targetX):
@@ -80,9 +86,12 @@ class Product:
     def __init__(self, positionX, positionY,workStationRoute, workStations):
         self.positionX = positionX
         self.positionY = positionY
+        self.iniPostionX = positionX
+        self.iniPostionY = positionY
+        self.iniWorkstationRoute = list(workStationRoute)
         self.workStationRoute = list(workStationRoute)
         self.workStations = workStations
-        self.isInitalized = False
+        self.isInitialized = False
         self.isDone = False
         self.targetX = -1
         self.targetY = -1
