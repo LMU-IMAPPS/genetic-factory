@@ -30,8 +30,10 @@ class Product:
 
     def run(self, currentFieldStatus):
         if self.isDone:
+            # Done doing nothing
             return StepResult.DONE
         if not self.isInitialized:
+            # Trying to move into starting position
             if not currentFieldStatus[self.positionX][self.positionY]:
                 self.findTarget()
                 currentFieldStatus[self.positionX][self.positionY] = True
@@ -41,20 +43,23 @@ class Product:
                 return StepResult.BLOCKED
         nextDir = self.findDirection()
         if not currentFieldStatus[self.positionX + nextDir.xAxis()][self.positionY + nextDir.yAxis()]:
+            #moving
             currentFieldStatus[self.positionX][self.positionY] = False
             self.positionX += nextDir.xAxis()
             self.positionY += nextDir.yAxis()
             currentFieldStatus[self.positionX][self.positionY] = True
             if (self.positionY == self.targetY) & (self.positionX == self.targetX):
                 self.findTarget()
-                if (self.isDone):
+                if self.isDone:
+                    #removing myself from the simulation, when I am done
                     currentFieldStatus[self.positionX][self.positionY] = False
                     return StepResult.DONE
                 return StepResult.MOVED
             return StepResult.MOVED
         if (self.positionY == self.targetY) & (self.positionX == self.targetX):
+            #should not be used
             self.findTarget()
-            if (self.isDone):
+            if self.isDone:
                 currentFieldStatus[self.positionX][self.positionY] = False
                 return StepResult.DONE
             return StepResult.MOVED
@@ -68,21 +73,21 @@ class Product:
         self.workStationRoute = list(self.iniWorkstationRoute)
 
     def findDirection(self):
-        if (self.positionX < self.targetX):
-            if (self.positionY < self.targetY):
+        if self.positionX < self.targetX:
+            if self.positionY < self.targetY:
                 return Direction.UPRIGHT
-            if (self.positionY > self.targetY):
+            if self.positionY > self.targetY:
                 return Direction.DOWNRIGHT
             return Direction.RIGHT
-        if (self.positionX > self.targetX):
-            if (self.positionY < self.targetY):
+        if self.positionX > self.targetX:
+            if self.positionY < self.targetY:
                 return Direction.UPLEFT
-            if (self.positionY > self.targetY):
+            if self.positionY > self.targetY:
                 return Direction.DOWNLEFT
             return Direction.LEFT
-        if (self.positionY < self.targetY):
+        if self.positionY < self.targetY:
             return Direction.UP
-        if (self.positionY > self.targetY):
+        if self.positionY > self.targetY:
             return Direction.DOWN
         return Direction.STAY
 
@@ -101,6 +106,7 @@ class Product:
 
     def findTarget(self):
         if len(self.workStationRoute) == 0:
+            #no workstations left
             self.isDone = True
             return
         nextTarget = self.workStationRoute.pop(0)
@@ -109,14 +115,14 @@ class Product:
         self.targetY = nextTarget.positionY
 
     def findClosest(self, workStationList):
-        clostetWorkstion = None
+        closestWorkstion = None
         distance = sys.maxsize
         for station in workStationList:
             newDis = self.calculateDistance(station)
             if newDis < distance:
                 distance = newDis
-                clostetWorkstion = station
-        return clostetWorkstion
+                closestWorkstion = station
+        return closestWorkstion
 
     def calculateDistance(self, station):
         x = station.positionX - self.positionX
@@ -124,7 +130,3 @@ class Product:
         x2 = x * x
         y2 = y * y
         return x2 + y2
-
-    # def nextStep():
-        # proceed one field calculated according to routing algorithm
-        # update postion to new position
