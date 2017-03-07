@@ -77,7 +77,7 @@ class FactorySimulator:
         self.set_position_for_workstations(workstation_positions)
         self.View = View(self.viewRoot, self.products, self.workStations)
         self.viewRoot.geometry("1000x600+300+50")
-        #viewRoot.mainloop()
+        self.productReset()
 
     def productReset(self):
         for p in self.products:
