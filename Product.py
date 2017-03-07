@@ -15,7 +15,13 @@ class Direction(Enum):
     DOWNLEFT = (-1, -1)
     LEFT = (-1, 0)
     UPLEFT = (-1, 1)
+    STAY = (0, 0)
 
+    def xAxis(self):
+        return self.value[0]
+
+    def yAxis(self):
+        return self.value[1]
 
 class Product:
 
@@ -24,23 +30,30 @@ class Product:
             return StepResult.DONE
         if not self.isInitalized:
             if not currentFieldStatus[self.positionX][self.positionY]:
+                self.findTarget()
                 currentFieldStatus[self.positionX][self.positionY] = True
                 self.isInitalized = True
                 return StepResult.MOVED
             else:
                 return StepResult.BLOCKED
         nextDir = self.findDirection()
-        if not currentFieldStatus[self.positionX + nextDir.first()][self.positionY + nextDir.second()]:
+        if not currentFieldStatus[self.positionX + nextDir.xAxis()][self.positionY + nextDir.yAxis()]:
             currentFieldStatus[self.positionX][self.positionY] = False
-            self.positionX += nextDir.first()
-            self.positionY += nextDir.second()
+            self.positionX += nextDir.xAxis()
+            self.positionY += nextDir.yAxis()
             currentFieldStatus[self.positionX][self.positionY] = True
-            if (self.positionY == self.targetY & self.positionX == self.targetX):
+            if (self.positionY == self.targetY) & (self.positionX == self.targetX):
                 self.findTarget()
                 if (self.isDone):
                     currentFieldStatus[self.positionX][self.positionY] = False
                     return StepResult.DONE
-
+                return StepResult.MOVED
+            return StepResult.MOVED
+        if (self.positionY == self.targetY) & (self.positionX == self.targetX):
+            self.findTarget()
+            if (self.isDone):
+                currentFieldStatus[self.positionX][self.positionY] = False
+                return StepResult.DONE
             return StepResult.MOVED
         return StepResult.BLOCKED
 
@@ -58,24 +71,27 @@ class Product:
             if (self.positionY > self.targetY):
                 return  Direction.DOWNLEFT
             return Direction.LEFT
-        if (self.positionY < self.positionY):
+        if (self.positionY < self.targetY):
             return Direction.UP
-        if (self.positionY > self.positionY):
+        if (self.positionY > self.targetY):
             return Direction.DOWN
+        return Direction.STAY
 
     def __init__(self, positionX, positionY,workStationRoute, workStations):
         self.positionX = positionX
         self.positionY = positionY
-        self.workStationRoute = workStationRoute
+        self.workStationRoute = list(workStationRoute)
         self.workStations = workStations
         self.isInitalized = False
-        self.isDone = False;
+        self.isDone = False
+        self.targetX = -1
+        self.targetY = -1
 
     def findTarget(self):
         if len(self.workStationRoute) == 0:
             self.isDone = True
             return
-        nextTarget = self.workStationRoute.pop([0])
+        nextTarget = self.workStationRoute.pop(0)
         nextTarget = self.findClosest(self.workStations[nextTarget])
         self.targetX = nextTarget.positionX
         self.targetY = nextTarget.positionY
@@ -83,7 +99,7 @@ class Product:
 
     def findClosest(self, workStationList):
         clostetWorkstion = None
-        distance = sys.Maxsize
+        distance = sys.maxsize
         for station in workStationList:
             newDis = self.calculateDistance(station)
             if newDis < distance:
