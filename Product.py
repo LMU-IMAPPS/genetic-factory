@@ -130,4 +130,3 @@ class Product:
         x2 = x * x
         y2 = y * y
         return x2 + y2
-

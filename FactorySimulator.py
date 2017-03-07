@@ -1,5 +1,5 @@
 import json
-from tkinter import Tk, Canvas, Frame, BOTH
+from tkinter import Tk
 from View import View
 from pprint import pprint
 from Product import Product
@@ -7,6 +7,7 @@ from Product import StepResult
 from Workstation import Workstation
 import time
 import sys
+
 
 class FactorySimulator:
     ARRAYSIZE = 11
@@ -113,16 +114,8 @@ class FactorySimulator:
         self.viewRoot.mainloop()
 
 
-
-
-
-
-
 Factory = FactorySimulator('Products.json', 'Workstations.json')
-position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6),  ('D', 1, 5)]
+position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5)]
 Factory.setup(position_list)
 
 Factory.run()
-
-
-
