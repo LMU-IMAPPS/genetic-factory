@@ -30,8 +30,10 @@ class Product:
 
     def run(self, currentFieldStatus):
         if self.isDone:
+            # Done doing nothing
             return StepResult.DONE
         if not self.isInitialized:
+            # Trying to move into starting position
             if not currentFieldStatus[self.positionX][self.positionY]:
                 self.findTarget()
                 currentFieldStatus[self.positionX][self.positionY] = True
@@ -41,6 +43,7 @@ class Product:
                 return StepResult.BLOCKED
         nextDir = self.findDirection()
         if not currentFieldStatus[self.positionX + nextDir.xAxis()][self.positionY + nextDir.yAxis()]:
+            #moving
             currentFieldStatus[self.positionX][self.positionY] = False
             self.positionX += nextDir.xAxis()
             self.positionY += nextDir.yAxis()
@@ -48,11 +51,13 @@ class Product:
             if (self.positionY == self.targetY) & (self.positionX == self.targetX):
                 self.findTarget()
                 if (self.isDone):
+                    #removing myself from the simulation, when I am done
                     currentFieldStatus[self.positionX][self.positionY] = False
                     return StepResult.DONE
                 return StepResult.MOVED
             return StepResult.MOVED
         if (self.positionY == self.targetY) & (self.positionX == self.targetX):
+            #should not be used
             self.findTarget()
             if (self.isDone):
                 currentFieldStatus[self.positionX][self.positionY] = False
@@ -101,6 +106,7 @@ class Product:
 
     def findTarget(self):
         if len(self.workStationRoute) == 0:
+            #no workstations left
             self.isDone = True
             return
         nextTarget = self.workStationRoute.pop(0)
@@ -125,6 +131,3 @@ class Product:
         y2 = y * y
         return x2 + y2
 
-    # def nextStep():
-        # proceed one field calculated according to routing algorithm
-        # update postion to new position
