@@ -115,14 +115,14 @@ class Product:
         self.targetY = nextTarget.positionY
 
     def findClosest(self, workStationList):
-        clostetWorkstion = None
+        closestWorkstion = None
         distance = sys.maxsize
         for station in workStationList:
             newDis = self.calculateDistance(station)
             if newDis < distance:
                 distance = newDis
                 clostetWorkstion = station
-        return clostetWorkstion
+        return closestWorkstion
 
     def calculateDistance(self, station):
         x = station.positionX - self.positionX
