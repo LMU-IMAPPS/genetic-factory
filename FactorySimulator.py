@@ -26,7 +26,7 @@ class FactorySimulator:
             r.append([False] * self.ARRAYSIZE)
         return r
 
-    def generate_products(self, path_to_json):
+    def generate_products(self, path_to_json, workStations):
         """ Generates products from the specified JSON file """
         products = []
         with open(path_to_json) as data_file:
@@ -119,14 +119,15 @@ class FactorySimulator:
                 time.sleep(0.1)
 
     def run(self, viz_type):
-        returnVal = []
+        returnVal = None
 
         def innerRun():
-            returnVal.append(self.privateRun(viz_type))
+            nonlocal returnVal
+            returnVal = self.privateRun(viz_type)
 
         self.viewRoot.after(1000, innerRun)
         self.viewRoot.mainloop()
-        return returnVal[0]
+        return returnVal
 
 
 Factory = FactorySimulator('Products.json', 'Workstations.json')
