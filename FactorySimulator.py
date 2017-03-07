@@ -83,7 +83,7 @@ class FactorySimulator:
         for p in self.products:
             p.reset()
 
-    def privateRun(self):
+    def privateRun(self, vizualisationType):
         counter = 0
         while True:
             print(counter)
@@ -96,21 +96,28 @@ class FactorySimulator:
                 if not result == StepResult.DONE:
                     isDone = False
             if isDone:
-                self.View.nextTimeStep(self.products, self.workStations)
-                self.viewRoot.update()
+                if vizualisationType != 0:
+                    self.View.nextTimeStep(self.products, self.workStations)
+                    self.viewRoot.update()
                 pprint("Done")
                 return counter
             if not madeChange:
                 pprint("Blocked")
                 return sys.maxsize
             counter += 1
-            self.View.nextTimeStep(self.products, self.workStations)
-            self.viewRoot.update()
-            time.sleep(0.1)
+            if vizualisationType == 2:
+                self.View.nextTimeStep(self.products, self.workStations)
+                self.viewRoot.update()
+                time.sleep(0.1)
 
-    def run(self):
-        self.viewRoot.after(1000, self.privateRun)
+    def run(self, viz_type):
+        returnVal = []
+        def innerRun():
+            returnVal.append(self.privateRun(viz_type))
+
+        self.viewRoot.after(1000, innerRun)
         self.viewRoot.mainloop()
+        return returnVal[0]
 
 
 
@@ -121,8 +128,9 @@ class FactorySimulator:
 Factory = FactorySimulator('Products.json', 'Workstations.json')
 position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6),  ('D', 1, 5)]
 Factory.setup(position_list)
+viz_type = 1 #0 for none, 1 for Workstation Position only, 2 for all steps
+print(Factory.run(viz_type))
 
-Factory.run()
 
 
 
