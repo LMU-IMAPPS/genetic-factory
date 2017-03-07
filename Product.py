@@ -50,7 +50,7 @@ class Product:
             currentFieldStatus[self.positionX][self.positionY] = True
             if (self.positionY == self.targetY) & (self.positionX == self.targetX):
                 self.findTarget()
-                if (self.isDone):
+                if self.isDone:
                     #removing myself from the simulation, when I am done
                     currentFieldStatus[self.positionX][self.positionY] = False
                     return StepResult.DONE
@@ -59,7 +59,7 @@ class Product:
         if (self.positionY == self.targetY) & (self.positionX == self.targetX):
             #should not be used
             self.findTarget()
-            if (self.isDone):
+            if self.isDone:
                 currentFieldStatus[self.positionX][self.positionY] = False
                 return StepResult.DONE
             return StepResult.MOVED
@@ -73,21 +73,21 @@ class Product:
         self.workStationRoute = list(self.iniWorkstationRoute)
 
     def findDirection(self):
-        if (self.positionX < self.targetX):
-            if (self.positionY < self.targetY):
+        if self.positionX < self.targetX:
+            if self.positionY < self.targetY:
                 return Direction.UPRIGHT
-            if (self.positionY > self.targetY):
+            if self.positionY > self.targetY:
                 return Direction.DOWNRIGHT
             return Direction.RIGHT
-        if (self.positionX > self.targetX):
-            if (self.positionY < self.targetY):
+        if self.positionX > self.targetX:
+            if self.positionY < self.targetY:
                 return Direction.UPLEFT
-            if (self.positionY > self.targetY):
+            if self.positionY > self.targetY:
                 return Direction.DOWNLEFT
             return Direction.LEFT
-        if (self.positionY < self.targetY):
+        if self.positionY < self.targetY:
             return Direction.UP
-        if (self.positionY > self.targetY):
+        if self.positionY > self.targetY:
             return Direction.DOWN
         return Direction.STAY
 
