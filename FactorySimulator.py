@@ -49,12 +49,13 @@ class FactorySimulator:
                 workStations[item['type']].append(Workstation(item['type']))
         return workStations
 
-    def __init__(self, path_to_products_json, path_to_workstations_json):
+    def __init__(self, path_to_products_json, path_to_workstations_json, vs):
         self.workStations = self.generate_work_stations(path_to_workstations_json)
         self.products = self.generate_products(path_to_products_json, self.workStations)
         self.currentFieldStatus = self.initFieldStatus()
         self.counter = 0
-        self.viewRoot = Tk()
+        if vs != visibitltyStatus.NONE:
+            self.viewRoot = Tk()
 
         """pprint(self.products)"""
         """pprint(self.workStations)"""
@@ -118,20 +119,23 @@ class FactorySimulator:
                 self.viewRoot.update()
                 time.sleep(0.1)
 
-    def run(self, viz_type):
+    def run(self, vs):
         returnVal = None
 
         def innerRun():
             nonlocal returnVal
-            returnVal = self.privateRun(viz_type)
+            returnVal = self.privateRun(vs)
 
-        self.viewRoot.after(1000, innerRun)
-        self.viewRoot.mainloop()
+        if vs != visibitltyStatus.NONE:
+            self.viewRoot.after(1000, innerRun)
+            self.viewRoot.mainloop()
+        else:
+            innerRun()
         return returnVal
 
-
-Factory = FactorySimulator('Products.json', 'Workstations.json')
+viz_type = visibitltyStatus.NONE
+Factory = FactorySimulator('Products.json', 'Workstations.json', viz_type)
 position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5)]
-viz_type = visibitltyStatus.ALL
+
 Factory.setup(position_list, viz_type)
 print(Factory.run(viz_type))
