@@ -10,6 +10,7 @@ import sys
 
 class FactorySimulator:
     ARRAYSIZE = 11
+    view = None
 
     def initFieldStatus(self):
         r = []
@@ -46,10 +47,6 @@ class FactorySimulator:
         self.currentFieldStatus = self.initFieldStatus()
         """pprint(self.products)"""
         """pprint(self.workStations)"""
-        self.viewRoot = Tk()
-        self.View = View(self.viewRoot, self.products, self.workStations)
-        self.viewRoot.geometry("1000x600+300+50")
-        self.viewRoot.mainloop(0)
 
 
     def count_workstations(self):
@@ -75,6 +72,10 @@ class FactorySimulator:
     def setup(self, workstation_positions):
         """ Sets up the factory """
         self.set_position_for_workstations(workstation_positions)
+        viewRoot = Tk()
+        self.View = View(viewRoot, self.products, self.workStations)
+        viewRoot.geometry("1000x600+300+50")
+        viewRoot.mainloop()
 
     def productReset(self):
         for p in self.products:
@@ -100,7 +101,6 @@ class FactorySimulator:
                 return sys.maxsize
             counter += 1
             self.View.nextTimeStep(self.products, self.workStations)
-            self.viewRoot.mainloop(counter)
 
             time.sleep(1)
 
