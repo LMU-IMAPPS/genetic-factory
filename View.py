@@ -55,9 +55,10 @@ class View(Frame):
         return size   
                 
     def drawWorkstations(self, works, size):
-        for w in works:
-            View.canvas.create_rectangle(w.positionX*size , w.positionY*size, w.positionX*size+size,w.positionY*size+size, fill="pink")
-            View.canvas.create_text((w.positionX*size + (size/2),w.positionY*size+ (size/2)), text = w.type)
+        for w_v in works.values:
+            for w in w_v:
+                View.canvas.create_rectangle(w.positionX*size , w.positionY*size, w.positionX*size+size,w.positionY*size+size, fill="pink")
+                View.canvas.create_text((w.positionX*size + (size/2),w.positionY*size+ (size/2)), text = w.type)
         pass
     
     def drawProduct(self, products, size):
