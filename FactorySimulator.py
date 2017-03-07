@@ -45,6 +45,9 @@ class FactorySimulator:
         self.workStations = self.generate_work_stations(path_to_workstations_json)
         self.products = self.generate_products(path_to_products_json, self.workStations)
         self.currentFieldStatus = self.initFieldStatus()
+        self.counter = 0
+        self.viewRoot = Tk()
+
         """pprint(self.products)"""
         """pprint(self.workStations)"""
 
@@ -72,17 +75,15 @@ class FactorySimulator:
     def setup(self, workstation_positions):
         """ Sets up the factory """
         self.set_position_for_workstations(workstation_positions)
-        viewRoot = Tk()
-        self.View = View(viewRoot, self.products, self.workStations)
-        viewRoot.geometry("1000x600+300+50")
-        viewRoot.mainloop()
+        self.View = View(self.viewRoot, self.products, self.workStations)
+        self.viewRoot.geometry("1000x600+300+50")
+        #viewRoot.mainloop()
 
     def productReset(self):
         for p in self.products:
             p.reset()
 
-
-    def run(self):
+    def privateRun(self):
         counter = 0
         while True:
             print(counter)
@@ -95,15 +96,22 @@ class FactorySimulator:
                 if not result == StepResult.DONE:
                     isDone = False
             if isDone:
+                self.View.nextTimeStep(self.products, self.workStations)
+                self.viewRoot.update()
                 pprint("Done")
                 return counter
             if not madeChange:
                 pprint("Blocked")
                 return sys.maxsize
             counter += 1
-            #self.View.nextTimeStep(self.products, self.workStations)
+            self.View.nextTimeStep(self.products, self.workStations)
+            self.viewRoot.update()
+            time.sleep(0.1)
 
-            #time.sleep(1)
+    def run(self):
+        self.viewRoot.after(1000, self.privateRun)
+        self.viewRoot.mainloop()
+
 
 
 
@@ -113,6 +121,7 @@ class FactorySimulator:
 Factory = FactorySimulator('Products.json', 'Workstations.json')
 position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6),  ('D', 1, 5)]
 Factory.setup(position_list)
+
 Factory.run()
 
 
