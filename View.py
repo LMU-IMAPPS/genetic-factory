@@ -1,4 +1,5 @@
 from tkinter import Canvas, Frame, BOTH
+import platform
 
 
 class View(Frame):
@@ -15,6 +16,9 @@ class View(Frame):
 
     def initUI(self):
         self.parent.title("IMAPPS")
+        self.parent.lift()
+        self.parent.call('wm', 'attributes', '.', '-topmost', True)
+        self.parent.after_idle(self.parent.call, 'wm', 'attributes', '.', '-topmost', False)
         self.pack(fill=BOTH, expand=1)
         View.canvas = Canvas(self, bg="white")
         View.canvas.pack(fill=BOTH, expand=1)
