@@ -3,6 +3,8 @@ from tkinter import Canvas, Frame, BOTH
 
 class View(Frame):
     list_old = []
+    width = 0
+    height = 0
 
     def __init__(self, parent, products, work):
         Frame.__init__(self, parent)
@@ -25,10 +27,10 @@ class View(Frame):
     def drawGrid(self, size):
         tX = 0
         tY = 0
-        for i in range(round(1000/size)):
-            for j in range(round(600/size)):
+        for i in range(self.width):
+            for j in range(self.height):
                 self.canvas.create_rectangle(i*size + tX, j*size+tY, (i*size)+size+tY, (j*size)+size+tY)
-                
+
     def getSize(self, works):
         size = 0
         minX = 10000
@@ -46,11 +48,16 @@ class View(Frame):
                     minY = w.positionY
                 if w.positionY > maxY:
                     maxY = w.positionY
-                
-        if(1000.0/(3+(maxX-minX)) > 600.0/(1+(maxY-minY))):
-            size = 600.0/(1+(maxY-minY))
+
+
+        self.width = maxX - minX +3
+        self.height = maxY - minY +1
+
+        if(600.0/(1+(maxY-minY))  > 1000.0/(3+(maxX-minX))):
+            size = 1000.0 / (3 + (maxX - minX))
         else:
-            size = 1000.0/(3+(maxX-minX))
+            size = 600.0 / (1 + (maxY - minY))
+
         
         return size   
                 
