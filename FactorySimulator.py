@@ -6,20 +6,21 @@ from Workstation import Workstation
 import sys
 
 class FactorySimulator:
+    ARRAYSIZE = 11
 
-    currentFieldStatus = [
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0]
-    ]
+    def initFieldStatus(self):
+        r = []
+        for i in range(0, self.ARRAYSIZE):
+            r.append([False] * self.ARRAYSIZE)
+        return r
 
-    def generate_products(self, path_to_json):
+    def generate_products(self, path_to_json, workStations):
         """ Generates products from the specified JSON file """
         products = []
         with open(path_to_json) as data_file:
             data = json.load(data_file)
             for item in data['products']:
-                products.append(Product(item['positionX'], item['positionY']))
+                products.append(Product(item['positionX'], item['positionY'], item["workstationRoute"], workStations))
         return products
 
     def generate_work_stations(self, path_to_json):
@@ -37,8 +38,9 @@ class FactorySimulator:
         return workStations
 
     def __init__(self, path_to_products_json, path_to_workstations_json):
-        self.products = self.generate_products(path_to_products_json)
         self.workStations = self.generate_work_stations(path_to_workstations_json)
+        self.products = self.generate_products(path_to_products_json, self.workStations)
+        self.currentFieldStatus = self.initFieldStatus()
         """pprint(self.products)"""
         """pprint(self.workStations)"""
 
@@ -66,25 +68,36 @@ class FactorySimulator:
         """ Sets up the factory """
         self.set_position_for_workstations(workstation_positions)
 
+    def productReset(self):
+        for p in self.products:
+            p.reset()
+
+
     def run(self):
         counter = 0;
         while (True):
             madeChange = False
             isDone = True
             for p in self.products:
-                result = p.run()
+                result = p.run(self.currentFieldStatus)
                 if not result == StepResult.BLOCKED:
                     madeChange = True
                 if not result == StepResult.DONE:
                     isDone = False
             if isDone:
+                pprint("Done")
                 return counter
             if not madeChange:
+                pprint("Blocked")
                 return sys.maxsize
             counter += 1;
 
 
+
+
+
 Factory = FactorySimulator('Products.json', 'Workstations.json')
-position_list = [('A', 10, 20), ('B', 5, 10), ('C', 20, 10), ('A', 20, 20),  ('D', 5, 5)]
+position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6),  ('D', 1, 5)]
 Factory.setup(position_list)
+Factory.run()
 

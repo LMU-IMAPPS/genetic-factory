@@ -3,18 +3,18 @@
    "products": [
         {
             "positionX": 0,
-            "positionY": 1,
-            "workstationRoute": "ABCBE"
+            "positionY": 0,
+            "workstationRoute": "ABCB"
         },
         {
-            "positionX": 1,
-            "positionY": 1,
+            "positionX": 0,
+            "positionY": 0,
             "workstationRoute": "DCAB"
         },
         {
-            "positionX": 2,
-            "positionY": 1,
-            "workstationRoute": "AEC"
+            "positionX": 0,
+            "positionY": 0,
+            "workstationRoute": "AC"
         }
     ]
 
