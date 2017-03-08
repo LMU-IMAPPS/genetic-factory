@@ -6,6 +6,7 @@ import random
 
 ARRAYSIZE = 1000
 
+
 class FactoryGenerator:
     def __init__(self, path_to_products_json, path_to_workstations_json):
         # self.workStations = {}
@@ -24,7 +25,6 @@ class FactoryGenerator:
                 result.append((type, random.randint(0, maxPosition), random.randint(0,maxPosition)))
         return result
 
-    def generateFactory(self, workstationPositions, visibilityStatus):
     def generateFactory(self, workstationPositions, visibilityType):
         ws = self.set_position_for_workstations(workstationPositions)
         p = self.generateProducts(ws)

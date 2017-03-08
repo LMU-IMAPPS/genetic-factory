@@ -8,14 +8,11 @@ def generateIndividual(positionList):
 
 
 def individualSelection(individuals):
-    subList = []
-    # TODO Try \w pointer
-    '''Sort'''
+    # Sort
+    individuals.sort(key=lambda y: y.fitness)
 
-    '''Sublist'''
-
-    return subList
-
+    # Return Sublist with best <SELECTION_FACTOR> from Individuals
+    return individuals[0: -round(SELECTION_FACTOR*len(individuals))]
 
 
 def optimizePositions(populationSize, cycles):
@@ -23,21 +20,22 @@ def optimizePositions(populationSize, cycles):
 
     for i in range(populationSize):
         # TODO randomize (factoryGenerator.randomPositionList)
-        positionList = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5)]
-        vizType = visibilityStatus.NONE
+        positionList = factoryGenerator.generateRandomWorkstations(20)
         individuals.append(generateIndividual(positionList))
 
     for cycle in range(cycles):
         '''Evaluate'''
         for individual in individuals:
             individual.evaluateFitness(factoryGenerator)
-            #print(individual.fitness)
+            print(individual.fitness)
 
 
 
         '''Selection'''
         individuals = individualSelection(individuals)
 
+        for i in individuals:
+            print(i.fitness)
         '''Mutation'''
         for i in range(len(individuals)):
             individual = individuals.pop(0)
@@ -50,8 +48,16 @@ def optimizePositions(populationSize, cycles):
         '''Recombination'''
 
         '''Fill up with random new'''
-        while individuals.len() <
+        #while individuals.len() <
 
+    '''Show off with best Factory'''
+    theBestPositions = individuals[0].DNA
+    theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL)
+    theBestFactory.run()
+
+
+'''Global Genetic Factors'''
+SELECTION_FACTOR = 0.5
 
 factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
 
