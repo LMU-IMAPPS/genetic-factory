@@ -22,8 +22,8 @@ class Individual:
             #for i in range(len(self.DNA)):
             wsPositionTmp = self.DNA.pop(np.random.randint(0, len(self.DNA)))
                 #wsPositionTmp = self.DNA.pop(0)
-            newX = wsPositionTmp[1] + np.random.randint(-1, 1)
-            newY = wsPositionTmp[2] + np.random.randint(-1, 1)
+            newX = wsPositionTmp[1] + np.random.randint(-1, 2)
+            newY = wsPositionTmp[2] + np.random.randint(-1, 2)
             if newX < 0:
                 newX = 0
             if newY < 0:
