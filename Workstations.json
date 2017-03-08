@@ -1,25 +1,22 @@
 {
     
-   "workStations": [
+   "workStations":
+    [
         {
           "type": "A",
-          "size": "10"
-        },
-        {
-          "type": "A",
-          "size": "10"
+          "count": 2
         },
         {
           "type": "B",
-          "size": "10"
+          "count": 1
         },
         {
           "type": "C",
-          "size": "10"
+          "count": 1
         },
         {
           "type": "D",
-          "size": "10"
+          "count": 1
         }
     ]
 

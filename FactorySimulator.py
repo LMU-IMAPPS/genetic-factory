@@ -35,8 +35,8 @@ class FactorySimulator:
                 products.append(Product(item['positionX'], item['positionY'], item["workstationRoute"], workStations))
         return products
 
-    def generate_work_stations(self, path_to_json):
-        """ Generates workstations from the specified JSON file """
+    """def generate_work_stations(self, path_to_json):
+        #Generates workstations from the specified JSON file
         workStations = {}
         with open(path_to_json) as data_file:
             data = json.load(data_file)
@@ -48,9 +48,9 @@ class FactorySimulator:
                 # Add New Workstation to List of existing type
                 workStations[item['type']].append(Workstation(item['type']))
         return workStations
-
+    """
     def __init__(self, path_to_products_json, path_to_workstations_json, vs):
-        self.workStations = self.generate_work_stations(path_to_workstations_json)
+        self.workStations = {}
         self.products = self.generate_products(path_to_products_json, self.workStations)
         self.currentFieldStatus = self.initFieldStatus()
         self.counter = 0
@@ -70,16 +70,16 @@ class FactorySimulator:
 
     def set_position_for_workstations(self, workstation_positions):
         """ Update workstation positions with Tupel (Type, x, y) - typically from evolutionary algorithm """
-        # Check if length is matchig
-        if self.count_workstations() == len(workstation_positions):
-            # iterate over input
-            for item in workstation_positions:
-                # Pop, setPosition, append Workstation Objects to maintain order
-                workstation = self.workStations[item[0]].pop(0)
-                workstation.setPosition(item[1], item[2])
-                self.workStations[item[0]].append(workstation)
-        else:
-            raise Exception("Too many positions in workstation_positions")
+        # Clear Workstation info from previous run
+        self.workStations.clear()
+        # Iterate over Workstation positions given
+        for item in workstation_positions:
+            if not item[0] in self.workStations:
+                self.workStations.update({item[0]: []})
+            # Create new Worstation object
+            ws = Workstation(item[0])
+            ws.setPosition(item[1], item[2])
+            self.workStations[item[0]].append(ws)
 
     def setup(self, workstation_positions):
         """ Sets up the factory """
