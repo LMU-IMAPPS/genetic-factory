@@ -1,0 +1,163 @@
+{
+    
+   "workStations":
+    [
+        {
+          "type": "A",
+          "count": 2,
+          "time_at_ws": 3
+        },
+        {
+          "type": "B",
+          "count": 1,
+          "time_at_ws": 1
+        },
+        {
+          "type": "C",
+          "count": 1,
+          "time_at_ws": 5
+        },
+        {
+          "type": "D",
+          "count": 1,
+          "time_at_ws": 2
+        },        {
+          "type": "E",
+          "count": 2,
+          "time_at_ws": 3
+        },
+        {
+          "type": "F",
+          "count": 2,
+          "time_at_ws": 1
+        },
+        {
+          "type": "G",
+          "count": 1,
+          "time_at_ws": 5
+        },
+        {
+          "type": "H",
+          "count": 1,
+          "time_at_ws": 2
+        },
+        {
+          "type": "I",
+          "count": 2,
+          "time_at_ws": 3
+        },
+        {
+          "type": "J",
+          "count": 1,
+          "time_at_ws": 1
+        },
+        {
+          "type": "K",
+          "count": 1,
+          "time_at_ws": 5
+        },
+        {
+          "type": "L",
+          "count": 1,
+          "time_at_ws": 2
+        },
+      {
+          "type": "M",
+          "count": 2,
+          "time_at_ws": 3
+        },
+        {
+          "type": "N",
+          "count": 1,
+          "time_at_ws": 1
+        },
+        {
+          "type": "O",
+          "count": 1,
+          "time_at_ws": 5
+        },
+        {
+          "type": "P",
+          "count": 1,
+          "time_at_ws": 2
+        },{
+          "type": "Q",
+          "count": 2,
+          "time_at_ws": 3
+        },
+        {
+          "type": "R",
+          "count": 1,
+          "time_at_ws": 1
+        },
+        {
+          "type": "S",
+          "count": 1,
+          "time_at_ws": 5
+        },
+        {
+          "type": "T",
+          "count": 4,
+          "time_at_ws": 2
+        },        {
+          "type": "U",
+          "count": 2,
+          "time_at_ws": 3
+        },
+        {
+          "type": "V",
+          "count": 1,
+          "time_at_ws": 1
+        },
+        {
+          "type": "W",
+          "count": 1,
+          "time_at_ws": 5
+        },
+        {
+          "type": "X",
+          "count": 1,
+          "time_at_ws": 2
+        },
+        {
+          "type": "Y",
+          "count": 2,
+          "time_at_ws": 3
+        },
+        {
+          "type": "Z",
+          "count": 1,
+          "time_at_ws": 1
+        },
+        {
+          "type": "0",
+          "count": 3,
+          "time_at_ws": 5
+        },
+        {
+          "type": "1",
+          "count": 1,
+          "time_at_ws": 2
+        },        {
+          "type": "2",
+          "count": 2,
+          "time_at_ws": 3
+        },
+        {
+          "type": "3",
+          "count": 1,
+          "time_at_ws": 1
+        },
+        {
+          "type": "4",
+          "count": 1,
+          "time_at_ws": 5
+        },
+        {
+          "type": "5",
+          "count": 1,
+          "time_at_ws": 2
+        }
+    ]
+
+}
