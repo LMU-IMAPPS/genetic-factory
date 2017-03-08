@@ -12,13 +12,12 @@ class FactoryGenerator:
             self.workstationJson = json.load(jsonFile)
         with open(path_to_products_json) as jsonFile:
             self.productsJson = json.load(jsonFile)
-        self.currentFieldStatus = self.initFieldStatus()
-        self.counter = 0
+
 
     def generateFactory(self, workstationPositions, visibilityStatus):
         ws = self.set_position_for_workstations(workstationPositions)
         p = self.generateProducts(ws)
-        cfs = self.initFieldStatus()
+        cfs = self.initFieldStatus(ws)
         factory = Factory(ws, p, cfs, visibilityStatus)
         return factory
 
@@ -29,10 +28,15 @@ class FactoryGenerator:
             products.append(Product(item['positionX'], item['positionY'], item["workstationRoute"], workStations))
         return products
 
-    def initFieldStatus(self):
+    def initFieldStatus(self, ws):
         r = []
         for i in range(0, ARRAYSIZE):
             r.append([False] * ARRAYSIZE)
+        for item in self.workstationJson['workStations']:
+            if 'blockedTiles' in item:
+                for actualWorkstationPosition in ws[item['type']]:
+                    for blockedTile in item['blockedTiles']:
+                        r[actualWorkstationPosition.positionX + blockedTile['x']][actualWorkstationPosition.positionY + blockedTile['y']] = True
         return r
 
     def count_workstations(self):
@@ -68,8 +72,8 @@ class FactoryGenerator:
             if not len(workStations[item['type']]) == item['count']:
                 raise Exception("Workstation constrait violated")
 
-viz_type = visibilityStatus.NONE
+viz_type = visibilityStatus.ALL
 facGen = FactoryGenerator('Products.json', 'Workstations.json')
-position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5)]
+position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 7, 6), ('D', 1, 5)]
 factory = facGen.generateFactory(position_list, viz_type)
 print(factory.run())

@@ -53,7 +53,7 @@ class Factory:
             if vs == visibilityStatus.ALL:
                 self.View.nextTimeStep(self.products, self.workStations)
                 self.viewRoot.update()
-                time.sleep(0.1)
+                time.sleep(0.3)
 
     def run(self):
         returnVal = None
