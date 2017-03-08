@@ -1,11 +1,10 @@
 class Workstation:
-    type = ''
-    positionX = -1
-    positionY = -1
 
-    def __init__(self, type):
+    def __init__(self, type, positionX, positionY):
         self.type = type
-
-    def setPosition(self, positionX, positionY):
         self.positionX = positionX
         self.positionY = positionY
+        self.timeAtWs = -1
+
+    def setTimeAtWs(self, timeAtWs):
+        self.timeAtWs = timeAtWs
