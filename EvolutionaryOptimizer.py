@@ -36,7 +36,7 @@ def optimizePositions(populationSize, cycles):
 
 
         '''Selection'''
-        individualSelection(individuals)
+        individuals = individualSelection(individuals)
 
         '''Mutation'''
         for i in range(len(individuals)):
