@@ -52,13 +52,13 @@ class View(Frame):
                 if w.positionY > maxY:
                     maxY = w.positionY
 
-        print(str(minX) + "minX")
+        """print(str(minX) + "minX")
         print(str(maxX) + "maxX")
         print(str(minY) + "minY")
-        print(str(maxY) + "maxY")
+        print(str(maxY) + "maxY")"""
 
-        self.width = maxX+1
-        self.height = maxY+1
+        self.width = max(maxX,maxY)+1
+        self.height = max(maxY,maxX)+1
 
         print(self.width)
         print(self.height)
