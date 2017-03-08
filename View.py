@@ -6,13 +6,16 @@ class View(Frame):
     width = 0
     height = 0
 
-    def __init__(self, parent, products, work):
+    def __init__(self, parent, products, work, cfs):
         Frame.__init__(self, parent)
         self.parent = parent
         self.initUI()
         size = self.getSize(work)
+        self.cfs = []
+        for c in cfs:
+            self.cfs.append(list(c))
         self.drawGrid(size)
-        self.drawWorkstations(work, size)
+        self.drawWorkstations(work, size, self.cfs)
         self.drawProduct(products, size)
 
     def initUI(self):
@@ -61,11 +64,15 @@ class View(Frame):
         
         return size   
                 
-    def drawWorkstations(self, works, size):
+    def drawWorkstations(self, works, size, cfs):
         for w_v in works.values():
             for w in w_v:
                 View.canvas.create_rectangle(w.positionX * size, w.positionY * size, w.positionX * size + size, w.positionY * size + size, fill="pink")
                 View.canvas.create_text((w.positionX * size + (size / 2), w.positionY * size + (size / 2)), text=w.type)
+        for x in range(0, len(cfs)):
+            for y in range(0, len(cfs[0])):
+                if cfs[x][y]:
+                    View.canvas.create_rectangle(x * size, y * size, x * size + size, y * size + size, fill="gray")
         pass
 
     def drawProduct(self, products, size):
@@ -83,7 +90,7 @@ class View(Frame):
         for p in View.list_old:
             View.canvas.create_oval(p[0] * size + 1, p[1] * size + 1, p[0] * size - 1 + size, p[1] * size - 1 + size, outline="gray", fill="white", width=0)
         print(View.list_old)
-        self.drawWorkstations(works, size)
+        self.drawWorkstations(works, size, self.cfs)
         self.drawProduct(products, size)
         pass
 
