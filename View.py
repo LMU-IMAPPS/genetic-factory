@@ -37,7 +37,6 @@ class View(Frame):
         maxX = 0
         minY = 10000
         maxY = 0
-        print(works.values())
         for w_v in works.values():
             for w in w_v:
                 if w.positionX < minX:
@@ -77,53 +76,12 @@ class View(Frame):
         pass
 
     def updateProducts(self, products, size, works):
-        print(products)
-        print(size)
-        print(works)
         for p in View.list_old:
             View.canvas.create_oval(p[0] * size + 1, p[1] * size + 1, p[0] * size - 1 + size, p[1] * size - 1 + size, outline="gray", fill="white", width=0)
-        print(View.list_old)
         self.drawWorkstations(works, size)
         self.drawProduct(products, size)
         pass
 
     def nextTimeStep(self, listP, listW):
-        print(listW['A'])
         size = self.getSize(listW)
         self.updateProducts(listP, size, listW)
-
-# Beispielhafte Funktionsweise
-'''def main():
-    list = []
-    for i in range(10):
-        w = Workstation('A')
-        w.setPosition(i, i)
-        list.append(w)
-
-    list_p = []
-    for i in range(10):
-        w = Product(i, i + 1)
-        list_p.append(w)
-
-
-
-    #w = Workstation('A')
-    #w.setPosition(50,30)
-    #list.append(w)
-    #size = ex.getSize(list)
-    #ex.drawGrid(size)
-    ex.drawWorkstations(list, size)
-    ex.drawProduct(list_p, size)
-    list_p[3].positionX  += 1
-    ex.updateProducts(list_p, size, list)
-    list_p[3].positionX  += 1
-    ex.updateProducts(list_p, size, list)
-
-
-    
-    root.geometry("1000x600+300+50")
-    #root.mainloop()
-
-
-if __name__ == '__main__':
-    main()'''
