@@ -101,7 +101,7 @@ class FactorySimulator:
             isDone = True
             for p in self.products:
                 result = p.run(self.currentFieldStatus)
-                if not result == StepResult.BLOCKED:
+                if result == StepResult.MOVED:
                     madeChange = True
                 if not result == StepResult.DONE:
                     isDone = False
