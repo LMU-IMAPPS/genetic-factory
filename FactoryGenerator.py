@@ -15,11 +15,11 @@ class FactoryGenerator:
         self.currentFieldStatus = self.initFieldStatus()
         self.counter = 0
 
-    def generateFactory(self, workstationPositions, visibilityStatus):
+    def generateFactory(self, workstationPositions, visibilityType):
         ws = self.set_position_for_workstations(workstationPositions)
         p = self.generateProducts(ws)
         cfs = self.initFieldStatus()
-        factory = Factory(ws, p, cfs, visibilityStatus)
+        factory = Factory(ws, p, cfs, visibilityType)
         return factory
 
     def generateProducts(self, workStations):
@@ -67,9 +67,3 @@ class FactoryGenerator:
             # Check count of ws for every type
             if not len(workStations[item['type']]) == item['count']:
                 raise Exception("Workstation constrait violated")
-
-viz_type = visibilityStatus.NONE
-facGen = FactoryGenerator('Products.json', 'Workstations.json')
-position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5)]
-factory = facGen.generateFactory(position_list, viz_type)
-print(factory.run())
