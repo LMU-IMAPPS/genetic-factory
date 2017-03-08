@@ -51,11 +51,12 @@ class FactorySimulator:
     """
     def __init__(self, path_to_products_json, path_to_workstations_json, vs):
         self.workStations = {}
+        with open(path_to_workstations_json) as jsonFile:
+            self.json = jsonFile.load(jsonFile)
         self.products = self.generate_products(path_to_products_json, self.workStations)
         self.currentFieldStatus = self.initFieldStatus()
         self.counter = 0
         self.vs = vs
-        self.workStationsJsonPath = path_to_workstations_json
         if vs != visibitltyStatus.NONE:
             self.viewRoot = Tk()
 
@@ -78,8 +79,9 @@ class FactorySimulator:
             if not item[0] in self.workStations:
                 self.workStations.update({item[0]: []})
             # Create new Worstation object
-            ws = Workstation(item[0])
-            ws.setPosition(item[1], item[2])
+            ws = Workstation(item[0], item[1], item[2])
+            # Add time at ws constraint to ws
+            ws.setTimeAtWs(self.json[item[0]]['timeAtWs'])
             self.workStations[item[0]].append(ws)
 
     def setup(self, workstation_positions):
@@ -91,14 +93,13 @@ class FactorySimulator:
         self.productReset()
 
     def checkWorkstationConstrait(self):
-        with open(self.workStationsJsonPath) as jsonFile:
-            json = jsonFile.load(jsonFile)
-            if not len(json['workStations']) == len(self.workStations):
-                raise Exception("Workstation constrait violated")
-            for item in json['workStations']:
-                if not len(self.workStations[item['type']]) == item['count']:
-                    raise Exception("Workstation constrait violated")
-
+        # Check number of ws types
+        if not len(self.json['workStations']) == len(self.workStations):
+            raise Exception("Workstation constrait violated")
+        for item in self.json['workStations']:
+            # Check count of ws for every type
+            if not len(self.workStations[item['type']]) == item['count']:
+                 raise Exception("Workstation constrait violated")
 
 
     def productReset(self):

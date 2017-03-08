@@ -4,19 +4,23 @@
     [
         {
           "type": "A",
-          "count": 2
+          "count": 2,
+          "time_at_ws": 3
         },
         {
           "type": "B",
-          "count": 1
+          "count": 1,
+          "time_at_ws": 1
         },
         {
           "type": "C",
-          "count": 1
+          "count": 1,
+          "time_at_ws": 5
         },
         {
           "type": "D",
-          "count": 1
+          "count": 1,
+          "time_at_ws": 2
         }
     ]
 
