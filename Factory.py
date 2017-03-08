@@ -47,8 +47,7 @@ class Factory:
                     pprint("Done with Fitness "+str(counter))
                 return counter
             if not madeChange:
-                if vs != visibilityStatus.NONE:
-                    pprint("Blocked")
+                if vs != visibilityStatus.NONE:pprint("Blocked")
                 return sys.maxsize
             counter += 1
             if vs == visibilityStatus.ALL:

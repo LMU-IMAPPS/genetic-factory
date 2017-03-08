@@ -19,7 +19,6 @@ class Individual:
     def mutate(self, mutationRate):
         if np.random.random() < mutationRate:
             self.fitness = None
-            #print(self.DNA)
             #for i in range(len(self.DNA)):
             wsPositionTmp = self.DNA.pop(np.random.randint(0, len(self.DNA)))
                 #wsPositionTmp = self.DNA.pop(0)
@@ -34,9 +33,6 @@ class Individual:
             if newY >= ARRAYSIZE:
                 newY = ARRAYSIZE - 1
             self.DNA.append((wsPositionTmp[0], newX, newY))
-            # TODO Mutate
-            #print(self.DNA)
-
         return self
 
     def mutatedCopy(self):

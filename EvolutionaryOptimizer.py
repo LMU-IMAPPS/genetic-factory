@@ -1,6 +1,7 @@
 from FactoryGenerator import FactoryGenerator
 from Factory import visibilityStatus
 from Individual import Individual
+import sys
 
 
 def generateIndividual(positionList):
@@ -21,12 +22,16 @@ def optimizePositions(populationSize, cycles):
     theBest = None
 
     for i in range(populationSize):
-        # TODO randomize (factoryGenerator.randomPositionList)
         positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE)
         individuals.append(generateIndividual(positionList))
+    print("Calculating with a Population Size of %d in %d Evolution Cycles..." % (POPULATION_SIZE, EVOLUTION_CYCLES))
 
     for cycle in range(cycles):
-        print(cycle)
+        percentage = round(cycle/cycles*100)
+        bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
+        sys.stdout.write("Progress: \r%d%% Done \t %s" % (percentage, bar))
+        sys.stdout.flush()
+
         '''Evaluation'''
         for individual in individuals:
             individual.evaluateFitness(factoryGenerator)
@@ -47,7 +52,6 @@ def optimizePositions(populationSize, cycles):
         for i in range(BREED_FACTOR):
             individuals.append(theBest.mutatedCopy())
 
-
         '''Recombination'''
 
         '''Fill up with random new'''
@@ -55,10 +59,29 @@ def optimizePositions(populationSize, cycles):
             positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE)
             individuals.append(generateIndividual(positionList))
 
+    print("\n")
+    '''Evaluation'''
+    for individual in individuals:
+        individual.evaluateFitness(factoryGenerator)
+
+    '''Selection'''
+    individuals = individualSelection(individuals)
+
     '''Show off with best Factory'''
     theBestPositions = theBest.DNA
     theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL)
     theBestFactory.run()
+    fieldToPrint = [["☐" for i in range(FIELD_SIZE)] for j in range(FIELD_SIZE)]
+    for pos in theBestPositions:
+        fieldToPrint[pos[1]][pos[2]] = pos[0]
+    sys.stdout.write("+"+"-"*(FIELD_SIZE*3)+"+\n")
+    for i in range(FIELD_SIZE):
+        sys.stdout.write("|")
+        for j in range(FIELD_SIZE):
+            sys.stdout.write(" %s " % fieldToPrint[i][j])
+        sys.stdout.write("|\n")
+    sys.stdout.write("+" + "-" * (FIELD_SIZE * 3) + "+\n")
+    sys.stdout.flush()
 
 
 '''Global Genetic Factors'''
@@ -74,20 +97,3 @@ FIELD_SIZE = 200
 factoryGenerator = FactoryGenerator('ProductBig.json', 'WorkstationsBig.json')
 
 optimizePositions(POPULATION_SIZE, EVOLUTION_CYCLES)
-    #Generate Factories(size)
-    # for size: Factory = FactoryCreator('Products.json', 'Workstations.json')
-
-    #set inital positions for all WS is WSs.json
-
-    # while cycles
-        # setup
-        # run
-        # evaluate fitness
-            # Factory.getBitString
-        # selection
-        # mutation & recombination
-
-
-
-
-    #position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5)]
