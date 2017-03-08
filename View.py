@@ -41,8 +41,6 @@ class View(Frame):
         maxY = 0
         for w_v in works.values():
             for w in w_v:
-                print(w.positionX)
-                print(w.positionY)
                 if w.positionX < minX:
                     minX = w.positionX
                 if w.positionX > maxX:
@@ -52,23 +50,14 @@ class View(Frame):
                 if w.positionY > maxY:
                     maxY = w.positionY
 
-        print(str(minX) + "minX")
-        print(str(maxX) + "maxX")
-        print(str(minY) + "minY")
-        print(str(maxY) + "maxY")
-
         self.width = maxX+1
         self.height = maxY+1
 
-        print(self.width)
-        print(self.height)
-
-        if((600.0/self.width)  > (1000.0/self.height)):
-            size = 1000.0 / (self.width)
+        if (600.0/self.width) > (1000.0/self.height):
+            size = 1000.0 / self.width
         else:
-            size = 600.0 / (self.height)
+            size = 600.0 / self.height
 
-        
         return size   
                 
     def drawWorkstations(self, works, size):
