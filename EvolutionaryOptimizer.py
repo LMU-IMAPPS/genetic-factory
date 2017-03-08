@@ -20,35 +20,31 @@ def optimizePositions(populationSize, cycles):
 
     for i in range(populationSize):
         # TODO randomize (factoryGenerator.randomPositionList)
-        positionList = factoryGenerator.generateRandomWorkstations(20)
+        positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE)
         individuals.append(generateIndividual(positionList))
 
     for cycle in range(cycles):
-        '''Evaluate'''
+        print(cycle)
+        '''Evaluation'''
         for individual in individuals:
             individual.evaluateFitness(factoryGenerator)
-            print(individual.fitness)
-
-
 
         '''Selection'''
         individuals = individualSelection(individuals)
 
-        for i in individuals:
-            print(i.fitness)
         '''Mutation'''
         for i in range(len(individuals)):
             individual = individuals.pop(0)
-            newPositionList = individual.mutate()
+            newPositionList = individual.mutate(MUTATION_FACTOR)
             individuals.append(generateIndividual(newPositionList))
 
-
-            individual.mutate()
 
         '''Recombination'''
 
         '''Fill up with random new'''
-        #while individuals.len() <
+        while len(individuals) < populationSize:
+            positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE)
+            individuals.append(generateIndividual(positionList))
 
     '''Show off with best Factory'''
     theBestPositions = individuals[0].DNA
@@ -58,10 +54,16 @@ def optimizePositions(populationSize, cycles):
 
 '''Global Genetic Factors'''
 SELECTION_FACTOR = 0.5
+MUTATION_FACTOR = 0.2
+
+POPULATION_SIZE = 30
+EVOLUTION_CYCLES = 50
+
+FIELD_SIZE = 20
 
 factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
 
-optimizePositions(5, 1)
+optimizePositions(POPULATION_SIZE, EVOLUTION_CYCLES)
     #Generate Factories(size)
     # for size: Factory = FactoryCreator('Products.json', 'Workstations.json')
 
@@ -78,4 +80,4 @@ optimizePositions(5, 1)
 
 
 
-    ##position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5)]
+    #position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 6, 6), ('D', 1, 5)]
