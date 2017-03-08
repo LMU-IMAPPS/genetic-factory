@@ -10,10 +10,10 @@ class View(Frame):
         Frame.__init__(self, parent)
         self.parent = parent
         self.initUI()
-        size = self.getSize(work)
-        self.drawGrid(size)
-        self.drawWorkstations(work, size)
-        self.drawProduct(products, size)
+        self.size = self.getSize(work)
+        self.drawGrid(self.size)
+        self.drawWorkstations(work, self.size)
+        self.drawProduct(products, self.size)
 
     def initUI(self):
         self.parent.title("IMAPPS")
@@ -32,6 +32,8 @@ class View(Frame):
                 self.canvas.create_rectangle(i*size + tX, j*size+tY, (i*size)+size+tY, (j*size)+size+tY)
 
     def getSize(self, works):
+
+
         size = 0
         minX = 10000
         maxX = 0
@@ -39,6 +41,8 @@ class View(Frame):
         maxY = 0
         for w_v in works.values():
             for w in w_v:
+                print(w.positionX)
+                print(w.positionY)
                 if w.positionX < minX:
                     minX = w.positionX
                 if w.positionX > maxX:
@@ -48,14 +52,21 @@ class View(Frame):
                 if w.positionY > maxY:
                     maxY = w.positionY
 
+        print(str(minX) + "minX")
+        print(str(maxX) + "maxX")
+        print(str(minY) + "minY")
+        print(str(maxY) + "maxY")
 
-        self.width = maxX - minX +3
-        self.height = maxY - minY +1
+        self.width = maxX+1
+        self.height = maxY+1
 
-        if(600.0/(1+(maxY-minY))  > 1000.0/(3+(maxX-minX))):
-            size = 1000.0 / (3 + (maxX - minX))
+        print(self.width)
+        print(self.height)
+
+        if((600.0/self.width)  > (1000.0/self.height)):
+            size = 1000.0 / (self.width)
         else:
-            size = 600.0 / (1 + (maxY - minY))
+            size = 600.0 / (self.height)
 
         
         return size   
@@ -83,5 +94,5 @@ class View(Frame):
         pass
 
     def nextTimeStep(self, listP, listW):
-        size = self.getSize(listW)
-        self.updateProducts(listP, size, listW)
+        #size = self.getSize(listW)
+        self.updateProducts(listP, self.size, listW)
