@@ -10,6 +10,7 @@ def generateIndividual(positionList):
 def individualSelection(individuals):
     # Sort
     individuals.sort(key=lambda y: y.fitness)
+    print(individuals[0].fitness)
 
     # Return Sublist with best <SELECTION_FACTOR> from Individuals
     return individuals[0: -round(SELECTION_FACTOR*len(individuals))]
@@ -17,6 +18,7 @@ def individualSelection(individuals):
 
 def optimizePositions(populationSize, cycles):
     individuals = []
+    theBest = None
 
     for i in range(populationSize):
         # TODO randomize (factoryGenerator.randomPositionList)
@@ -32,11 +34,18 @@ def optimizePositions(populationSize, cycles):
         '''Selection'''
         individuals = individualSelection(individuals)
 
+        '''Preserve the best found so far'''
+        if theBest is None or individuals[0].fitness < theBest.fitness:
+            theBest = individuals.pop(0)
+
         '''Mutation'''
         for i in range(len(individuals)):
             individual = individuals.pop(0)
-            newPositionList = individual.mutate(MUTATION_FACTOR)
-            individuals.append(generateIndividual(newPositionList))
+            individuals.append(individual.mutate(MUTATION_FACTOR))
+
+        '''Breed theBest'''
+        for i in range(BREED_FACTOR):
+            individuals.append(theBest.mutatedCopy())
 
 
         '''Recombination'''
@@ -47,21 +56,22 @@ def optimizePositions(populationSize, cycles):
             individuals.append(generateIndividual(positionList))
 
     '''Show off with best Factory'''
-    theBestPositions = individuals[0].DNA
+    theBestPositions = theBest.DNA
     theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL)
     theBestFactory.run()
 
 
 '''Global Genetic Factors'''
-SELECTION_FACTOR = 0.5
+SELECTION_FACTOR = 0.85
 MUTATION_FACTOR = 0.2
+BREED_FACTOR = 2
 
-POPULATION_SIZE = 30
-EVOLUTION_CYCLES = 50
+POPULATION_SIZE = 100
+EVOLUTION_CYCLES = 5000
 
-FIELD_SIZE = 20
+FIELD_SIZE = 200
 
-factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
+factoryGenerator = FactoryGenerator('ProductBig.json', 'WorkstationsBig.json')
 
 optimizePositions(POPULATION_SIZE, EVOLUTION_CYCLES)
     #Generate Factories(size)
