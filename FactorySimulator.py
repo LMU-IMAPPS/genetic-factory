@@ -55,6 +55,7 @@ class FactorySimulator:
         self.currentFieldStatus = self.initFieldStatus()
         self.counter = 0
         self.vs = vs
+        self.workStationsJsonPath = path_to_workstations_json
         if vs != visibitltyStatus.NONE:
             self.viewRoot = Tk()
 
@@ -88,6 +89,17 @@ class FactorySimulator:
             self.View = View(self.viewRoot, self.products, self.workStations)
             self.viewRoot.geometry("1000x600+300+50")
         self.productReset()
+
+    def checkWorkstationConstrait(self):
+        with open(self.workStationsJsonPath) as jsonFile:
+            json = jsonFile.load(jsonFile)
+            if not len(json['workStations']) == len(self.workStations):
+                raise Exception("Workstation constrait violated")
+            for item in json['workStations']:
+                if not len(self.workStations[item['type']]) == item['count']:
+                    raise Exception("Workstation constrait violated")
+
+
 
     def productReset(self):
         for p in self.products:
