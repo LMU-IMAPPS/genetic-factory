@@ -5,7 +5,7 @@ from Factory import Factory, visibilityStatus
 import random
 import copy
 
-ARRAYSIZE = 100
+ARRAYSIZE = 1001
 
 
 class FactoryGenerator:
