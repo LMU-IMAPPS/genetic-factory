@@ -10,7 +10,7 @@ class Individual:
         self.fitness = None
 
     def evaluateFitness(self, factoryGenerator, vizType=visibilityStatus.NONE):
-        if (self.fitness is None) or (vizType is not None):
+        if (self.fitness is None) or (vizType != visibilityStatus.NONE):
             self.fitness = factoryGenerator.generateFactory(self.DNA, vizType).run()
 
     def getFitness(self):
