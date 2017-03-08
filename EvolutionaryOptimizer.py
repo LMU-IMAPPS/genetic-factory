@@ -45,9 +45,8 @@ def optimizePositions(populationSize, cycles):
             theBest = individuals.pop(0)
 
         '''Mutation'''
-        for i in range(len(individuals)):
-            individual = individuals.pop(0)
-            individuals.append(individual.mutate(MUTATION_FACTOR))
+        for individual in individuals:
+            individual.mutate(MUTATION_FACTOR)
 
         '''Breed theBest'''
         for i in range(BREED_FACTOR):
@@ -88,7 +87,7 @@ def optimizePositions(populationSize, cycles):
 '''Global Genetic Factors'''
 SELECTION_FACTOR = 0.85
 MUTATION_FACTOR = 0.2
-BREED_FACTOR = 2
+BREED_FACTOR = 1
 
 POPULATION_SIZE = 10
 EVOLUTION_CYCLES = 50
