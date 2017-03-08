@@ -49,6 +49,9 @@ class Product:
             self.positionY += nextDir.yAxis()
             currentFieldStatus[self.positionX][self.positionY] = True
             if (self.positionY == self.targetY) & (self.positionX == self.targetX):
+                if self.waitTimeAtTarget > 1:
+                    self.waitTimeAtTarget -= 1
+                    return StepResult.MOVED
                 self.findTarget()
                 if self.isDone:
                     #removing myself from the simulation, when I am done
@@ -57,7 +60,9 @@ class Product:
                 return StepResult.MOVED
             return StepResult.MOVED
         if (self.positionY == self.targetY) & (self.positionX == self.targetX):
-            #should not be used
+            if self.waitTimeAtTarget > 1:
+                self.waitTimeAtTarget -= 1
+                return StepResult.MOVED
             self.findTarget()
             if self.isDone:
                 currentFieldStatus[self.positionX][self.positionY] = False
@@ -103,6 +108,7 @@ class Product:
         self.isDone = False
         self.targetX = -1
         self.targetY = -1
+        self.waitTimeAtTarget = -1
 
     def findTarget(self):
         if len(self.workStationRoute) == 0:
@@ -113,6 +119,7 @@ class Product:
         nextTarget = self.findClosest(self.workStations[nextTarget])
         self.targetX = nextTarget.positionX
         self.targetY = nextTarget.positionY
+        self.waitTimeAtTarget = nextTarget.timeAtWs
 
     def findClosest(self, workStationList):
         closestWorkstion = None
