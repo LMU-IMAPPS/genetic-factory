@@ -102,13 +102,14 @@ def optimizePositions(populationSize, cycles):
             individuals.append(generateIndividual(positionList))
 
         ''' Draw just Workstations'''
-        if cycle == 0:
-            viewRoot = Tk()
-            view = WorkstationView(viewRoot, individuals[0], constants.FIELD_SIZE, constants.FIELD_SIZE)
-            viewRoot.geometry("1000x600+300+50")
-        else:
-            view.nextTimeStep(individuals[0])
-            view.update()
+        if constants.DRAW_EVERY_CYCLE == True:
+            if cycle == 0:
+                viewRoot = Tk()
+                view = WorkstationView(viewRoot, individuals[0], constants.FIELD_SIZE, constants.FIELD_SIZE)
+                viewRoot.geometry("1000x600+300+50")
+            else:
+                view.nextTimeStep(individuals[0])
+                view.update()
 
     save_best_fitness.append(theBest.fitness)
 
@@ -140,7 +141,7 @@ def optimizePositions(populationSize, cycles):
 
 
 
-factoryGenerator = FactoryGenerator('ProductBig.json', 'WorkstationsBig.json')
+factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
 
 optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
 
