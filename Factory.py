@@ -44,10 +44,10 @@ class Factory:
                 if vs != visibilityStatus.NONE:
                     self.View.nextTimeStep(self.products, self.workStations)
                     self.viewRoot.update()
-                pprint("Done")
+                    pprint("Done with Fitness "+str(counter))
                 return counter
             if not madeChange:
-                pprint("Blocked")
+                if vs != visibilityStatus.NONE:pprint("Blocked")
                 return sys.maxsize
             counter += 1
             if vs == visibilityStatus.ALL:

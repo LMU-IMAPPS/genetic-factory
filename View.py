@@ -14,9 +14,10 @@ class View(Frame):
         self.cfs = []
         for c in cfs:
             self.cfs.append(list(c))
-        self.drawGrid(size)
-        self.drawWorkstations(work, size, self.cfs)
-        self.drawProduct(products, size)
+        self.size = self.getSize(work)
+        self.drawGrid(self.size)
+        self.drawWorkstations(work, self.size, self.cfs)
+        self.drawProduct(products, self.size)
 
     def initUI(self):
         self.parent.title("IMAPPS")
@@ -35,12 +36,13 @@ class View(Frame):
                 self.canvas.create_rectangle(i*size + tX, j*size+tY, (i*size)+size+tY, (j*size)+size+tY)
 
     def getSize(self, works):
+
+
         size = 0
         minX = 10000
         maxX = 0
         minY = 10000
         maxY = 0
-        print(works.values())
         for w_v in works.values():
             for w in w_v:
                 if w.positionX < minX:
@@ -52,16 +54,14 @@ class View(Frame):
                 if w.positionY > maxY:
                     maxY = w.positionY
 
+        self.width = maxX+1
+        self.height = maxY+1
 
-        self.width = maxX - minX +3
-        self.height = maxY - minY +1
-
-        if(600.0/(1+(maxY-minY))  > 1000.0/(3+(maxX-minX))):
-            size = 1000.0 / (3 + (maxX - minX))
+        if (600.0/self.width) > (1000.0/self.height):
+            size = 1000.0 / self.width
         else:
-            size = 600.0 / (1 + (maxY - minY))
+            size = 600.0 / self.height
 
-        
         return size   
                 
     def drawWorkstations(self, works, size, cfs):
@@ -84,53 +84,12 @@ class View(Frame):
         pass
 
     def updateProducts(self, products, size, works):
-        print(products)
-        print(size)
-        print(works)
         for p in View.list_old:
             View.canvas.create_oval(p[0] * size + 1, p[1] * size + 1, p[0] * size - 1 + size, p[1] * size - 1 + size, outline="gray", fill="white", width=0)
-        print(View.list_old)
         self.drawWorkstations(works, size, self.cfs)
         self.drawProduct(products, size)
         pass
 
     def nextTimeStep(self, listP, listW):
-        print(listW['A'])
-        size = self.getSize(listW)
-        self.updateProducts(listP, size, listW)
-
-# Beispielhafte Funktionsweise
-'''def main():
-    list = []
-    for i in range(10):
-        w = Workstation('A')
-        w.setPosition(i, i)
-        list.append(w)
-
-    list_p = []
-    for i in range(10):
-        w = Product(i, i + 1)
-        list_p.append(w)
-
-
-
-    #w = Workstation('A')
-    #w.setPosition(50,30)
-    #list.append(w)
-    #size = ex.getSize(list)
-    #ex.drawGrid(size)
-    ex.drawWorkstations(list, size)
-    ex.drawProduct(list_p, size)
-    list_p[3].positionX  += 1
-    ex.updateProducts(list_p, size, list)
-    list_p[3].positionX  += 1
-    ex.updateProducts(list_p, size, list)
-
-
-    
-    root.geometry("1000x600+300+50")
-    #root.mainloop()
-
-
-if __name__ == '__main__':
-    main()'''
+        #size = self.getSize(listW)
+        self.updateProducts(listP, self.size, listW)

@@ -3,8 +3,10 @@ from Product import Product
 from Workstation import Workstation
 from Factory import Factory, visibilityStatus
 import random
+import copy
 
-ARRAYSIZE = 1000
+ARRAYSIZE = 1001
+
 
 class FactoryGenerator:
     def __init__(self, path_to_products_json, path_to_workstations_json):
@@ -22,11 +24,11 @@ class FactoryGenerator:
                 result.append((type, random.randint(0, maxPosition), random.randint(0,maxPosition)))
         return result
 
-    def generateFactory(self, workstationPositions, visibilityStatus):
+    def generateFactory(self, workstationPositions, visibilityType):
         ws = self.set_position_for_workstations(workstationPositions)
         p = self.generateProducts(ws)
         cfs = self.initFieldStatus(ws)
-        factory = Factory(ws, p, cfs, visibilityStatus)
+        factory = Factory(ws, p, cfs, visibilityType)
         return factory
 
     def generateProducts(self, workStations):
@@ -80,10 +82,4 @@ class FactoryGenerator:
             if not len(workStations[item['type']]) == item['count']:
                 raise Exception("Workstation constrait violated")
 
-viz_type = visibilityStatus.ALL
-facGen = FactoryGenerator('Products.json', 'Workstations.json')
-print(facGen.generateRandomWorkstations(100))
-"""
-position_list = [('A', 3, 10), ('B', 2, 9), ('C', 7, 0), ('A', 7, 6), ('D', 1, 5)]
-factory = facGen.generateFactory(position_list, viz_type)
-print(factory.run())"""
+
