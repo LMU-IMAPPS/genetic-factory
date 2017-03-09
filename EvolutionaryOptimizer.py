@@ -1,3 +1,5 @@
+from tkinter import Tk
+
 from FactoryGenerator import FactoryGenerator
 from Factory import visibilityStatus
 from Individual import Individual
@@ -6,6 +8,9 @@ import numpy
 import constants
 
 import matplotlib
+
+from WorkstationView import WorkstationView
+
 matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 
@@ -94,6 +99,15 @@ def optimizePositions(populationSize, cycles):
             positionList = factoryGenerator.generateRandomWorkstations(constants.FIELD_SIZE - 1)
             individuals.append(generateIndividual(positionList))
 
+        ''' Draw just Workstations'''
+        if cycle == 0:
+            viewRoot = Tk()
+            view = WorkstationView(viewRoot, individuals[0], constants.FIELD_SIZE, constants.FIELD_SIZE)
+            viewRoot.geometry("1000x600+300+50")
+        else:
+            view.nextTimeStep(individuals[0])
+            view.update()
+
     save_best_fitness.append(theBest.fitness)
 
     print("\n")
@@ -124,9 +138,13 @@ def optimizePositions(populationSize, cycles):
 
 
 
-factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
+factoryGenerator = FactoryGenerator('ProductBig.json', 'WorkstationsBig.json')
 
 optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
+
+
+
+
 
 x = range(len(save_best_fitness))
 save_worst_fitness.append(save_worst_fitness[len(save_worst_fitness)-1])

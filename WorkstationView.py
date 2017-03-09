@@ -8,11 +8,13 @@ class WorkstationView(Frame):
     width = 0
     height = 0
 
-    def __init__(self, parent, work):
+    def __init__(self, parent, work, width, heigth):
         Frame.__init__(self, parent)
+        self.width = width
+        self.height = heigth
         self.parent = parent
         self.initUI()
-        self.getSize(work)
+        self.getSize()
         self.drawGrid(self.size)
         self.drawWorkstations(work, self.size)
 
@@ -33,20 +35,7 @@ class WorkstationView(Frame):
                 self.canvas.create_rectangle(i * size + tX, j * size + tY, (i * size) + size + tY,
                                              (j * size) + size + tY)
 
-    def getSize(self, works):
-        # size = 0
-        maxX = 0
-        maxY = 0
-        for w in works.DNA:
-            if w[1] > maxX:
-                maxX = w[1]
-            if w[2] > maxY:
-                maxY = w[2]
-
-        #self.width = maxX + 1
-        self.width = 55
-        #self.height = maxY + 1
-        self.height = 55
+    def getSize(self):
 
         if (600.0 / self.height) > (1000.0 / self.width):
             self.size = 1000.0 / self.width
