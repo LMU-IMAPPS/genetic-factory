@@ -14,7 +14,13 @@ def individualSelection(individuals):
     # print(individuals[0].fitness)
 
     # Return Sublist with best <SELECTION_FACTOR> from Individuals
-    return individuals[0: -round(SELECTION_FACTOR*len(individuals))]
+    nextIndividuals = []
+    lenIndividuals = len(individuals)
+    for i in range(lenIndividuals):
+        if pow(i / lenIndividuals, 1 / SELECTION_FACTOR) < numpy.random.random():
+            nextIndividuals.append(individuals[i])
+    return nextIndividuals
+
 
 
 def optimizePositions(populationSize, cycles):
@@ -97,10 +103,10 @@ MUTATION_FACTOR = 0.2
 BREED_FACTOR = 1
 RECOMBINATION_FACTOR = 0.1
 
-POPULATION_SIZE = 10
-EVOLUTION_CYCLES = 50
+POPULATION_SIZE = 50
+EVOLUTION_CYCLES = 250
 
-FIELD_SIZE = 50
+FIELD_SIZE = 75
 
 factoryGenerator = FactoryGenerator('ProductBig.json', 'WorkstationsBig.json')
 
