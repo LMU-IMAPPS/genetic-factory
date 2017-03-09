@@ -4,6 +4,10 @@ from Individual import Individual
 import sys
 import math
 import numpy
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib import pyplot as plt
+
 
 
 def generateIndividual(positionList):
