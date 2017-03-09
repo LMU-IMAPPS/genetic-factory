@@ -177,7 +177,7 @@ def drawPlots():
     plt.show()
 
 
-factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
+factoryGenerator = FactoryGenerator(constants.PRODUCT_JSON, constants.WORKSTATION_JSON)
 
 optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
 
