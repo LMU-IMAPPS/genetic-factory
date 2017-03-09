@@ -3,6 +3,16 @@ from Factory import visibilityStatus
 from Individual import Individual
 import sys
 import numpy
+import math
+
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib import pyplot as plt
+
+save_best_fitness= []
+save_worst_fitness= []
+save_mean = []
+
 
 def generateIndividual(positionList):
     return Individual(positionList)
@@ -10,7 +20,18 @@ def generateIndividual(positionList):
 
 def individualSelection(individuals):
     # Sort
+    save_mean_current = []
     individuals.sort(key=lambda y: y.fitness)
+    save_best_fitness.append(individuals[0].fitness)
+    for worst in range(len(individuals)):
+        if individuals[len(individuals)-(worst+1)].fitness < sys.maxsize:
+            #save_worst_fitness.append(individuals[len(individuals)-(worst+1)].fitness)
+            save_mean_current.append((individuals[len(individuals) - (worst + 1)].fitness))
+    save_worst_fitness.append(save_mean_current[0])
+    mean_value = numpy.mean(save_mean_current)
+    save_mean.append(mean_value)
+            #save_mean.append(individuals[0:(len(individuals)-(worst+1))].fitness)
+
     # print(individuals[0].fitness)
 
     # Return Sublist with best <SELECTION_FACTOR> from Individuals
@@ -58,6 +79,7 @@ def optimizePositions(populationSize, cycles):
         for i in range(BREED_FACTOR):
             individuals.append(theBest.mutatedCopy())
 
+
         '''Recombination'''
         for i in range(int(RECOMBINATION_FACTOR*populationSize)):
             ancestorIndex1 = 0
@@ -71,6 +93,8 @@ def optimizePositions(populationSize, cycles):
         while len(individuals) < populationSize:
             positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE - 1)
             individuals.append(generateIndividual(positionList))
+
+    save_best_fitness.append(theBest.fitness)
 
     print("\n")
     '''Evaluation'''
@@ -108,6 +132,20 @@ EVOLUTION_CYCLES = 250
 
 FIELD_SIZE = 30
 
-factoryGenerator = FactoryGenerator('ProductBig.json', 'WorkstationsBig.json')
+factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
 
 optimizePositions(POPULATION_SIZE, EVOLUTION_CYCLES)
+
+x = range(len(save_best_fitness))
+save_worst_fitness.append(save_worst_fitness[len(save_worst_fitness)-1])
+save_mean.append(save_mean[len(save_mean)-1])
+plt.xlabel('Time')
+plt.ylabel('Fitness')
+plt.title('best vs. worst Individuals')
+print(save_worst_fitness[len(save_worst_fitness)-2])
+
+plt.plot(x, save_best_fitness, label ='best', color='g')
+plt.plot(x,save_mean, label = 'mean', color='b')
+plt.plot(x, save_worst_fitness, label = 'worst', color='r')
+plt.legend()
+plt.show()
