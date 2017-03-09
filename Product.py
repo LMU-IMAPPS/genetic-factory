@@ -1,5 +1,6 @@
 from enum import Enum
 import sys
+import numpy
 
 
 class StepResult(Enum):
@@ -25,45 +26,95 @@ class Direction(Enum):
     def yAxis(self):
         return self.value[1]
 
+    def alt1(self):
+        if self == Direction.UP:
+            return Direction.UPRIGHT
+        if self == Direction.UPRIGHT:
+            return Direction.RIGHT
+        if self == Direction.RIGHT:
+            return Direction.DOWNRIGHT
+        if self == Direction.DOWNRIGHT:
+            return Direction.DOWN
+        if self == Direction.DOWN:
+            return Direction.DOWNLEFT
+        if self == Direction.DOWNLEFT:
+            return Direction.LEFT
+        if self == Direction.LEFT:
+            return Direction.UPLEFT
+        if self == Direction.UPLEFT:
+            return Direction.UP
+
+    def alt2(self):
+        if self == Direction.UP:
+            return Direction.UPLEFT
+        if self == Direction.UPRIGHT:
+            return Direction.UP
+        if self == Direction.RIGHT:
+            return Direction.UPRIGHT
+        if self == Direction.DOWNRIGHT:
+            return Direction.RIGHT
+        if self == Direction.DOWN:
+            return Direction.DOWNRIGHT
+        if self == Direction.DOWNLEFT:
+            return Direction.DOWN
+        if self == Direction.LEFT:
+            return Direction.DOWNLEFT
+        if self == Direction.UPLEFT:
+            return Direction.LEFT
 
 class Product:
 
     def run(self, currentFieldStatus):
         if self.isDone:
+            self.blockedLastRound = False
             # Done doing nothing
             return StepResult.DONE
         if not self.isInitialized:
             # Trying to move into starting position
-            if not currentFieldStatus[self.positionX][self.positionY]:
+            if (self.positionX, self.positionY) not in currentFieldStatus:
                 self.findTarget()
-                currentFieldStatus[self.positionX][self.positionY] = True
+                currentFieldStatus.add((self.positionX, self.positionY))
                 self.isInitialized = True
+                self.blockedLastRound = False
                 return StepResult.MOVED
             else:
+                self.blockedLastRound = True
                 return StepResult.BLOCKED
         nextDir = self.findDirection()
-        if not currentFieldStatus[self.positionX + nextDir.xAxis()][self.positionY + nextDir.yAxis()]:
-            #moving
-            currentFieldStatus[self.positionX][self.positionY] = False
-            self.positionX += nextDir.xAxis()
-            self.positionY += nextDir.yAxis()
-            currentFieldStatus[self.positionX][self.positionY] = True
-            if (self.positionY == self.targetY) & (self.positionX == self.targetX):
-                self.findTarget()
-                if self.isDone:
-                    #removing myself from the simulation, when I am done
-                    currentFieldStatus[self.positionX][self.positionY] = False
-                    return StepResult.DONE
-                return StepResult.MOVED
-            return StepResult.MOVED
+        if (self.positionX + nextDir.xAxis(), self.positionY + nextDir.yAxis()) not in currentFieldStatus:
+            self.blockedLastRound = False
+            return self.makeStep(currentFieldStatus, nextDir)
+        else:
+            nextDir = nextDir.alt1()
+            if self.blockedLastRound and (self.positionX + nextDir.xAxis(), self.positionY + nextDir.yAxis()) not in currentFieldStatus:
+                self.blockedLastRound = False
+                return self.makeStep(currentFieldStatus, nextDir)
         if (self.positionY == self.targetY) & (self.positionX == self.targetX):
             #should not be used
             self.findTarget()
             if self.isDone:
-                currentFieldStatus[self.positionX][self.positionY] = False
+                currentFieldStatus.remove((self.positionX, self.positionY))
+                self.blockedLastRound = False
+                return StepResult.DONE
+            self.blockedLastRound = False
+            return StepResult.MOVED
+        self.blockedLastRound = True
+        return StepResult.BLOCKED
+
+    def makeStep(self, currentFieldStatus,nextDir):
+        #moving
+        currentFieldStatus.remove((self.positionX, self.positionY))
+        self.positionX += nextDir.xAxis()
+        self.positionY += nextDir.yAxis()
+        currentFieldStatus.add((self.positionX, self.positionY))
+        if (self.positionY == self.targetY) & (self.positionX == self.targetX):
+            self.findTarget()
+            if self.isDone:
+                #removing myself from the simulation, when I am done
+                currentFieldStatus.remove((self.positionX, self.positionY))
                 return StepResult.DONE
             return StepResult.MOVED
-        return StepResult.BLOCKED
+        return StepResult.MOVED
 
     def reset(self):
         self.positionY = self.iniPostionY
@@ -103,6 +154,7 @@ class Product:
         self.isDone = False
         self.targetX = -1
         self.targetY = -1
+        self.blockedLastRound = False
 
     def findTarget(self):
         if len(self.workStationRoute) == 0:
