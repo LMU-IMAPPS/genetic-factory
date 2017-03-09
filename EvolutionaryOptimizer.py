@@ -24,12 +24,14 @@ def individualSelection(individuals):
     save_best_fitness.append(individuals[0].fitness)
     for worst in range(len(individuals)):
         if individuals[len(individuals)-(worst+1)].fitness < sys.maxsize:
-            #save_worst_fitness.append(individuals[len(individuals)-(worst+1)].fitness)
             save_mean_current.append((individuals[len(individuals) - (worst + 1)].fitness))
+    if save_best_fitness[0] == sys.maxsize:
+        save_worst_fitness.append(sys.maxsize)
+        save_mean.append(sys.maxsize)
+
     save_worst_fitness.append(save_mean_current[0])
     mean_value = numpy.mean(save_mean_current)
     save_mean.append(mean_value)
-            #save_mean.append(individuals[0:(len(individuals)-(worst+1))].fitness)
 
     # print(individuals[0].fitness)
 
