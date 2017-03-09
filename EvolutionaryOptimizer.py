@@ -2,6 +2,8 @@ from FactoryGenerator import FactoryGenerator
 from Factory import visibilityStatus
 from Individual import Individual
 import sys
+import math
+import numpy
 
 
 def generateIndividual(positionList):
@@ -14,7 +16,12 @@ def individualSelection(individuals):
     # print(individuals[0].fitness)
 
     # Return Sublist with best <SELECTION_FACTOR> from Individuals
-    return individuals[0: -round(SELECTION_FACTOR*len(individuals))]
+    inLen = len(individuals)
+    nextInduviduals = []
+    for i in range(inLen):
+        if math.pow((inLen - i)/inLen, 1 / SELECTION_FACTOR) > numpy.random.random():
+            nextInduviduals.append(individuals[i])
+    return nextInduviduals
 
 
 def optimizePositions(populationSize, cycles):
