@@ -44,6 +44,7 @@ class Factory:
                 if vs != visibilityStatus.NONE:
                     self.View.nextTimeStep(self.products, self.workStations)
                     self.viewRoot.update()
+                    self.View.showButton()
                     pprint("Done with Fitness "+str(counter))
                 return counter
             if not madeChange:
