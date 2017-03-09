@@ -11,4 +11,4 @@ FIELD_SIZE = 30
 DRAW_EVERY_CYCLE = False
 
 PRODUCT_JSON = 'Products.json'
-WORKSTATION_JSON = 'WorkstationsBig.json'
+WORKSTATION_JSON = 'Workstations.json'
