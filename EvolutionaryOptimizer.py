@@ -19,7 +19,10 @@ def individualSelection(individuals):
     # Sort
     individuals.sort(key=lambda y: y.fitness)
     save_best_fitness.append(individuals[0].fitness)
-    save_worst_fitness.append(individuals[round(len(individuals) / 2)].fitness)
+    for worst in range(len(individuals)):
+        if individuals[len(individuals)-(worst+1)].fitness < sys.maxsize:
+            save_worst_fitness.append(individuals[len(individuals)-(worst+1)].fitness)
+            break
     # print(individuals[0].fitness)
 
     # Return Sublist with best <SELECTION_FACTOR> from Individuals
@@ -66,12 +69,15 @@ def optimizePositions(populationSize, cycles):
         for i in range(BREED_FACTOR):
             individuals.append(theBest.mutatedCopy())
 
+
         '''Recombination'''
 
         '''Fill up with random new'''
         while len(individuals) < populationSize:
             positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE)
             individuals.append(generateIndividual(positionList))
+
+    save_best_fitness.append(theBest.fitness)
 
     print("\n")
     '''Evaluation'''
@@ -114,9 +120,11 @@ optimizePositions(POPULATION_SIZE, EVOLUTION_CYCLES)
 
 x = range(len(save_best_fitness))
 y = range(len(save_worst_fitness))
+save_worst_fitness.append(save_worst_fitness[len(save_worst_fitness)-1])
 plt.xlabel('Time')
 plt.ylabel('Fitness')
 plt.title('best vs. worst Individuals')
+print(save_worst_fitness[len(save_worst_fitness)-2])
 
 plt.plot(x, save_best_fitness, label ='best')
 plt.plot(x, save_worst_fitness, label = 'worst')
