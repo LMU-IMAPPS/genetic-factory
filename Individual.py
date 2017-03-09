@@ -1,5 +1,6 @@
 from Factory import visibilityStatus
 import numpy as np
+from EvolutionaryOptimizer import FIELD_SIZE
 
 MUTATION_ZERO_FACTOR = 3
 
@@ -27,6 +28,10 @@ class Individual:
                     newX = 0
                 if newY < 0:
                     newY = 0
+                if newX >= FIELD_SIZE:
+                    newX = FIELD_SIZE - 1
+                if newX >= FIELD_SIZE:
+                    newY = FIELD_SIZE - 1
         return self
 
     @staticmethod
@@ -38,6 +43,7 @@ class Individual:
             if np.random.random() < 0.5:
                 newIndividual.DNA[i] = ancestor2.DNA[i]
         return newIndividual
+
 
     def mutatedCopy(self):
         return Individual(list(self.DNA)).mutate(999)

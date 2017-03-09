@@ -28,7 +28,7 @@ def optimizePositions(populationSize, cycles):
     theBest = None
 
     for i in range(populationSize):
-        positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE)
+        positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE - 1)
         individuals.append(generateIndividual(positionList))
     print("Calculating with a Population Size of %d in %d Evolution Cycles..." % (POPULATION_SIZE, EVOLUTION_CYCLES))
 
@@ -69,7 +69,7 @@ def optimizePositions(populationSize, cycles):
 
         '''Fill up with random new'''
         while len(individuals) < populationSize:
-            positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE)
+            positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE - 1)
             individuals.append(generateIndividual(positionList))
 
     print("\n")
@@ -106,7 +106,7 @@ RECOMBINATION_FACTOR = 0.1
 POPULATION_SIZE = 50
 EVOLUTION_CYCLES = 250
 
-FIELD_SIZE = 75
+FIELD_SIZE = 30
 
 factoryGenerator = FactoryGenerator('ProductBig.json', 'WorkstationsBig.json')
 
