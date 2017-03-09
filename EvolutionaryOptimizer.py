@@ -3,7 +3,7 @@ from Factory import visibilityStatus
 from Individual import Individual
 import sys
 import numpy
-import math
+import constants
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -38,7 +38,7 @@ def individualSelection(individuals):
     nextIndividuals = []
     lenIndividuals = len(individuals)
     for i in range(lenIndividuals):
-        if pow(i / lenIndividuals, 1 / SELECTION_FACTOR) < numpy.random.random():
+        if pow(i / lenIndividuals, 1 / constants.SELECTION_FACTOR) < numpy.random.random():
             nextIndividuals.append(individuals[i])
     return nextIndividuals
 
@@ -49,9 +49,9 @@ def optimizePositions(populationSize, cycles):
     theBest = None
 
     for i in range(populationSize):
-        positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE - 1)
+        positionList = factoryGenerator.generateRandomWorkstations(constants.FIELD_SIZE - 1)
         individuals.append(generateIndividual(positionList))
-    print("Calculating with a Population Size of %d in %d Evolution Cycles..." % (POPULATION_SIZE, EVOLUTION_CYCLES))
+    print("Calculating with a Population Size of %d in %d Evolution Cycles..." % (constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES))
 
     for cycle in range(cycles):
         '''Evaluation'''
@@ -73,15 +73,15 @@ def optimizePositions(populationSize, cycles):
 
         '''Mutation'''
         for individual in individuals:
-            individual.mutate(MUTATION_FACTOR)
+            individual.mutate(constants.MUTATION_FACTOR)
 
         '''Breed theBest'''
-        for i in range(BREED_FACTOR):
+        for i in range(constants.BREED_FACTOR):
             individuals.append(theBest.mutatedCopy())
 
 
         '''Recombination'''
-        for i in range(int(RECOMBINATION_FACTOR*populationSize)):
+        for i in range(int(constants.RECOMBINATION_FACTOR*populationSize)):
             ancestorIndex1 = 0
             ancestorIndex2 = 0
             while ancestorIndex1 != ancestorIndex2:
@@ -91,7 +91,7 @@ def optimizePositions(populationSize, cycles):
 
         '''Fill up with random new'''
         while len(individuals) < populationSize:
-            positionList = factoryGenerator.generateRandomWorkstations(FIELD_SIZE - 1)
+            positionList = factoryGenerator.generateRandomWorkstations(constants.FIELD_SIZE - 1)
             individuals.append(generateIndividual(positionList))
 
     save_best_fitness.append(theBest.fitness)
@@ -108,33 +108,25 @@ def optimizePositions(populationSize, cycles):
     theBestPositions = theBest.DNA
     theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL)
     theBestFactory.run()
-    fieldToPrint = [["☐" for i in range(FIELD_SIZE)] for j in range(FIELD_SIZE)]
+    fieldToPrint = [["☐" for i in range(constants.FIELD_SIZE)] for j in range(constants.FIELD_SIZE)]
     for pos in theBestPositions:
         fieldToPrint[pos[1]][pos[2]] = pos[0]
-    sys.stdout.write("+"+"-"*(FIELD_SIZE*3)+"+\n")
-    for i in range(FIELD_SIZE):
+    sys.stdout.write("+"+"-"*(constants.FIELD_SIZE*3)+"+\n")
+    for i in range(constants.FIELD_SIZE):
         sys.stdout.write("|")
-        for j in range(FIELD_SIZE):
+        for j in range(constants.FIELD_SIZE):
             sys.stdout.write(" %s " % fieldToPrint[i][j])
         sys.stdout.write("|\n")
-    sys.stdout.write("+" + "-" * (FIELD_SIZE * 3) + "+\n")
+    sys.stdout.write("+" + "-" * (constants.FIELD_SIZE * 3) + "+\n")
     sys.stdout.flush()
 
 
-'''Global Genetic Factors'''
-SELECTION_FACTOR = 0.85
-MUTATION_FACTOR = 0.2
-BREED_FACTOR = 1
-RECOMBINATION_FACTOR = 0.1
 
-POPULATION_SIZE = 50
-EVOLUTION_CYCLES = 250
 
-FIELD_SIZE = 30
 
 factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
 
-optimizePositions(POPULATION_SIZE, EVOLUTION_CYCLES)
+optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
 
 x = range(len(save_best_fitness))
 save_worst_fitness.append(save_worst_fitness[len(save_worst_fitness)-1])

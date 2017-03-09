@@ -1,9 +1,6 @@
 from Factory import visibilityStatus
 import numpy as np
-from EvolutionaryOptimizer import FIELD_SIZE
-
-MUTATION_ZERO_FACTOR = 3
-
+import constants
 
 class Individual:
     def __init__(self, DNA):
@@ -22,16 +19,16 @@ class Individual:
             self.fitness = None
             for i in range(len(self.DNA)):
                 wsPositionTmp = self.DNA[i]
-                newX = wsPositionTmp[1] + int(np.random.randint(-1*MUTATION_ZERO_FACTOR, 1*MUTATION_ZERO_FACTOR + 1) / MUTATION_ZERO_FACTOR)
-                newY = wsPositionTmp[2] + int(np.random.randint(-2*MUTATION_ZERO_FACTOR, 1*MUTATION_ZERO_FACTOR + 1) / MUTATION_ZERO_FACTOR)
+                newX = wsPositionTmp[1] + int(np.random.randint(-1*constants.MUTATION_ZERO_FACTOR, 1*constants.MUTATION_ZERO_FACTOR + 1) / constants.MUTATION_ZERO_FACTOR)
+                newY = wsPositionTmp[2] + int(np.random.randint(-2*constants.MUTATION_ZERO_FACTOR, 1*constants.MUTATION_ZERO_FACTOR + 1) / constants.MUTATION_ZERO_FACTOR)
                 if newX < 0:
                     newX = 0
                 if newY < 0:
                     newY = 0
-                if newX >= FIELD_SIZE:
-                    newX = FIELD_SIZE - 1
-                if newX >= FIELD_SIZE:
-                    newY = FIELD_SIZE - 1
+                if newX >= constants.FIELD_SIZE:
+                    newX = constants.FIELD_SIZE - 1
+                if newX >= constants.FIELD_SIZE:
+                    newY = constants.FIELD_SIZE - 1
         return self
 
     @staticmethod
