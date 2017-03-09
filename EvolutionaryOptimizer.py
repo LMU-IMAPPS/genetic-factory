@@ -2,7 +2,7 @@ from FactoryGenerator import FactoryGenerator
 from Factory import visibilityStatus
 from Individual import Individual
 import sys
-
+import numpy
 
 def generateIndividual(positionList):
     return Individual(positionList)
@@ -53,6 +53,13 @@ def optimizePositions(populationSize, cycles):
             individuals.append(theBest.mutatedCopy())
 
         '''Recombination'''
+        for i in range(RECOMBINATION_FACTOR):
+            ancestorIndex1 = 0
+            ancestorIndex2 = 0
+            while ancestorIndex1 != ancestorIndex2:
+                ancestorIndex1 = numpy.random.randint(0, len(individuals))
+                ancestorIndex2 = numpy.random.randint(0, len(individuals))
+            individuals.append(Individual.recombine(individuals[ancestorIndex1],individuals[ancestorIndex2]))
 
         '''Fill up with random new'''
         while len(individuals) < populationSize:
@@ -88,6 +95,7 @@ def optimizePositions(populationSize, cycles):
 SELECTION_FACTOR = 0.85
 MUTATION_FACTOR = 0.2
 BREED_FACTOR = 1
+RECOMBINATION_FACTOR = 1
 
 POPULATION_SIZE = 10
 EVOLUTION_CYCLES = 50
