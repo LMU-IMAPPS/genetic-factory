@@ -7,6 +7,7 @@ class StepResult(Enum):
     MOVED = 1
     BLOCKED = 2
     DONE = 3
+    FIRSTDONE = 4
 
 
 class Direction(Enum):
@@ -90,12 +91,11 @@ class Product:
                 self.blockedLastRound = False
                 return self.makeStep(currentFieldStatus, nextDir)
         if (self.positionY == self.targetY) & (self.positionX == self.targetX):
-            #should not be used
             self.findTarget()
             if self.isDone:
                 currentFieldStatus.remove((self.positionX, self.positionY))
                 self.blockedLastRound = False
-                return StepResult.DONE
+                return StepResult.FIRSTDONE
             self.blockedLastRound = False
             return StepResult.MOVED
         self.blockedLastRound = True
@@ -112,7 +112,7 @@ class Product:
             if self.isDone:
                 #removing myself from the simulation, when I am done
                 currentFieldStatus.remove((self.positionX, self.positionY))
-                return StepResult.DONE
+                return StepResult.FIRSTDONE
             return StepResult.MOVED
         return StepResult.MOVED
 
