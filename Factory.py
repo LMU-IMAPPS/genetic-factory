@@ -50,7 +50,7 @@ class Factory:
                     self.viewRoot.update()
                     self.View.showButton()
                     pprint("Done in "+str(counter) + ' steps.')
-                return totalMoves
+                return counter * 100000 + totalMoves
             if not madeChange:
                 if vs != visibilityStatus.NONE:pprint("Blocked")
                 return sys.maxsize
