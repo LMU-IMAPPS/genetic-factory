@@ -24,6 +24,7 @@ class View(Frame):
         self.button1.pack()
 
     def reset(self):
+        self.button1.pack_forget()
         self.factory.productReset()
         self.factory.run()
 
