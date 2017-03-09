@@ -11,7 +11,7 @@ class View(Frame):
         Frame.__init__(self, parent)
         self.parent = parent
         self.initUI()
-        self.size = self.getSize(work)
+        self.getSize(work)
         self.drawGrid(self.size)
         self.drawWorkstations(work, self.size)
         self.drawProduct(products, self.size)
@@ -47,31 +47,25 @@ class View(Frame):
     def getSize(self, works):
 
 
-        size = 0
-        minX = 10000
+        #size = 0
         maxX = 0
-        minY = 10000
         maxY = 0
         for w_v in works.values():
             for w in w_v:
-                if w.positionX < minX:
-                    minX = w.positionX
                 if w.positionX > maxX:
                     maxX = w.positionX
-                if w.positionY < minY:
-                    minY = w.positionY
                 if w.positionY > maxY:
                     maxY = w.positionY
 
         self.width = maxX+1
         self.height = maxY+1
 
-        if (600.0/self.width) > (1000.0/self.height):
-            size = 1000.0 / self.width
+        if (600.0/self.height) > (1000.0/self.width):
+            self.size = 1000.0 / self.width
         else:
-            size = 600.0 / self.height
+            self.size = 600.0 / self.height
 
-        return size   
+        #return size
                 
     def drawWorkstations(self, works, size):
         for w_v in works.values():
