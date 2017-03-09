@@ -3,21 +3,15 @@ from Product import Product
 from Workstation import Workstation
 from Factory import Factory, visibilityStatus
 import random
-import copy
-
-ARRAYSIZE = 1001
 
 
 class FactoryGenerator:
     def __init__(self, path_to_products_json, path_to_workstations_json):
-        self.emptyField = [[False for i in range(ARRAYSIZE)]for j in range(ARRAYSIZE)]
         # self.workStations = {}
         with open(path_to_workstations_json) as jsonFile:
             self.workstationJson = json.load(jsonFile)
         with open(path_to_products_json) as jsonFile:
             self.productsJson = json.load(jsonFile)
-        #self.currentFieldStatus = self.initFieldStatus() #copy.deepcopy(self.emptyField)
-        self.counter = 0
 
     def generateRandomWorkstations(self, maxPosition):
         result = []
@@ -30,7 +24,7 @@ class FactoryGenerator:
     def generateFactory(self, workstationPositions, visibilityType):
         ws = self.set_position_for_workstations(workstationPositions)
         p = self.generateProducts(ws)
-        cfs = self.initFieldStatus() #self.currentFieldStatus#
+        cfs = self.initFieldStatus()
         factory = Factory(ws, p, cfs, visibilityType)
         return factory
 
@@ -42,11 +36,7 @@ class FactoryGenerator:
         return products
 
     def initFieldStatus(self):
-        r = []
-        for i in range(0, ARRAYSIZE):
-            r.append([False] * ARRAYSIZE)
-
-        return r
+        return set()
 
     def count_workstations(self):
         """ Counts the workstations saved in FactorySimulator """

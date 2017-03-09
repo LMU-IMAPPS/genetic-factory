@@ -53,7 +53,7 @@ def optimizePositions(populationSize, cycles):
             individuals.append(theBest.mutatedCopy())
 
         '''Recombination'''
-        for i in range(RECOMBINATION_FACTOR):
+        for i in range(int(RECOMBINATION_FACTOR*populationSize)):
             ancestorIndex1 = 0
             ancestorIndex2 = 0
             while ancestorIndex1 != ancestorIndex2:
@@ -95,7 +95,7 @@ def optimizePositions(populationSize, cycles):
 SELECTION_FACTOR = 0.85
 MUTATION_FACTOR = 0.2
 BREED_FACTOR = 1
-RECOMBINATION_FACTOR = 1
+RECOMBINATION_FACTOR = 0.1
 
 POPULATION_SIZE = 10
 EVOLUTION_CYCLES = 50

@@ -34,25 +34,25 @@ class Product:
             return StepResult.DONE
         if not self.isInitialized:
             # Trying to move into starting position
-            if not currentFieldStatus[self.positionX][self.positionY]:
+            if (self.positionX, self.positionY) not in currentFieldStatus:
                 self.findTarget()
-                currentFieldStatus[self.positionX][self.positionY] = True
+                currentFieldStatus.add((self.positionX, self.positionY))
                 self.isInitialized = True
                 return StepResult.MOVED
             else:
                 return StepResult.BLOCKED
         nextDir = self.findDirection()
-        if not currentFieldStatus[self.positionX + nextDir.xAxis()][self.positionY + nextDir.yAxis()]:
+        if (self.positionX + nextDir.xAxis(), self.positionY + nextDir.yAxis()) not in currentFieldStatus:
             #moving
-            currentFieldStatus[self.positionX][self.positionY] = False
+            currentFieldStatus.remove((self.positionX, self.positionY))
             self.positionX += nextDir.xAxis()
             self.positionY += nextDir.yAxis()
-            currentFieldStatus[self.positionX][self.positionY] = True
+            currentFieldStatus.add((self.positionX, self.positionY))
             if (self.positionY == self.targetY) & (self.positionX == self.targetX):
                 self.findTarget()
                 if self.isDone:
                     #removing myself from the simulation, when I am done
-                    currentFieldStatus[self.positionX][self.positionY] = False
+                    currentFieldStatus.remove((self.positionX, self.positionY))
                     return StepResult.DONE
                 return StepResult.MOVED
             return StepResult.MOVED
@@ -60,7 +60,7 @@ class Product:
             #should not be used
             self.findTarget()
             if self.isDone:
-                currentFieldStatus[self.positionX][self.positionY] = False
+                currentFieldStatus.remove((self.positionX, self.positionY))
                 return StepResult.DONE
             return StepResult.MOVED
         return StepResult.BLOCKED
