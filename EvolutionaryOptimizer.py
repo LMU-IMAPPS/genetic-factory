@@ -119,7 +119,6 @@ factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
 optimizePositions(POPULATION_SIZE, EVOLUTION_CYCLES)
 
 x = range(len(save_best_fitness))
-y = range(len(save_worst_fitness))
 save_worst_fitness.append(save_worst_fitness[len(save_worst_fitness)-1])
 plt.xlabel('Time')
 plt.ylabel('Fitness')
