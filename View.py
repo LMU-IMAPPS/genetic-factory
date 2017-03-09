@@ -1,4 +1,5 @@
-from tkinter import Canvas, Frame, BOTH
+from tkinter import Canvas, Frame, BOTH, Button
+
 
 
 class View(Frame):
@@ -6,7 +7,7 @@ class View(Frame):
     width = 0
     height = 0
 
-    def __init__(self, parent, products, work):
+    def __init__(self, parent, products, work, Factory):
         Frame.__init__(self, parent)
         self.parent = parent
         self.initUI()
@@ -14,6 +15,18 @@ class View(Frame):
         self.drawGrid(self.size)
         self.drawWorkstations(work, self.size)
         self.drawProduct(products, self.size)
+        self.save_products = products
+        self.factory = Factory
+        self.button1 = Button(self.parent, text='Reset', command=self.reset)
+        #self.button1.pack()
+
+    def showButton(self):
+        self.button1.pack()
+
+    def reset(self):
+        self.button1.pack_forget()
+        self.factory.productReset()
+        self.factory.run()
 
     def initUI(self):
         self.parent.title("IMAPPS")
@@ -80,6 +93,7 @@ class View(Frame):
             View.canvas.create_oval(p[0] * size + 1, p[1] * size + 1, p[0] * size - 1 + size, p[1] * size - 1 + size, outline="gray", fill="white", width=0)
         self.drawWorkstations(works, size)
         self.drawProduct(products, size)
+
         pass
 
     def nextTimeStep(self, listP, listW):
