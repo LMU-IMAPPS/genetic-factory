@@ -22,7 +22,7 @@ class Factory:
         self.View = None
         if vs != visibilityStatus.NONE:
             self.viewRoot = Tk()
-            self.View = View(self.viewRoot, self.products, self.workStations)
+            self.View = View(self.viewRoot, self.products, self.workStations, self)
             self.viewRoot.geometry("1000x600+300+50")
 
     def productReset(self):
