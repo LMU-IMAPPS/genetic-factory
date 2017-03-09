@@ -8,7 +8,8 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 
-
+save_best_fitness= []
+save_worst_fitness= []
 
 def generateIndividual(positionList):
     return Individual(positionList)
@@ -17,6 +18,8 @@ def generateIndividual(positionList):
 def individualSelection(individuals):
     # Sort
     individuals.sort(key=lambda y: y.fitness)
+    save_best_fitness.append(individuals[0].fitness)
+    save_worst_fitness.append(individuals[round(len(individuals) / 2)].fitness)
     # print(individuals[0].fitness)
 
     # Return Sublist with best <SELECTION_FACTOR> from Individuals
@@ -105,6 +108,17 @@ EVOLUTION_CYCLES = 50
 
 FIELD_SIZE = 50
 
-factoryGenerator = FactoryGenerator('ProductBig.json', 'WorkstationsBig.json')
+factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
 
 optimizePositions(POPULATION_SIZE, EVOLUTION_CYCLES)
+
+x = range(len(save_best_fitness))
+y = range(len(save_worst_fitness))
+plt.xlabel('Time')
+plt.ylabel('Fitness')
+plt.title('best vs. worst Individuals')
+
+plt.plot(x, save_best_fitness, label ='best')
+plt.plot(x, save_worst_fitness, label = 'worst')
+plt.legend()
+plt.show()
