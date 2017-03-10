@@ -190,7 +190,7 @@ def drawPlots():
 
     #plot with frequency of best fitness
     ypos = range(len(save_best_frequency))
-    plt.bar(ypos, save_best_frequency, color='g')
+    plt.plot(ypos, save_best_frequency, color='g')
     plt.ylabel('Frequency')
     plt.xlabel('Time')
     plt.title('number of individuals with same best fitness per generation')
