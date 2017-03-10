@@ -7,6 +7,7 @@ class Individual:
     def __init__(self, DNA):
         self.DNA = DNA
         self.fitness = None
+        self.DNA.sort(key=lambda individual: ord(individual[0][0]) * 1000000 + (individual[1] * individual[2]))
         self.workstationOnDifferentPlacesTest()
 
     def workstationOnDifferentPlacesTest(self):
@@ -42,8 +43,6 @@ class Individual:
 
     @staticmethod
     def recombine(ancestor1, ancestor2):
-        ancestor1.DNA.sort(key=lambda individual: individual[0])
-        ancestor2.DNA.sort(key=lambda individual: individual[0])
         newIndividual = Individual(list(ancestor1.DNA))
         for i in range(len(newIndividual.DNA)):
             if np.random.random() < 0.5:
@@ -53,3 +52,11 @@ class Individual:
 
     def mutatedCopy(self):
         return Individual(list(self.DNA)).mutate(999)
+
+    def divergence(self, other):
+        result = 0
+        for i in range(len(self.DNA)):
+            result += abs(self.DNA[i][1] - other.DNA[i][1])
+            result += abs(self.DNA[i][2] - other.DNA[i][2])
+        return result
+
