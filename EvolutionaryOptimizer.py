@@ -7,6 +7,7 @@ import sys
 import numpy
 import constants
 import math
+import copy
 
 import matplotlib
 
@@ -58,7 +59,7 @@ def individualSelection(individuals):
     nextIndividuals = []
     lenIndividuals = len(individuals)
     for i in range(lenIndividuals):
-        if pow(i / lenIndividuals, 1 / constants.SELECTION_FACTOR) < numpy.random.random():
+        if pow(i / lenIndividuals, 1 / constants.SELECTION_FACTOR) <= numpy.random.random():
             nextIndividuals.append(individuals[i])
     return nextIndividuals
 
@@ -81,29 +82,22 @@ def optimizePositions(populationSize, cycles):
         '''Selection'''
         individuals = individualSelection(individuals)
 
-        newTheBest = False
-        '''Preserve the best found so far'''
-        if theBest is None or individuals[0].fitness < theBest.fitness:
-            theBest = individuals.pop(0)
-            newTheBest = True
+        '''Make a copy of the best individual'''
+        theBest = copy.deepcopy(individuals[0])
 
         '''See whats going on in the console'''
         percentage = round(cycle/cycles*100)
         bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
-        sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, round(theBest.fitness/100000)))
+        sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, individuals[0].fitness))
         sys.stdout.flush()
 
         '''Mutation'''
         for individual in individuals:
             individual.mutate(constants.MUTATION_FACTOR)
 
-        if newTheBest:
-            individuals.append(theBest)
-
         '''Breed theBest'''
         for i in range(constants.BREED_FACTOR):
             individuals.append(theBest.mutatedCopy())
-
 
         '''Recombination'''
         divergences = calculateDivergences(individuals)
@@ -112,7 +106,8 @@ def optimizePositions(populationSize, cycles):
             ancestorsIndex2 = len(divergences) - exponetialDistrubution(len(divergences)) - 1
             individuals.append(Individual.recombine(divergences[ancestorsIndex1][1], divergences[ancestorsIndex2][1]))
 
-
+        '''Reinsert best individual'''
+        individuals.append(theBest)
 
         '''Fill up with random new'''
         while len(individuals) < populationSize:
