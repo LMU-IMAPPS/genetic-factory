@@ -80,15 +80,15 @@ def optimizePositions(populationSize, cycles):
         '''Selection'''
         individuals = individualSelection(individuals)
 
-        '''See whats going on in the console'''
-        percentage = round(cycle/cycles*100)
-        bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
-        sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, individuals[0].fitness))
-        sys.stdout.flush()
-
         '''Preserve the best found so far'''
         if theBest is None or individuals[0].fitness < theBest.fitness:
             theBest = individuals.pop(0)
+
+        '''See whats going on in the console'''
+        percentage = round(cycle/cycles*100)
+        bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
+        sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, round(theBest.fitness/100000)))
+        sys.stdout.flush()
 
         '''Mutation'''
         for individual in individuals:
