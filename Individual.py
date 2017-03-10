@@ -1,11 +1,18 @@
 from Factory import visibilityStatus
 import numpy as np
 import constants
+import sys
 
 class Individual:
     def __init__(self, DNA):
         self.DNA = DNA
         self.fitness = None
+        self.workstationOnDifferentPlacesTest()
+
+    def workstationOnDifferentPlacesTest(self):
+        setOfWorkstationPostion = set(map(lambda d: (d[1], d[2]),self.DNA))
+        if len(self.DNA) != len(setOfWorkstationPostion):
+            self.fitness = sys.maxsize
 
     def evaluateFitness(self, factoryGenerator, vizType=visibilityStatus.NONE):
         if (self.fitness is None) or (vizType != visibilityStatus.NONE):
@@ -30,6 +37,7 @@ class Individual:
                 if newY >= constants.FIELD_SIZE:
                     newY = constants.FIELD_SIZE - 1
                 self.DNA[i] = (wsPositionTmp[0], newX, newY)
+                self.workstationOnDifferentPlacesTest()
         return self
 
     @staticmethod
