@@ -86,13 +86,18 @@ def optimizePositions(populationSize, cycles):
         sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, individuals[0].fitness))
         sys.stdout.flush()
 
+        newTheBest = False
         '''Preserve the best found so far'''
         if theBest is None or individuals[0].fitness < theBest.fitness:
             theBest = individuals.pop(0)
+            newTheBest = True
 
         '''Mutation'''
         for individual in individuals:
             individual.mutate(constants.MUTATION_FACTOR)
+
+        if newTheBest:
+            individuals.append(theBest)
 
         '''Breed theBest'''
         for i in range(constants.BREED_FACTOR):
@@ -117,10 +122,10 @@ def optimizePositions(populationSize, cycles):
         if constants.DRAW_EVERY_CYCLE == True:
             if cycle == 0:
                 viewRoot = Tk()
-                view = WorkstationView(viewRoot, individuals[0], constants.FIELD_SIZE, constants.FIELD_SIZE)
+                view = WorkstationView(viewRoot, theBest, constants.FIELD_SIZE, constants.FIELD_SIZE)
                 viewRoot.geometry("1000x600+300+50")
             else:
-                view.nextTimeStep(individuals[0])
+                view.nextTimeStep(theBest)
                 view.update()
 
     save_best_fitness.append(theBest.fitness)
