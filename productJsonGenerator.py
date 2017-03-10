@@ -15,7 +15,7 @@ def genertateJson(filname, numProducts, baseCourseLength, startingPositions, sta
             startingPosition = startingPositions[random.randint(1, len(startingPositions)) - 1]
             jsonFile.write('{\"positionX\": ' + str(startingPosition[0]) + ',\n\"positionY\": '+ str(startingPosition[1]) +',\n\"workstationRoute\": \"')
             lastIndex = -1
-            for j in range(0, random.randint(baseCourseLength - courseLengthDeviation, baseCourseLength + courseLengthDeviation)):
+            for j in range(0, random.randint(baseCourseLength - courseLengthDeviation, baseCourseLength + courseLengthDeviation +1)):
                 nextIndex = lastIndex
                 while nextIndex == lastIndex:
                     nextIndex = random.randint(1, len(stations)) -1
@@ -33,5 +33,5 @@ def generateJsonUsingAllWorkstations(filname, numProducts, baseCourseLength, sta
     genertateJson(filname,numProducts,baseCourseLength,startingPostitons,stations,courseLengthDeviation)
 
 
-generateJsonUsingAllWorkstations('ProductBig.json', 25, 8, [(0, 0)], 'WorkstationsBig.json', courseLengthDeviation= 1)
+generateJsonUsingAllWorkstations('ProductsMid.json', 16, 6, [(0, 0), (5, 0)], 'WorkstationsMid.json', courseLengthDeviation= 2)
 
