@@ -27,7 +27,7 @@ class Individual:
                     newY = 0
                 if newX >= constants.FIELD_SIZE:
                     newX = constants.FIELD_SIZE - 1
-                if newX >= constants.FIELD_SIZE:
+                if newY >= constants.FIELD_SIZE:
                     newY = constants.FIELD_SIZE - 1
                 self.DNA[i] = (wsPositionTmp[0], newX, newY)
         return self
