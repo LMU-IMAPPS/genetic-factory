@@ -13,6 +13,9 @@ class FactoryGenerator:
         with open(path_to_products_json) as jsonFile:
             self.productsJson = json.load(jsonFile)
 
+    def evaluateIndivdual(self, indivdual):
+        return indivdual.evaluateFitness(self)
+
     def generateRandomWorkstations(self, maxPosition):
         result = []
         for item in self.workstationJson['workStations']:

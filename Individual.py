@@ -20,11 +20,13 @@ class Individual:
         if (self.fitness is None) or (vizType != visibilityStatus.NONE):
             if self.workstationOnDifferentPlacesTest():
                 self.fitness = factoryGenerator.generateFactory(self.DNA, vizType).run()
+        return self
 
     def getFitness(self):
         return self.fitness
 
-    def mutate(self, mutationRate):
+    def mutate(self):
+        mutationRate = constants.MUTATION_FACTOR
         if np.random.random() < mutationRate:
             self.fitness = None
             for i in range(len(self.DNA)):

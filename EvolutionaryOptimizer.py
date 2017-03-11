@@ -1,14 +1,13 @@
 from tkinter import Tk
 
 from FactoryGenerator import FactoryGenerator
-from Factory import visibilityStatus
 from Individual import Individual
 import sys
 import numpy
 import constants
 import math
 import copy
-
+from multiprocessing import Pool
 import matplotlib
 
 from WorkstationView import WorkstationView
@@ -21,6 +20,8 @@ save_worst_fitness= []
 save_mean = []
 save_best_frequency=[]
 
+def generateRandomIndividual(factoryGenerator):
+    return generateIndividual(factoryGenerator.generateRandomWorkstations(constants.FIELD_SIZE - 1))
 
 def generateIndividual(positionList):
     return Individual(positionList)
@@ -65,7 +66,7 @@ def individualSelection(individuals):
 
 
 
-def optimizePositions(populationSize, cycles):
+def optimizePositions(populationSize, cycles, factoryGenerator):
     individuals = []
     theBest = None
 
@@ -74,55 +75,50 @@ def optimizePositions(populationSize, cycles):
         individuals.append(generateIndividual(positionList))
     print("Calculating with a Population Size of %d in %d Evolution Cycles..." % (constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES))
 
-    for cycle in range(cycles):
-        '''Evaluation'''
-        for individual in individuals:
-            individual.evaluateFitness(factoryGenerator)
+    with Pool(None) as pool: # Creates as many worker threads as there are CPU cores
+        for cycle in range(cycles):
+            '''Evaluation'''
 
-        '''Selection'''
-        individuals = individualSelection(individuals)
+            individuals = pool.map(factoryGenerator.evaluateIndivdual, individuals)
 
-        '''Make a copy of the best individual'''
-        theBest = copy.deepcopy(individuals[0])
+            '''Selection'''
+            individuals = individualSelection(individuals)
 
-        '''See whats going on in the console'''
-        percentage = round(cycle/cycles*100)
-        bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
-        sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, individuals[0].fitness))
-        sys.stdout.flush()
+            '''Make a copy of the best individual'''
+            theBest = copy.deepcopy(individuals[0])
 
-        '''Mutation'''
-        for individual in individuals:
-            individual.mutate(constants.MUTATION_FACTOR)
+            '''See whats going on in the console'''
+            percentage = round(cycle/cycles*100)
+            bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
+            sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, individuals[0].fitness))
+            sys.stdout.flush()
 
-        '''Breed theBest'''
-        for i in range(constants.BREED_FACTOR):
-            individuals.append(theBest.mutatedCopy())
+            '''Mutation'''
+            individuals = pool.map(Individual.mutate, individuals)
 
-        '''Recombination'''
-        divergences = calculateDivergences(individuals)
-        for i in range(int(constants.RECOMBINATION_FACTOR*populationSize)):
-            ancestorsIndex1 = exponetialDistrubution(len(divergences))
-            ancestorsIndex2 = len(divergences) - exponetialDistrubution(len(divergences)) - 1
-            individuals.append(Individual.recombine(divergences[ancestorsIndex1][1], divergences[ancestorsIndex2][1]))
 
-        '''Reinsert best individual'''
-        individuals.append(theBest)
+            '''Recombination'''
+            divergences = calculateDivergences(individuals, pool)
+            for i in range(int(constants.RECOMBINATION_FACTOR*populationSize)):
+                ancestorsIndex1 = exponetialDistrubution(len(divergences))
+                ancestorsIndex2 = len(divergences) - exponetialDistrubution(len(divergences)) - 1
+                individuals.append(Individual.recombine(divergences[ancestorsIndex1][1], divergences[ancestorsIndex2][1]))
 
-        '''Fill up with random new'''
-        while len(individuals) < populationSize:
-            positionList = factoryGenerator.generateRandomWorkstations(constants.FIELD_SIZE - 1)
-            individuals.append(generateIndividual(positionList))
+            '''Reinsert best individual'''
+            individuals.append(theBest)
 
-        ''' Draw just Workstations'''
-        if constants.DRAW_EVERY_CYCLE == True:
-            if cycle == 0:
-                viewRoot = Tk()
-                view = WorkstationView(viewRoot, theBest, constants.FIELD_SIZE, constants.FIELD_SIZE)
-                viewRoot.geometry("1000x600+300+50")
-            else:
-                view.nextTimeStep(theBest)
-                view.update()
+            '''Fill up with random new'''
+            individuals.extend(pool.map(generateRandomIndividual, [factoryGenerator] * (populationSize - len(individuals))))
+
+            ''' Draw just Workstations'''
+            if constants.DRAW_EVERY_CYCLE:
+                if cycle == 0:
+                    viewRoot = Tk()
+                    view = WorkstationView(viewRoot, theBest, constants.FIELD_SIZE, constants.FIELD_SIZE)
+                    viewRoot.geometry("1000x600+300+50")
+                else:
+                    view.nextTimeStep(theBest)
+                    view.update()
 
     save_best_fitness.append(theBest.fitness)
 
@@ -150,11 +146,19 @@ def optimizePositions(populationSize, cycles):
     sys.stdout.write("+" + "-" * (constants.FIELD_SIZE * 3) + "+\n")
     sys.stdout.flush()
 
-def calculateDivergences(individuals):
-    result = []
+class divergenceTestHelperClass:
+    def __init__(self, individuals):
+        self.individuals = individuals
+
+    def divergenceTestInner(self, individual):
+        return (divergenceTest(individual, self.individuals), individual)
+
+def calculateDivergences(individuals, pool):
+    result = pool.map(divergenceTestHelperClass(individuals).divergenceTestInner, individuals)
+    """
     for individual in individuals:
         divergence = divergenceTest(individual, individuals)
-        result.append((divergence, individual))
+        result.append((divergence, individual))"""
     result.sort(key= lambda i: i[0])
     return result
 
@@ -197,8 +201,7 @@ def drawPlots():
     plt.show()
 
 
-factoryGenerator = FactoryGenerator(constants.PRODUCT_JSON, constants.WORKSTATION_JSON)
-
-optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
-
-drawPlots()
+if __name__ == '__main__':
+    factoryGenerator = FactoryGenerator(constants.PRODUCT_JSON, constants.WORKSTATION_JSON)
+    optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES, factoryGenerator)
+    drawPlots()
