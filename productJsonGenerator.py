@@ -33,5 +33,5 @@ def generateJsonUsingAllWorkstations(filname, numProducts, baseCourseLength, sta
     genertateJson(filname,numProducts,baseCourseLength,startingPostitons,stations,courseLengthDeviation)
 
 
-generateJsonUsingAllWorkstations('ProductsMid.json', 16, 6, [(0, 0), (5, 0)], 'WorkstationsMid.json', courseLengthDeviation= 2)
+generateJsonUsingAllWorkstations('ProductsBigNew.json', 30, 8, [(0, 0), (5, 0), (0, 5)], 'WorkstationsBig.json', courseLengthDeviation= 2)
 
