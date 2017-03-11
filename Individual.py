@@ -8,16 +8,18 @@ class Individual:
         self.DNA = DNA
         self.fitness = None
         self.DNA.sort(key=lambda individual: ord(individual[0][0]) * 1000000 + (individual[1] * individual[2]))
-        self.workstationOnDifferentPlacesTest()
 
     def workstationOnDifferentPlacesTest(self):
         setOfWorkstationPostion = set(map(lambda d: (d[1], d[2]),self.DNA))
         if len(self.DNA) != len(setOfWorkstationPostion):
             self.fitness = sys.maxsize
+            return False
+        return True
 
     def evaluateFitness(self, factoryGenerator, vizType=visibilityStatus.NONE):
         if (self.fitness is None) or (vizType != visibilityStatus.NONE):
-            self.fitness = factoryGenerator.generateFactory(self.DNA, vizType).run()
+            if self.workstationOnDifferentPlacesTest():
+                self.fitness = factoryGenerator.generateFactory(self.DNA, vizType).run()
 
     def getFitness(self):
         return self.fitness
@@ -38,7 +40,6 @@ class Individual:
                 if newY >= constants.FIELD_SIZE:
                     newY = constants.FIELD_SIZE - 1
                 self.DNA[i] = (wsPositionTmp[0], newX, newY)
-            self.workstationOnDifferentPlacesTest()
         return self
 
     @staticmethod
