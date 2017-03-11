@@ -83,7 +83,7 @@ def optimizePositions(populationSize, cycles):
         individuals = individualSelection(individuals)
 
         '''Make a copy of the best individual'''
-        theBest = copy.deepcopy(individuals[0])
+        theBest = Individual(list(individuals[0].DNA), initalFitness=individuals[0].fitness)
 
         '''See whats going on in the console'''
         percentage = round(cycle/cycles*100)
