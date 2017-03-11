@@ -59,7 +59,7 @@ def individualSelection(individuals):
     nextIndividuals = []
     lenIndividuals = len(individuals)
     for i in range(lenIndividuals):
-        if pow(i / lenIndividuals, 1 / constants.SELECTION_FACTOR) <= numpy.random.random():
+        if pow(i / lenIndividuals, 1 / (constants.SELECTION_FACTOR * 2)) <= numpy.random.random():
             nextIndividuals.append(individuals[i])
     return nextIndividuals
 
@@ -94,10 +94,6 @@ def optimizePositions(populationSize, cycles):
         '''Mutation'''
         for individual in individuals:
             individual.mutate(constants.MUTATION_FACTOR)
-
-        '''Breed theBest'''
-        for i in range(constants.BREED_FACTOR):
-            individuals.append(theBest.mutatedCopy())
 
         '''Recombination'''
         divergences = calculateDivergences(individuals)
