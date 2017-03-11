@@ -28,20 +28,24 @@ class Individual:
     def mutate(self):
         mutationRate = constants.MUTATION_FACTOR
         if np.random.random() < mutationRate:
+            i = np.random.randint(0, len(self.DNA))
             self.fitness = None
-            for i in range(len(self.DNA)):
-                wsPositionTmp = self.DNA[i]
-                newX = wsPositionTmp[1] + int(np.random.randint(-1*constants.MUTATION_ZERO_FACTOR, 1*constants.MUTATION_ZERO_FACTOR + 1) / constants.MUTATION_ZERO_FACTOR)
-                newY = wsPositionTmp[2] + int(np.random.randint(-2*constants.MUTATION_ZERO_FACTOR, 1*constants.MUTATION_ZERO_FACTOR + 1) / constants.MUTATION_ZERO_FACTOR)
-                if newX < 0:
-                    newX = 0
-                if newY < 0:
-                    newY = 0
-                if newX >= constants.FIELD_SIZE:
-                    newX = constants.FIELD_SIZE - 1
-                if newY >= constants.FIELD_SIZE:
-                    newY = constants.FIELD_SIZE - 1
-                self.DNA[i] = (wsPositionTmp[0], newX, newY)
+            wsPositionTmp = self.DNA[i]
+            newX = wsPositionTmp[1]
+            newY = wsPositionTmp[2]
+            while newX == wsPositionTmp[1] and newY == wsPositionTmp[2]:
+                newX = wsPositionTmp[1] + np.random.randint(-1, 2)
+                newY = wsPositionTmp[2] + np.random.randint(-1, 2)
+            if newX < 0:
+                newX = 0
+            if newY < 0:
+                newY = 0
+            if newX >= constants.FIELD_SIZE:
+                newX = constants.FIELD_SIZE - 1
+            if newY >= constants.FIELD_SIZE:
+                newY = constants.FIELD_SIZE - 1
+            self.DNA[i] = (wsPositionTmp[0], newX, newY)
+
         return self
 
     @staticmethod
