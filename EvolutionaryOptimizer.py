@@ -61,7 +61,7 @@ def individualSelection(individuals):
     nextIndividuals = []
     lenIndividuals = len(individuals)
     for i in range(lenIndividuals):
-        if pow(i / lenIndividuals, 1 / constants.SELECTION_FACTOR) <= numpy.random.random():
+        if pow(i / lenIndividuals, 1 / (constants.SELECTION_FACTOR * 2)) <= numpy.random.random():
             nextIndividuals.append(individuals[i])
     return nextIndividuals
 
@@ -96,7 +96,6 @@ def optimizePositions(populationSize, cycles, factoryGenerator):
 
             '''Mutation'''
             individuals = pool.map(Individual.mutate, individuals)
-
 
             '''Recombination'''
             divergences = calculateDivergences(individuals, pool)
