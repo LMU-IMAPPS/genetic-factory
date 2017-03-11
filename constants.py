@@ -5,10 +5,9 @@ RECOMBINATION_FACTOR = 0.1
 
 POPULATION_SIZE = 40
 EVOLUTION_CYCLES = 200
-MUTATION_ZERO_FACTOR = 2  # Counts possibility of zero mutation
-FIELD_SIZE = 20
-DRAW_EVERY_CYCLE = True
+FIELD_SIZE = 22
+DRAW_EVERY_CYCLE = False
 SHOW_PRODUCT_PATH = False
 
-PRODUCT_JSON = 'Products.json'
-WORKSTATION_JSON = 'Workstations.json'
+PRODUCT_JSON = 'ProductsBig.json'
+WORKSTATION_JSON = 'WorkstationsBig.json'
