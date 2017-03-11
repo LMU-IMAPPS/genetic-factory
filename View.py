@@ -1,4 +1,5 @@
 import copy
+from random import randint
 from tkinter import Canvas, Frame, BOTH, Button
 import constants
 
@@ -21,6 +22,7 @@ class View(Frame):
         self.save_products = products
         self.factory = Factory
         self.button1 = Button(self.parent, text='Reset', command=self.reset)
+
         #self.button1.pack()
 
     def showButton(self):
@@ -102,16 +104,31 @@ class View(Frame):
     def nextTimeStep(self, listP, listW):
         #size = self.getSize(listW)
         self.updateProducts(listP, self.size, listW)
+        #self.canvas.create_rectangle(0, 0, 100, 100, fill = "red", activestipple="gray25")
 
+
+    save = dict()
     def drawPath(self):
-
         for i in range(len(self.savePath)-1):
             for j in range(len(self.savePath[i])):
+                xS = self.savePath[i][j][0]*self.size + self.size / 2
+                yS = self.savePath[i][j][1]*self.size + self.size / 2
+                xE = self.savePath[i+1][j][0] * self.size + self.size / 2
+                yE = self.savePath[i+1][j][1] * self.size + self.size / 2
+
+                if (xS, yS, xE, yE) in self.save:
+                     self.save[(xS, yS, xE, yE)] += 0.5
+                else:
+                    self.save.update({(xS, yS, xE, yE) : 0.5})
+
+                w = self.save[(xS, yS, xE, yE)]
+
+
                 View.canvas.create_line(self.savePath[i][j][0]*self.size + self.size / 2,
                                         self.savePath[i][j][1]*self.size + self.size / 2,
                                         self.savePath[i+1][j][0] * self.size + self.size / 2,
                                         self.savePath[i+1][j][1] * self.size + self.size / 2,
-                                        fill="blue", dash = (10,100), width=2)
+                                        fill="blue", width=w)
 
 
 
