@@ -1,6 +1,7 @@
 from tkinter import Tk
 
 from FactoryGenerator import FactoryGenerator
+from Factory import visibilityStatus
 from Individual import Individual
 import sys
 import numpy
