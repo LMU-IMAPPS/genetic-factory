@@ -90,7 +90,7 @@ class View(Frame):
 
     def updateProducts(self, products, size, works):
         if constants.SHOW_PRODUCT_PATH:
-            self.savePath.append(copy.deepcopy( self.list_old))
+            self.savePath.append(list(self.list_old))
         #print(self.savePath)
         for p in View.list_old:
             View.canvas.create_oval(p[0] * size + 1, p[1] * size + 1, p[0] * size - 1 + size, p[1] * size - 1 + size, outline="gray", fill="white", width=0)

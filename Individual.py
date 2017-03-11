@@ -4,9 +4,9 @@ import constants
 import sys
 
 class Individual:
-    def __init__(self, DNA):
+    def __init__(self, DNA, initalFitness = None):
         self.DNA = DNA
-        self.fitness = None
+        self.fitness = initalFitness
         self.DNA.sort(key=lambda individual: ord(individual[0][0]) * 1000000 + (individual[1] * individual[2]))
 
     def workstationOnDifferentPlacesTest(self):
