@@ -38,7 +38,7 @@ class Individual:
                 if newY >= constants.FIELD_SIZE:
                     newY = constants.FIELD_SIZE - 1
                 self.DNA[i] = (wsPositionTmp[0], newX, newY)
-                self.workstationOnDifferentPlacesTest()
+            self.workstationOnDifferentPlacesTest()
         return self
 
     @staticmethod
