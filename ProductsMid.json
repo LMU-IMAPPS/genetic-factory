@@ -1,0 +1,67 @@
+{
+"products":[
+{"positionX": 0,
+"positionY": 0,
+"workstationRoute": "EGDAD"
+},
+{"positionX": 5,
+"positionY": 0,
+"workstationRoute": "FEGA"
+},
+{"positionX": 5,
+"positionY": 0,
+"workstationRoute": "GAFA"
+},
+{"positionX": 0,
+"positionY": 0,
+"workstationRoute": "FEGBCE"
+},
+{"positionX": 5,
+"positionY": 0,
+"workstationRoute": "BEGEFED"
+},
+{"positionX": 0,
+"positionY": 0,
+"workstationRoute": "BGEBFD"
+},
+{"positionX": 0,
+"positionY": 0,
+"workstationRoute": "DCEGED"
+},
+{"positionX": 5,
+"positionY": 0,
+"workstationRoute": "BCGFAC"
+},
+{"positionX": 5,
+"positionY": 0,
+"workstationRoute": "CFGF"
+},
+{"positionX": 0,
+"positionY": 0,
+"workstationRoute": "ADCEA"
+},
+{"positionX": 0,
+"positionY": 0,
+"workstationRoute": "DCBEF"
+},
+{"positionX": 0,
+"positionY": 0,
+"workstationRoute": "DEBFABD"
+},
+{"positionX": 0,
+"positionY": 0,
+"workstationRoute": "ACBACG"
+},
+{"positionX": 5,
+"positionY": 0,
+"workstationRoute": "DBFGCFA"
+},
+{"positionX": 5,
+"positionY": 0,
+"workstationRoute": "ADBAFGE"
+},
+{"positionX": 5,
+"positionY": 0,
+"workstationRoute": "DGAEFC"
+}]
+}
