@@ -6,6 +6,8 @@ from Individual import Individual
 import sys
 import numpy
 import constants
+import math
+import copy
 
 import matplotlib
 
@@ -57,7 +59,7 @@ def individualSelection(individuals):
     nextIndividuals = []
     lenIndividuals = len(individuals)
     for i in range(lenIndividuals):
-        if pow(i / lenIndividuals, 1 / constants.SELECTION_FACTOR) < numpy.random.random():
+        if pow(i / lenIndividuals, 1 / (constants.SELECTION_FACTOR * 2)) <= numpy.random.random():
             nextIndividuals.append(individuals[i])
     return nextIndividuals
 
@@ -80,33 +82,28 @@ def optimizePositions(populationSize, cycles):
         '''Selection'''
         individuals = individualSelection(individuals)
 
+        '''Make a copy of the best individual'''
+        theBest = Individual(list(individuals[0].DNA), initalFitness=individuals[0].fitness)
+
         '''See whats going on in the console'''
         percentage = round(cycle/cycles*100)
         bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
         sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, individuals[0].fitness))
         sys.stdout.flush()
 
-        '''Preserve the best found so far'''
-        if theBest is None or individuals[0].fitness < theBest.fitness:
-            theBest = individuals.pop(0)
-
         '''Mutation'''
         for individual in individuals:
             individual.mutate(constants.MUTATION_FACTOR)
 
-        '''Breed theBest'''
-        for i in range(constants.BREED_FACTOR):
-            individuals.append(theBest.mutatedCopy())
-
-
         '''Recombination'''
+        divergences = calculateDivergences(individuals)
         for i in range(int(constants.RECOMBINATION_FACTOR*populationSize)):
-            ancestorIndex1 = 0
-            ancestorIndex2 = 0
-            while ancestorIndex1 != ancestorIndex2:
-                ancestorIndex1 = numpy.random.randint(0, len(individuals))
-                ancestorIndex2 = numpy.random.randint(0, len(individuals))
-            individuals.append(Individual.recombine(individuals[ancestorIndex1],individuals[ancestorIndex2]))
+            ancestorsIndex1 = exponetialDistrubution(len(divergences))
+            ancestorsIndex2 = len(divergences) - exponetialDistrubution(len(divergences)) - 1
+            individuals.append(Individual.recombine(divergences[ancestorsIndex1][1], divergences[ancestorsIndex2][1]))
+
+        '''Reinsert best individual'''
+        individuals.append(theBest)
 
         '''Fill up with random new'''
         while len(individuals) < populationSize:
@@ -117,10 +114,10 @@ def optimizePositions(populationSize, cycles):
         if constants.DRAW_EVERY_CYCLE == True:
             if cycle == 0:
                 viewRoot = Tk()
-                view = WorkstationView(viewRoot, individuals[0], constants.FIELD_SIZE, constants.FIELD_SIZE)
+                view = WorkstationView(viewRoot, theBest, constants.FIELD_SIZE, constants.FIELD_SIZE)
                 viewRoot.geometry("1000x600+300+50")
             else:
-                view.nextTimeStep(individuals[0])
+                view.nextTimeStep(theBest)
                 view.update()
 
     save_best_fitness.append(theBest.fitness)
@@ -149,13 +146,32 @@ def optimizePositions(populationSize, cycles):
     sys.stdout.write("+" + "-" * (constants.FIELD_SIZE * 3) + "+\n")
     sys.stdout.flush()
 
+def calculateDivergences(individuals):
+    result = []
+    for individual in individuals:
+        divergence = divergenceTest(individual, individuals)
+        result.append((divergence, individual))
+    result.sort(key= lambda i: i[0])
+    return result
+
+
+def exponetialDistrubution(max):
+    for i in range(max):
+        if pow(0.5 * math.e, (i+1) * (-0.5)) > numpy.random.random():
+            return i
+
+    return 0
+
+
+def divergenceTest(individual, individuals):
+    result = 0
+    result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
+    result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
+    result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
+    return result
 
 def drawPlots():
     #plot with best, worst and mean indiv per generation
-
-
-
-
     x = range(len(save_best_fitness))
     save_worst_fitness.append(save_worst_fitness[len(save_worst_fitness) - 1])
     save_mean.append(save_mean[len(save_mean) - 1])
@@ -170,14 +186,14 @@ def drawPlots():
 
     #plot with frequency of best fitness
     ypos = range(len(save_best_frequency))
-    plt.bar(ypos, save_best_frequency, color='g')
+    plt.plot(ypos, save_best_frequency, color='g')
     plt.ylabel('Frequency')
     plt.xlabel('Time')
     plt.title('number of individuals with same best fitness per generation')
     plt.show()
 
 
-factoryGenerator = FactoryGenerator('Products.json', 'Workstations.json')
+factoryGenerator = FactoryGenerator(constants.PRODUCT_JSON, constants.WORKSTATION_JSON)
 
 optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
 

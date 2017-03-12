@@ -5,6 +5,7 @@ from Product import StepResult
 import time
 import sys
 from enum import Enum
+import constants
 
 
 class visibilityStatus(Enum):
@@ -31,6 +32,7 @@ class Factory:
 
     def privateRun(self, vs):
         counter = 0
+        totalMoves = 0
         while True:
             madeChange = False
             isDone = True
@@ -38,15 +40,20 @@ class Factory:
                 result = p.run(self.currentFieldStatus)
                 if result == StepResult.MOVED:
                     madeChange = True
-                if not result == StepResult.DONE:
                     isDone = False
+                if result == StepResult.BLOCKED:
+                    isDone = False
+                if result == StepResult.FIRSTDONE:
+                    totalMoves += counter
             if isDone:
                 if vs != visibilityStatus.NONE:
                     self.View.nextTimeStep(self.products, self.workStations)
+
                     self.viewRoot.update()
+                    if constants.SHOW_PRODUCT_PATH: self.View.drawPath()
                     self.View.showButton()
-                    pprint("Done with Fitness "+str(counter))
-                return counter
+                    pprint("Done in "+str(counter) + ' steps.')
+                return counter * 100000 + totalMoves
             if not madeChange:
                 if vs != visibilityStatus.NONE:pprint("Blocked")
                 return sys.maxsize

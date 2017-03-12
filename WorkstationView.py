@@ -61,6 +61,6 @@ class WorkstationView(Frame):
 
     def nextTimeStep(self, idv):
         self.updateWorkstation(self.size, idv)
-        print("step")
+        #print("step")
         #time.sleep(0.1)
 

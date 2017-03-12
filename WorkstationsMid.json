@@ -1,0 +1,42 @@
+{
+    
+   "workStations":
+    [
+        {
+          "type": "A",
+          "count": 1,
+          "time_at_ws": 3
+        },
+        {
+          "type": "B",
+          "count": 1,
+          "time_at_ws": 1
+        },
+        {
+          "type": "C",
+          "count": 1,
+          "time_at_ws": 5
+        },
+        {
+          "type": "D",
+          "count": 2,
+          "time_at_ws": 2
+        },
+        {
+          "type": "E",
+          "count": 1,
+          "time_at_ws": 2
+        },
+        {
+          "type": "F",
+          "count": 1,
+          "time_at_ws": 2
+        },
+        {
+          "type": "G",
+          "count": 1,
+          "time_at_ws": 2
+        }
+    ]
+
+}
