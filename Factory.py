@@ -53,7 +53,7 @@ class Factory:
                     if constants.SHOW_PRODUCT_PATH: self.View.drawPath()
                     self.View.showButton()
                     pprint("Done in "+str(counter) + ' steps.')
-                return counter * 100000 + totalMoves
+                return counter  # * 100000 + totalMoves
             if not madeChange:
                 if vs != visibilityStatus.NONE:pprint("Blocked")
                 return sys.maxsize

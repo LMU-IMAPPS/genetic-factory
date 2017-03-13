@@ -1,12 +1,14 @@
 from tkinter import Tk
 
 from FactoryGenerator import FactoryGenerator
+from ProductOptimizer import ProductOptimizer
 from Factory import visibilityStatus
 from Individual import Individual
 import sys
 import numpy
 import constants
 import math
+import json
 import copy
 
 import matplotlib
@@ -75,10 +77,29 @@ def optimizePositions(populationSize, cycles):
     print("Calculating with a Population Size of %d in %d Evolution Cycles..." % (constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES))
 
     for cycle in range(cycles):
+        '''Init products list for generation'''
+        productsGeneration = productOptimizer.getGeneration()  # [[(1,1,"ABAC"),..],[(1,1,"ADC"),..],..]
+        productsGenerationFitness = []
+        for i in range(constants.LISTS_PER_GENERATION):
+            productsGenerationFitness.append(0)
+
         '''Evaluation'''
         for individual in individuals:
-            individual.evaluateFitness(factoryGenerator)
+            fitness = 0
+            for productIndex in range(constants.LISTS_PER_GENERATION):
+                # todo Random select productList from productsGeneration
+                singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[productIndex])
+                fitness += singleFitness
+                # set product list fitness in productsGenerationFitness
+                productsGenerationFitness[productIndex] += singleFitness
+            fitness = round(fitness/len(productsGeneration))
+            individual.setFitness(fitness)
 
+        for i in range(constants.LISTS_PER_GENERATION):
+            productsGenerationFitness[i] /= constants.POPULATION_SIZE
+        productOptimizer.evaluateGeneration(productsGenerationFitness)
+
+        #print(productsGenerationFitness)
         '''Selection'''
         individuals = individualSelection(individuals)
 
@@ -121,18 +142,21 @@ def optimizePositions(populationSize, cycles):
                 view.update()
 
     save_best_fitness.append(theBest.fitness)
+    the_best_products = productOptimizer.getGeneration()
 
     print("\n")
     '''Evaluation'''
     for individual in individuals:
-        individual.evaluateFitness(factoryGenerator)
+        fitness = individual.evaluateFitness(factoryGenerator, the_best_products[0])
+        individual.setFitness(fitness)
 
     '''Selection'''
     individuals = individualSelection(individuals)
 
     '''Show off with best Factory'''
     theBestPositions = theBest.DNA
-    theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL)
+    # TODO from Products Optimization
+    theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL, the_best_products[0])
     theBestFactory.run()
     fieldToPrint = [["☐" for i in range(constants.FIELD_SIZE)] for j in range(constants.FIELD_SIZE)]
     for pos in theBestPositions:
@@ -179,8 +203,8 @@ def drawPlots():
     plt.ylabel('Fitness')
     plt.title('best vs. worst individuals')
     plt.plot(x, save_best_fitness, label='best', color='g')
-    plt.plot(x, save_mean, label='mean', color='b')
-    plt.plot(x, save_worst_fitness, label='worst', color='r')
+    #plt.plot(x, save_mean, label='mean', color='b')
+    #plt.plot(x, save_worst_fitness, label='worst', color='r')
     plt.legend()
     plt.show()
 
@@ -193,7 +217,11 @@ def drawPlots():
     plt.show()
 
 
-factoryGenerator = FactoryGenerator(constants.PRODUCT_JSON, constants.WORKSTATION_JSON)
+with open(constants.WORKSTATION_JSON) as jsonFile:
+    workstationsJson = json.load(jsonFile)
+
+factoryGenerator = FactoryGenerator(workstationsJson)
+productOptimizer = ProductOptimizer(workstationsJson)
 
 optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
 

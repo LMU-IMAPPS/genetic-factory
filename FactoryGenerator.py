@@ -6,12 +6,13 @@ import random
 
 
 class FactoryGenerator:
-    def __init__(self, path_to_products_json, path_to_workstations_json):
-        # self.workStations = {}
-        with open(path_to_workstations_json) as jsonFile:
-            self.workstationJson = json.load(jsonFile)
-        with open(path_to_products_json) as jsonFile:
-            self.productsJson = json.load(jsonFile)
+    def __init__(self, workstationsJson):
+        self.workstationJson = workstationsJson
+
+        #with open(path_to_workstations_json) as jsonFile:
+        #    self.workstationJson = json.load(jsonFile)
+        #with open(path_to_products_json) as jsonFile:
+        #    self.productsJson = json.load(jsonFile)
 
     def generateRandomWorkstations(self, maxPosition):
         result = []
@@ -21,18 +22,18 @@ class FactoryGenerator:
                 result.append((type, random.randint(0, maxPosition), random.randint(0,maxPosition)))
         return result
 
-    def generateFactory(self, workstationPositions, visibilityType):
+    def generateFactory(self, workstationPositions, visibilityType, products):
         ws = self.set_position_for_workstations(workstationPositions)
-        p = self.generateProducts(ws)
+        p = self.generateProducts(ws, products)
         cfs = self.initFieldStatus()
         factory = Factory(ws, p, cfs, visibilityType)
         return factory
 
-    def generateProducts(self, workStations):
+    def generateProducts(self, workStations, productList):
         """ Generates products from the specified JSON file """
         products = []
-        for item in self.productsJson['products']:
-            products.append(Product(item['positionX'], item['positionY'], item["workstationRoute"], workStations))
+        for product in productList:
+            products.append(Product(product[0], product[1], product[2], workStations))
         return products
 
     def initFieldStatus(self):
