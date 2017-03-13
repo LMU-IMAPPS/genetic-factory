@@ -1,25 +1,12 @@
-from Factory import visibilityStatus
 import numpy as np
 import constants
 import sys
 
-class Individual:
+
+class EvilProducts:
     def __init__(self, DNA, initalFitness = None):
         self.DNA = DNA
         self.fitness = initalFitness
-        self.DNA.sort(key=lambda individual: ord(individual[0][0]) * 1000000 + (individual[1] * individual[2]))
-
-    def workstationOnDifferentPlacesTest(self):
-        setOfWorkstationPostion = set(map(lambda d: (d[1], d[2]),self.DNA))
-        if len(self.DNA) != len(setOfWorkstationPostion):
-            self.fitness = sys.maxsize
-            return False
-        return True
-
-    def evaluateFitness(self, factoryGenerator, products, vizType=visibilityStatus.NONE):
-        #if (self.fitness is None) or (vizType != visibilityStatus.NONE):
-            #if self.workstationOnDifferentPlacesTest():
-        return factoryGenerator.generateFactory(self.DNA, vizType, products).run()
 
     def setFitness(self, fitness):
         self.fitness = fitness
@@ -57,7 +44,7 @@ class Individual:
                 newIndividual.DNA[i] = ancestor2.DNA[i]
         return newIndividual
 
-    def divergence(self, other):
+    def diversity(self, other):
         result = 0
         for i in range(len(self.DNA)):
             result += abs(self.DNA[i][1] - other.DNA[i][1])

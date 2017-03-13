@@ -1,7 +1,7 @@
 from tkinter import Tk
 
 from FactoryGenerator import FactoryGenerator
-from ProductOptimizer import ProductOptimizer
+from ProductsOptimizer import ProductOptimizer
 from Factory import visibilityStatus
 from Individual import Individual
 import sys
