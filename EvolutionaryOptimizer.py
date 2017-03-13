@@ -3,24 +3,22 @@ from tkinter import Tk
 from FactoryGenerator import FactoryGenerator
 from Factory import visibilityStatus
 from Individual import Individual
+from WorkstationView import WorkstationView
 import sys
 import numpy
 import constants
+import matplotlib
 import math
 from multiprocessing import Process
 from multiprocessing import SimpleQueue
-
-import matplotlib
-
-from WorkstationView import WorkstationView
-
-matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 
-save_best_fitness= []
-save_worst_fitness= []
+matplotlib.use("TkAgg")
+
+save_best_fitness = []
+save_worst_fitness = []
 save_mean = []
-save_best_frequency=[]
+save_best_frequency = []
 
 
 def generateIndividual(positionList):
@@ -66,6 +64,7 @@ def individualSelection(individuals):
             nextIndividuals.append(individuals[i])
     return nextIndividuals
 
+
 def consoleReport(reportQueue):
     cycles = [0] * constants.CPU_CORES
     bestFitness = sys.maxsize
@@ -81,13 +80,13 @@ def consoleReport(reportQueue):
         if bestFitness > report[2]:
             bestFitness = report[2]
         '''See whats going on in the console'''
-        percentage = round(cycle/constants.EVOLUTION_CYCLES*100)
-        bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
+        percentage = round(cycle / constants.EVOLUTION_CYCLES * 100)
+        bar = "[" + "=" * round(percentage / 2) + "-" * round(50 - (percentage / 2)) + "]"
         sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, bestFitness))
         sys.stdout.flush()
 
 
-def work(factoryGenerator, interProcessCommunication ,id, resultOutput, reportQueue):
+def work(factoryGenerator, interProcessCommunication, id, resultOutput, reportQueue):
     populationSize = constants.POPULATION_SIZE
     individuals = []
     theBest = None
@@ -105,7 +104,6 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput, reportQu
 
         '''Make a copy of the best individual'''
         theBest = Individual(list(individuals[0].DNA), initalFitness=individuals[0].fitness)
-
 
         '''Migration'''
         if cycle % constants.NUMBER_OF_CYCLES_UNTIL_MIGRATION == 0:
@@ -127,7 +125,7 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput, reportQu
 
         '''Recombination'''
         divergences = calculateDivergences(individuals)
-        for i in range(int(constants.RECOMBINATION_FACTOR*populationSize)):
+        for i in range(int(constants.RECOMBINATION_FACTOR * populationSize)):
             ancestorsIndex1 = exponetialDistrubution(len(divergences))
             ancestorsIndex2 = len(divergences) - exponetialDistrubution(len(divergences)) - 1
             individuals.append(Individual.recombine(divergences[ancestorsIndex1][1], divergences[ancestorsIndex2][1]))
@@ -141,7 +139,7 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput, reportQu
             individuals.append(generateIndividual(positionList))
 
         ''' Draw just Workstations'''
-        if constants.DRAW_EVERY_CYCLE == True:
+        if constants.DRAW_EVERY_CYCLE is True:
             if cycle == 0:
                 viewRoot = Tk()
                 view = WorkstationView(viewRoot, theBest, constants.FIELD_SIZE, constants.FIELD_SIZE)
@@ -150,13 +148,13 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput, reportQu
                 view.nextTimeStep(theBest)
                 view.update()
 
-
     for individual in individuals:
         individual.evaluateFitness(factoryGenerator)
 
     # Sort
     individuals.sort(key=lambda y: y.fitness)
     resultOutput.put(individuals[0])
+
 
 def optimizePositions(factoryGenerator):
     print("Calculating with a Population Size of %d in %d Evolution Cycles in %d Threads..." % (constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES, constants.CPU_CORES))
@@ -172,11 +170,10 @@ def optimizePositions(factoryGenerator):
     Process(target=consoleReport, args=(reportQueue,)).start()
     for i in range(constants.CPU_CORES):
         result.append(resultOutput.get())
-    theBest = min(result, key= lambda r: r.fitness)
+    theBest = min(result, key=lambda r: r.fitness)
     reportQueue.put((-42, -42, -42)) # poison pill
 
     save_best_fitness.append(theBest.fitness)
-
 
     '''Show off with best Factory'''
     theBestPositions = theBest.DNA
@@ -185,7 +182,7 @@ def optimizePositions(factoryGenerator):
     fieldToPrint = [["☐" for i in range(constants.FIELD_SIZE)] for j in range(constants.FIELD_SIZE)]
     for pos in theBestPositions:
         fieldToPrint[pos[1]][pos[2]] = pos[0]
-    sys.stdout.write("+"+"-"*(constants.FIELD_SIZE*3)+"+\n")
+    sys.stdout.write("+" + "-" * (constants.FIELD_SIZE * 3) + "+\n")
     for i in range(constants.FIELD_SIZE):
         sys.stdout.write("|")
         for j in range(constants.FIELD_SIZE):
@@ -194,18 +191,19 @@ def optimizePositions(factoryGenerator):
     sys.stdout.write("+" + "-" * (constants.FIELD_SIZE * 3) + "+\n")
     sys.stdout.flush()
 
+
 def calculateDivergences(individuals):
     result = []
     for individual in individuals:
         divergence = divergenceTest(individual, individuals)
         result.append((divergence, individual))
-    result.sort(key= lambda i: i[0])
+    result.sort(key=lambda i: i[0])
     return result
 
 
 def exponetialDistrubution(max):
     for i in range(max):
-        if pow(0.5 * math.e, (i+1) * (-0.5)) > numpy.random.random():
+        if pow(0.5 * math.e, (i + 1) * (-0.5)) > numpy.random.random():
             return i
 
     return 0
@@ -217,6 +215,7 @@ def divergenceTest(individual, individuals):
     result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
     result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
     return result
+
 
 def drawPlots():
     #plot with best, worst and mean indiv per generation
@@ -239,6 +238,7 @@ def drawPlots():
     plt.xlabel('Time')
     plt.title('number of individuals with same best fitness per generation')
     plt.show()
+
 
 if __name__ == '__main__':
     factoryGenerator = FactoryGenerator(constants.PRODUCT_JSON, constants.WORKSTATION_JSON)
