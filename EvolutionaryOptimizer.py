@@ -103,10 +103,12 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput):
                 else:
                     emigrants.append(individual)
             immigrants = interProcessCommunication.get()
-            print(immigrants)
-            interProcessCommunication.put(emigrants)
+            while (immigrants[0] == id):
+                interProcessCommunication.put(immigrants)
+                immigrants= interProcessCommunication.get()
+            interProcessCommunication.put((id, emigrants))
             individuals = nextIndividuals
-            individuals.extend(immigrants)
+            individuals.extend(immigrants[1])
 
         '''Mutation'''
         for individual in individuals:
@@ -148,7 +150,7 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput):
 def optimizePositions(factoryGenerator):
     result = []
     interProcessCommunication = SimpleQueue()
-    interProcessCommunication.put([])
+    interProcessCommunication.put((-1, []))
     resultOutput = SimpleQueue()
 
     for i in range(constants.CPU_CORES):
