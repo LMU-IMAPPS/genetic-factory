@@ -1,7 +1,8 @@
 '''Global Genetic Factors'''
 SELECTION_FACTOR = 0.2  # Linear probability of distribution
-MUTATION_FACTOR = 0.2
+MUTATION_FACTOR = 0.4
 RECOMBINATION_FACTOR = 0.1
+
 
 POPULATION_SIZE = 20
 EVOLUTION_CYCLES = 100

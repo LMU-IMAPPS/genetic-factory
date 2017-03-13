@@ -42,6 +42,12 @@ class EvolutionaryOptimizer:
         if self.save_best_fitness[0] == sys.maxsize:
             self.save_worst_fitness.append(sys.maxsize)
             self.save_mean.append(sys.maxsize)
+        else:
+            # save worst indiv except blocked ones
+            self.save_worst_fitness.append(save_mean_current[0])
+            # save mean of generation
+            mean_value = numpy.mean(save_mean_current)
+            self.save_mean.append(mean_value)
 
         # Return Sublist with best <SELECTION_FACTOR> from Individuals
         nextIndividuals = []
@@ -59,11 +65,28 @@ class EvolutionaryOptimizer:
         self.theBest = Individual(list(self.individuals[0].DNA), initalFitness=self.individuals[0].fitness)
 
         '''Mutation'''
-        for individual in self.individuals:
-            individual.mutate(constants.MUTATION_FACTOR)
-
-        '''Recombination'''
         divergences = self.calculateDivergences()
+        mutationlist = []
+
+        for individual in divergences:
+            indifit = individual[1].fitness
+            indidiv = individual[0] + 1
+            mutationfactor = indifit/(indidiv*100000)
+            mutationlist.append((mutationfactor,individual[1]))
+
+        mutationlist.sort(key= lambda i: i[0])
+        scala = 1/(len(mutationlist)*2)
+        for individual in range(len(mutationlist)-1):
+            tempindiv = mutationlist[individual][1]
+            scalaproindiv = (individual +1) * scala + 0.5
+            #if (scalaproindiv) < 0.2:
+                #scalaproindiv = 0.2
+            mutationf = constants.MUTATION_FACTOR * scalaproindiv
+            tempindiv.mutate(mutationf)
+
+        # for individual in individuals:
+        #    individual.mutate(constants.MUTATION_FACTOR)
+        '''Recombination'''
         for i in range(int(constants.RECOMBINATION_FACTOR * constants.POPULATION_SIZE)):
             ancestorsIndex1 = self.exponentialDistribution(len(divergences))
             ancestorsIndex2 = len(divergences) - self.exponentialDistribution(len(divergences)) - 1
