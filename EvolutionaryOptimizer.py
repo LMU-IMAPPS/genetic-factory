@@ -116,15 +116,9 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput, reportQu
                     nextIndividuals.append(individual)
                 else:
                     emigrants.append(individual)
-            immigrants = interProcessCommunication.get()
-            immigrantCount = 0
-            while immigrants[0] == id or immigrantCount <= constants.CPU_CORES:
-                interProcessCommunication.put(immigrants)
-                immigrants= interProcessCommunication.get()
-                immigrantCount += 1
-            interProcessCommunication.put((id, emigrants))
             individuals = nextIndividuals
-            individuals.extend(immigrants[1])
+            individuals.extend(interProcessCommunication.get())
+            interProcessCommunication.put(emigrants)
             reportQueue.put((id, cycle, theBest.fitness))
 
         '''Mutation'''
@@ -169,7 +163,7 @@ def optimizePositions(factoryGenerator):
 
     result = []
     interProcessCommunication = SimpleQueue()
-    interProcessCommunication.put((-1, []))
+    interProcessCommunication.put([])
     resultOutput = SimpleQueue()
     reportQueue = SimpleQueue()
     for i in range(constants.CPU_CORES):
