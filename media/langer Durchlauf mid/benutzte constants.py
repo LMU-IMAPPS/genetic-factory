@@ -1,0 +1,13 @@
+'''Global Genetic Factors'''
+SELECTION_FACTOR = 0.2  # Linear probability of distribution
+MUTATION_FACTOR = 0.2
+RECOMBINATION_FACTOR = 0.1
+
+POPULATION_SIZE = 250
+EVOLUTION_CYCLES = 50000
+FIELD_SIZE = 15
+DRAW_EVERY_CYCLE = False
+SHOW_PRODUCT_PATH = False
+
+PRODUCT_JSON = 'ProductsMid.json'
+WORKSTATION_JSON = 'WorkstationsMid.json'
