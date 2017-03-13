@@ -66,7 +66,28 @@ def individualSelection(individuals):
             nextIndividuals.append(individuals[i])
     return nextIndividuals
 
-def work(factoryGenerator, interProcessCommunication ,id, resultOutput):
+def consoleReport(reportQueue):
+    cycles = [0] * constants.CPU_CORES
+    bestFitness = sys.maxsize
+    while True:
+        report = reportQueue.get()
+        if report[0] == -42: # poison pill
+            return
+        cycles[report[0]] = report[1]
+        cycle = 0
+        for c in cycles:
+            cycle += c
+        cycle /= constants.CPU_CORES
+        if bestFitness > report[2]:
+            bestFitness = report[2]
+        '''See whats going on in the console'''
+        percentage = round(cycle/constants.EVOLUTION_CYCLES*100)
+        bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
+        sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, bestFitness))
+        sys.stdout.flush()
+
+
+def work(factoryGenerator, interProcessCommunication ,id, resultOutput, reportQueue):
     populationSize = constants.POPULATION_SIZE
     individuals = []
     theBest = None
@@ -74,8 +95,6 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput):
     for i in range(populationSize):
         positionList = factoryGenerator.generateRandomWorkstations(constants.FIELD_SIZE - 1)
         individuals.append(generateIndividual(positionList))
-    print("Calculating with a Population Size of %d in %d Evolution Cycles..." % (constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES))
-
     for cycle in range(constants.EVOLUTION_CYCLES):
         '''Evaluation'''
         for individual in individuals:
@@ -87,11 +106,6 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput):
         '''Make a copy of the best individual'''
         theBest = Individual(list(individuals[0].DNA), initalFitness=individuals[0].fitness)
 
-        '''See whats going on in the console'''"""
-        percentage = round(cycle/constants.EVOLUTION_CYCLES*100)
-        bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
-        sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, individuals[0].fitness))
-        sys.stdout.flush()"""
 
         '''Migration'''
         if cycle % constants.NUMBER_OF_CYCLES_UNTIL_MIGRATION == 0:
@@ -103,12 +117,15 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput):
                 else:
                     emigrants.append(individual)
             immigrants = interProcessCommunication.get()
-            while (immigrants[0] == id):
+            immigrantCount = 0
+            while immigrants[0] == id or immigrantCount <= constants.CPU_CORES:
                 interProcessCommunication.put(immigrants)
                 immigrants= interProcessCommunication.get()
+                immigrantCount += 1
             interProcessCommunication.put((id, emigrants))
             individuals = nextIndividuals
             individuals.extend(immigrants[1])
+            reportQueue.put((id, cycle, theBest.fitness))
 
         '''Mutation'''
         for individual in individuals:
@@ -148,17 +165,21 @@ def work(factoryGenerator, interProcessCommunication ,id, resultOutput):
     resultOutput.put(individuals[0])
 
 def optimizePositions(factoryGenerator):
+    print("Calculating with a Population Size of %d in %d Evolution Cycles in %d Threads..." % (constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES, constants.CPU_CORES))
+
     result = []
     interProcessCommunication = SimpleQueue()
     interProcessCommunication.put((-1, []))
     resultOutput = SimpleQueue()
-
+    reportQueue = SimpleQueue()
     for i in range(constants.CPU_CORES):
-        Process(target=work, args=(factoryGenerator, interProcessCommunication, i, resultOutput)).start()
+        Process(target=work, args=(factoryGenerator, interProcessCommunication, i, resultOutput, reportQueue)).start()
 
+    Process(target=consoleReport, args=(reportQueue,)).start()
     for i in range(constants.CPU_CORES):
         result.append(resultOutput.get())
     theBest = min(result, key= lambda r: r.fitness)
+    reportQueue.put((-42, -42, -42)) # poison pill
 
     save_best_fitness.append(theBest.fitness)
 
