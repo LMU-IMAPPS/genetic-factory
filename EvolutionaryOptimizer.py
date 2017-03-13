@@ -43,17 +43,23 @@ def individualSelection(individuals):
         #save all individuals of this generation without blocked ones
         if individuals[len(individuals)-(indiv+1)].fitness < sys.maxsize:
             save_mean_current.append((individuals[len(individuals) - (indiv + 1)].fitness))
-    #save frequency of best fitness
-    save_best_frequency.append(count_frequency)
-    # save worst indiv except blocked ones
-    save_worst_fitness.append(save_mean_current[0])
-    #save mean of generation
-    mean_value = numpy.mean(save_mean_current)
-    save_mean.append(mean_value)
+
     # if all indiv are blocked take sys.maxsize as value
     if save_best_fitness[0] == sys.maxsize:
         save_worst_fitness.append(sys.maxsize)
         save_mean.append(sys.maxsize)
+    else:
+        # save worst indiv except blocked ones
+        save_worst_fitness.append(save_mean_current[0])
+        # save mean of generation
+        mean_value = numpy.mean(save_mean_current)
+        save_mean.append(mean_value)
+
+    #save frequency of best fitness
+    save_best_frequency.append(count_frequency)
+
+
+
 
     # Return Sublist with best <SELECTION_FACTOR> from Individuals
     nextIndividuals = []
@@ -71,6 +77,7 @@ def optimizePositions(populationSize, cycles):
 
     for i in range(populationSize):
         positionList = factoryGenerator.generateRandomWorkstations(constants.FIELD_SIZE - 1)
+
         individuals.append(generateIndividual(positionList))
     print("Calculating with a Population Size of %d in %d Evolution Cycles..." % (constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES))
 
@@ -92,9 +99,27 @@ def optimizePositions(populationSize, cycles):
         sys.stdout.flush()
 
         '''Mutation'''
-        for individual in individuals:
-            individual.mutate(constants.MUTATION_FACTOR)
+        divergences = calculateDivergences(individuals)
+        mutationlist = []
 
+        for individual in divergences:
+            indifit = individual[1].fitness
+            indidiv = individual[0] + 1
+            mutationfactor = indifit/(indidiv*100000)
+            mutationlist.append((mutationfactor,individual[1]))
+
+        mutationlist.sort(key= lambda i: i[0])
+        scala = 1/(len(mutationlist)*2)
+        for individual in range(len(mutationlist)-1):
+            tempindiv = mutationlist[individual][1]
+            scalaproindiv = (individual +1) * scala + 0.5
+            #if (scalaproindiv) < 0.2:
+                #scalaproindiv = 0.2
+            mutationf = constants.MUTATION_FACTOR * scalaproindiv
+            tempindiv.mutate(mutationf)
+
+        # for individual in individuals:
+        #    individual.mutate(constants.MUTATION_FACTOR)
         '''Recombination'''
         divergences = calculateDivergences(individuals)
         for i in range(int(constants.RECOMBINATION_FACTOR*populationSize)):
@@ -168,6 +193,9 @@ def divergenceTest(individual, individuals):
     result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
     result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
     result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
+    #result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
+    #result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
+    #result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
     return result
 
 def drawPlots():
