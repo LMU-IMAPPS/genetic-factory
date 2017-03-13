@@ -7,7 +7,8 @@ import sys
 import numpy
 import constants
 import math
-import copy
+from multiprocessing import Process
+from multiprocessing import SimpleQueue
 
 import matplotlib
 
@@ -30,6 +31,7 @@ def individualSelection(individuals):
     # Sort
     individuals.sort(key=lambda y: y.fitness)
 
+    """
     #save values for plots in lists
     save_mean_current = []
     #save indiv with best fitness
@@ -54,6 +56,7 @@ def individualSelection(individuals):
     if save_best_fitness[0] == sys.maxsize:
         save_worst_fitness.append(sys.maxsize)
         save_mean.append(sys.maxsize)
+    """
 
     # Return Sublist with best <SELECTION_FACTOR> from Individuals
     nextIndividuals = []
@@ -63,9 +66,8 @@ def individualSelection(individuals):
             nextIndividuals.append(individuals[i])
     return nextIndividuals
 
-
-
-def optimizePositions(populationSize, cycles):
+def work(factoryGenerator, interProcessCommunication ,id, resultOutput):
+    populationSize = constants.POPULATION_SIZE
     individuals = []
     theBest = None
 
@@ -74,7 +76,7 @@ def optimizePositions(populationSize, cycles):
         individuals.append(generateIndividual(positionList))
     print("Calculating with a Population Size of %d in %d Evolution Cycles..." % (constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES))
 
-    for cycle in range(cycles):
+    for cycle in range(constants.EVOLUTION_CYCLES):
         '''Evaluation'''
         for individual in individuals:
             individual.evaluateFitness(factoryGenerator)
@@ -85,11 +87,26 @@ def optimizePositions(populationSize, cycles):
         '''Make a copy of the best individual'''
         theBest = Individual(list(individuals[0].DNA), initalFitness=individuals[0].fitness)
 
-        '''See whats going on in the console'''
-        percentage = round(cycle/cycles*100)
+        '''See whats going on in the console'''"""
+        percentage = round(cycle/constants.EVOLUTION_CYCLES*100)
         bar = "["+"="*round(percentage/2)+"-"*round(50-(percentage/2))+"]"
         sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, individuals[0].fitness))
-        sys.stdout.flush()
+        sys.stdout.flush()"""
+
+        '''Migration'''
+        if cycle % constants.NUMBER_OF_CYCLES_UNTIL_MIGRATION == 0:
+            nextIndividuals = []
+            emigrants = []
+            for individual in individuals:
+                if numpy.random.random() >= constants.MIGRATION_FACTOR:
+                    nextIndividuals.append(individual)
+                else:
+                    emigrants.append(individual)
+            immigrants = interProcessCommunication.get()
+            print(immigrants)
+            interProcessCommunication.put(emigrants)
+            individuals = nextIndividuals
+            individuals.extend(immigrants)
 
         '''Mutation'''
         for individual in individuals:
@@ -120,15 +137,29 @@ def optimizePositions(populationSize, cycles):
                 view.nextTimeStep(theBest)
                 view.update()
 
-    save_best_fitness.append(theBest.fitness)
 
-    print("\n")
-    '''Evaluation'''
     for individual in individuals:
         individual.evaluateFitness(factoryGenerator)
 
-    '''Selection'''
-    individuals = individualSelection(individuals)
+    # Sort
+    individuals.sort(key=lambda y: y.fitness)
+    resultOutput.put(individuals[0])
+
+def optimizePositions(factoryGenerator):
+    result = []
+    interProcessCommunication = SimpleQueue()
+    interProcessCommunication.put([])
+    resultOutput = SimpleQueue()
+
+    for i in range(constants.CPU_CORES):
+        Process(target=work, args=(factoryGenerator, interProcessCommunication, i, resultOutput)).start()
+
+    for i in range(constants.CPU_CORES):
+        result.append(resultOutput.get())
+    theBest = min(result, key= lambda r: r.fitness)
+
+    save_best_fitness.append(theBest.fitness)
+
 
     '''Show off with best Factory'''
     theBestPositions = theBest.DNA
@@ -192,9 +223,7 @@ def drawPlots():
     plt.title('number of individuals with same best fitness per generation')
     plt.show()
 
-
-factoryGenerator = FactoryGenerator(constants.PRODUCT_JSON, constants.WORKSTATION_JSON)
-
-optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
-
-drawPlots()
+if __name__ == '__main__':
+    factoryGenerator = FactoryGenerator(constants.PRODUCT_JSON, constants.WORKSTATION_JSON)
+    optimizePositions(factoryGenerator)
+    # drawPlots()
