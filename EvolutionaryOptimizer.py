@@ -80,12 +80,15 @@ def optimizePositions(populationSize, cycles):
     for cycle in range(cycles):
         '''Init products list for generation'''
         productsGeneration = productOptimizer.getGeneration()  # [[(1,1,"ABAC"),..],[(1,1,"ADC"),..],..]
-        productsGenerationFitness = []
-        for i in range(constants.LISTS_PER_GENERATION):
-            productsGenerationFitness.append(0)
+        productsGenerationFitness = [0] * constants.LISTS_PER_GENERATION
 
         '''Evaluation'''
-        individuals = pool.map(evalIndividual, map(lambda i: (i, productsGeneration,productsGenerationFitness), individuals))
+        dataFromMultiprocessing = pool.map(evalIndividual, map(lambda i: (i, productsGeneration), individuals))
+        individuals = []
+        for dfm in dataFromMultiprocessing:
+            individuals.append(dfm[0])
+            for i in range(constants.LISTS_PER_GENERATION):
+                productsGenerationFitness[i] += dfm[1][i]
 
         for i in range(constants.LISTS_PER_GENERATION):
             productsGenerationFitness[i] /= constants.POPULATION_SIZE
@@ -149,8 +152,8 @@ def optimizePositions(populationSize, cycles):
     '''Show off with best Factory'''
     theBestPositions = theBest.DNA
     # TODO from Products Optimization
-    theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL, the_best_products[0].DNA)
-    theBestFactory.run()
+    #theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL, the_best_products[0].DNA)
+    #theBestFactory.run()
     fieldToPrint = [["☐" for i in range(constants.FIELD_SIZE)] for j in range(constants.FIELD_SIZE)]
     for pos in theBestPositions:
         fieldToPrint[pos[1]][pos[2]] = pos[0]
@@ -164,11 +167,10 @@ def optimizePositions(populationSize, cycles):
     sys.stdout.flush()
     print(the_best_products[0].DNA)
 
-
 def evalIndividual(inputTupel):
     individual = inputTupel[0]
     productsGeneration = inputTupel[1]
-    productsGenerationFitness = inputTupel[2]
+    productsGenerationFitness = []
     fitness = 0
     for evilProductIndex in range(constants.LISTS_PER_GENERATION):
         # todo Random select productList from productsGeneration
@@ -176,10 +178,10 @@ def evalIndividual(inputTupel):
         singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[evilProductIndex].DNA)
         fitness += singleFitness
         # set product list fitness in productsGenerationFitness
-        productsGenerationFitness[evilProductIndex] += singleFitness
+        productsGenerationFitness.append(singleFitness)
     fitness = round(fitness / len(productsGeneration))
     individual.setFitness(fitness)
-    return individual
+    return (individual, productsGenerationFitness)
 
 
 def calculateDivergences(individuals):
@@ -237,4 +239,4 @@ if __name__ == '__main__':
 
     optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
 
-    drawPlots()
+    #drawPlots()
