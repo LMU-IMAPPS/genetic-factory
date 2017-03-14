@@ -21,14 +21,19 @@ def optimizePositions():
     for cycle in range(constants.EVOLUTION_CYCLES):
         '''Init products list for generation'''
         productsGeneration = productOptimizer.getGeneration()  # [[(1,1,"ABAC"),..],[(1,1,"ADC"),..],..]
-        productsGenerationFitness = []
-        for i in range(constants.LISTS_PER_GENERATION):
-            productsGenerationFitness.append(0)
+        productsGenerationFitness = [0] * constants.LISTS_PER_GENERATION
 
         '''Evaluation'''
-        individuals = pool.map(evaluate, map(lambda i: (i, productsGeneration, productsGenerationFitness), evolutionaryOptimizer.getIndividuals()))
-        evolutionaryOptimizer.setIndividuals(individuals)
+        dataFromMultiprocessing = pool.map(evaluate, map(lambda i: (i, productsGeneration, productsGenerationFitness), evolutionaryOptimizer.getIndividuals()))
+        for dfmIndex in range(len(dataFromMultiprocessing)):
+            evolutionaryOptimizer.getIndividuals()[dfmIndex].setFitness(dataFromMultiprocessing[dfmIndex][0])
+            for i in range(constants.LISTS_PER_GENERATION):
+                productsGenerationFitness[i] += dataFromMultiprocessing[dfmIndex][1][i]
 
+
+        for i in range(constants.LISTS_PER_GENERATION):
+            productsGenerationFitness[i] /= constants.POPULATION_SIZE
+            productsGeneration[i].setFitness(productsGenerationFitness[i])
         productOptimizer.evaluateGeneration()
         evolutionaryOptimizer.evaluateIndividuals(factoryGenerator)
 
@@ -45,8 +50,7 @@ def optimizePositions():
         '''See whats going on in the console'''
         percentage = round(cycle / constants.EVOLUTION_CYCLES * 100)
         bar = "[" + "=" * round(percentage / 2) + "-" * round(50 - (percentage / 2)) + "]"
-        sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (
-            percentage, bar, evolutionaryOptimizer.getIndividuals()[0].fitness))
+        sys.stdout.write("Progress: \r%d%% Done \t %s \tFittest right now at a level of %i" % (percentage, bar, evolutionaryOptimizer.theBest.fitness))
         sys.stdout.flush()
 
     evolutionaryOptimizer.save_best_fitness.append(evolutionaryOptimizer.theBest.fitness)
@@ -75,7 +79,7 @@ def optimizePositions():
 def evaluate(inputTupel):
     individual = inputTupel[0]
     productsGeneration = inputTupel[1]
-    productsGenerationFitness = inputTupel[2]
+    productsGenerationFitness = []
     fitness = 0
     for evilProductIndex in range(constants.LISTS_PER_GENERATION):
         # todo Random select productList from productsGeneration
@@ -83,14 +87,10 @@ def evaluate(inputTupel):
         singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[evilProductIndex].DNA)
         fitness += singleFitness
         # set product list fitness in productsGenerationFitness
-        productsGenerationFitness[evilProductIndex] += singleFitness
+        productsGenerationFitness.append(singleFitness)
     fitness = round(fitness / len(productsGeneration))
-    individual.setFitness(fitness)
-    for i in range(constants.LISTS_PER_GENERATION):
-        productsGenerationFitness[i] /= constants.POPULATION_SIZE
-        productsGeneration[i].setFitness(productsGenerationFitness[i])
 
-    return individual
+    return (fitness, productsGenerationFitness)
 
 
 def drawPlots():
