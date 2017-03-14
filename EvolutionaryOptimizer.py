@@ -151,8 +151,8 @@ def optimizePositions(populationSize, cycles):
     '''Show off with best Factory'''
     theBestPositions = theBest.DNA
     # TODO from Products Optimization
-    #theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL, the_best_products[0].DNA)
-    #theBestFactory.run()
+    theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL, the_best_products[0].DNA)
+    theBestFactory.run()
     fieldToPrint = [["☐" for i in range(constants.FIELD_SIZE)] for j in range(constants.FIELD_SIZE)]
     for pos in theBestPositions:
         fieldToPrint[pos[1]][pos[2]] = pos[0]
@@ -237,4 +237,4 @@ if __name__ == '__main__':
 
     optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
 
-    #drawPlots()
+    drawPlots()
