@@ -14,26 +14,15 @@ class EvilProducts:
     def getFitness(self):
         return self.fitness
 
-    def mutate(self, mutationRate):
+    def mutate(self, mutationRate, workstationsJson):
         if np.random.random() < mutationRate:
-            i = np.random.randint(0, len(self.DNA))
-            self.fitness = None
-            wsPositionTmp = self.DNA[i]
-            newX = wsPositionTmp[1]
-            newY = wsPositionTmp[2]
-            while newX == wsPositionTmp[1] and newY == wsPositionTmp[2]:
-                newX = wsPositionTmp[1] + np.random.randint(-1, 2)
-                newY = wsPositionTmp[2] + np.random.randint(-1, 2)
-            if newX < 0:
-                newX = 0
-            if newY < 0:
-                newY = 0
-            if newX >= constants.FIELD_SIZE:
-                newX = constants.FIELD_SIZE - 1
-            if newY >= constants.FIELD_SIZE:
-                newY = constants.FIELD_SIZE - 1
-            self.DNA[i] = (wsPositionTmp[0], newX, newY)
-
+            p = np.random.randint(0, len(self.DNA))
+            i = np.random.randint(0, constants.PRODUCTS_PATH_LENGTH)
+            workstationTypeIndex = np.random.randint(len(workstationsJson['workStations']))
+            first = self.DNA[p][2][:i]
+            change = workstationsJson['workStations'][workstationTypeIndex]['type']
+            last = self.DNA[p][2][i+1:]
+            self.DNA[p] = (self.DNA[p][0], self.DNA[p][1], first + change + last)
         return self
 
     @staticmethod

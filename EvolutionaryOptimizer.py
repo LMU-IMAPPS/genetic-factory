@@ -86,20 +86,22 @@ def optimizePositions(populationSize, cycles):
         '''Evaluation'''
         for individual in individuals:
             fitness = 0
-            for productIndex in range(constants.LISTS_PER_GENERATION):
+            for evilProductIndex in range(constants.LISTS_PER_GENERATION):
                 # todo Random select productList from productsGeneration
-                singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[productIndex])
+                #print(productsGeneration[evilProductIndex])
+                singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[evilProductIndex].DNA)
                 fitness += singleFitness
                 # set product list fitness in productsGenerationFitness
-                productsGenerationFitness[productIndex] += singleFitness
+                productsGenerationFitness[evilProductIndex] += singleFitness
             fitness = round(fitness/len(productsGeneration))
             individual.setFitness(fitness)
 
         for i in range(constants.LISTS_PER_GENERATION):
             productsGenerationFitness[i] /= constants.POPULATION_SIZE
-        productOptimizer.evaluateGeneration(productsGenerationFitness)
+            productsGeneration[i].setFitness(productsGenerationFitness[i])
 
-        #print(productsGenerationFitness)
+        productOptimizer.evaluateGeneration()
+
         '''Selection'''
         individuals = individualSelection(individuals)
 
@@ -147,7 +149,7 @@ def optimizePositions(populationSize, cycles):
     print("\n")
     '''Evaluation'''
     for individual in individuals:
-        fitness = individual.evaluateFitness(factoryGenerator, the_best_products[0])
+        fitness = individual.evaluateFitness(factoryGenerator, the_best_products[0].DNA)
         individual.setFitness(fitness)
 
     '''Selection'''
@@ -156,7 +158,7 @@ def optimizePositions(populationSize, cycles):
     '''Show off with best Factory'''
     theBestPositions = theBest.DNA
     # TODO from Products Optimization
-    theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL, the_best_products[0])
+    theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL, the_best_products[0].DNA)
     theBestFactory.run()
     fieldToPrint = [["☐" for i in range(constants.FIELD_SIZE)] for j in range(constants.FIELD_SIZE)]
     for pos in theBestPositions:
@@ -169,6 +171,7 @@ def optimizePositions(populationSize, cycles):
         sys.stdout.write("|\n")
     sys.stdout.write("+" + "-" * (constants.FIELD_SIZE * 3) + "+\n")
     sys.stdout.flush()
+    print(the_best_products[0].DNA)
 
 def calculateDivergences(individuals):
     result = []
