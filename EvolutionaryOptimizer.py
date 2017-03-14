@@ -17,15 +17,15 @@ def generateIndividual(positionList):
     return Individual(positionList)
 
 
-def individualSelection(individuals):
+def individualSelection(individuals, plottingData):
     # Sort
     individuals.sort(key=lambda y: y.fitness)
 
-    """
+
     #save values for plots in lists
     save_mean_current = []
     #save indiv with best fitness
-    save_best_fitness.append(individuals[0].fitness)
+    plottingData.save_best_fitness.append(individuals[0].fitness)
 
     count_frequency = 0
     for indiv in range(len(individuals)):
@@ -37,19 +37,19 @@ def individualSelection(individuals):
             save_mean_current.append((individuals[len(individuals) - (indiv + 1)].fitness))
 
     # if all indiv are blocked take sys.maxsize as value
-    if save_best_fitness[0] == sys.maxsize:
-        save_worst_fitness.append(sys.maxsize)
-        save_mean.append(sys.maxsize)
+    if plottingData.save_best_fitness[0] == sys.maxsize:
+        plottingData.save_worst_fitness.append(sys.maxsize)
+        plottingData.save_mean.append(sys.maxsize)
     else:
         # save worst indiv except blocked ones
-        save_worst_fitness.append(save_mean_current[0])
+        plottingData.save_worst_fitness.append(save_mean_current[0])
         # save mean of generation
         mean_value = numpy.mean(save_mean_current)
-        save_mean.append(mean_value)
+        plottingData.save_mean.append(mean_value)
 
     #save frequency of best fitness
-    save_best_frequency.append(count_frequency)
-	"""
+    plottingData.save_best_frequency.append(count_frequency)
+
 
 
 
@@ -83,10 +83,43 @@ def consoleReport(reportQueue):
         sys.stdout.flush()
 
 
-def work(factoryGenerator, interProcessCommunication, id, resultOutput, reportQueue):
+class PlottingData:
+    def __init__(self):
+        self.save_best_fitness = []
+        self.save_worst_fitness =[]
+        self.save_mean = []
+        self.save_best_frequency = []
+
+    @staticmethod
+    def combine(plottingDatas):
+        result = PlottingData()
+        for i in range(len(plottingDatas[0].save_best_fitness)):
+            worst_fitness = -9999
+            best_fitness = sys.maxsize
+            best_frequency = 0
+            mean = 0
+            for plottingData in plottingDatas:
+                worst_fitness = max(plottingData.save_worst_fitness[i], worst_fitness)
+                if plottingData.save_best_fitness[i] < best_fitness:
+                    best_fitness = plottingData.save_best_fitness[i]
+                    best_frequency = plottingData.save_best_frequency[i]
+                if plottingData.save_best_fitness[i] == best_fitness:
+                    best_frequency += plottingData.save_best_frequency[i]
+                mean += plottingData.save_mean[i]
+            mean /= len(plottingDatas)
+            result.save_worst_fitness.append(worst_fitness)
+            result.save_best_fitness.append(best_fitness)
+            result.save_best_frequency.append(best_frequency)
+            result.save_mean.append(mean)
+        return result
+
+
+
+def work(factoryGenerator, interProcessCommunication, id, resultOutput, reportQueue, plottingDataQueue):
     populationSize = constants.POPULATION_SIZE
     individuals = []
     theBest = None
+    plottingData = PlottingData()
 
     for i in range(populationSize):
         positionList = factoryGenerator.generateRandomWorkstations(constants.FIELD_SIZE - 1)
@@ -98,7 +131,7 @@ def work(factoryGenerator, interProcessCommunication, id, resultOutput, reportQu
             individual.evaluateFitness(factoryGenerator)
 
         '''Selection'''
-        individuals = individualSelection(individuals)
+        individuals = individualSelection(individuals, plottingData)
 
         '''Make a copy of the best individual'''
         theBest = Individual(list(individuals[0].DNA), initalFitness=individuals[0].fitness)
@@ -186,6 +219,7 @@ def work(factoryGenerator, interProcessCommunication, id, resultOutput, reportQu
     # Sort
     individuals.sort(key=lambda y: y.fitness)
     resultOutput.put(individuals[0])
+    plottingDataQueue.put(plottingData)
 
 
 def optimizePositions(factoryGenerator):
@@ -196,8 +230,9 @@ def optimizePositions(factoryGenerator):
     interProcessCommunication.put([])
     resultOutput = SimpleQueue()
     reportQueue = SimpleQueue()
+    plottingDataQueue = SimpleQueue()
     for i in range(constants.CPU_CORES):
-        Process(target=work, args=(factoryGenerator, interProcessCommunication, i, resultOutput, reportQueue)).start()
+        Process(target=work, args=(factoryGenerator, interProcessCommunication, i, resultOutput, reportQueue, plottingDataQueue)).start()
 
     Process(target=consoleReport, args=(reportQueue,)).start()
     for i in range(constants.CPU_CORES):
@@ -205,7 +240,7 @@ def optimizePositions(factoryGenerator):
     theBest = min(result, key=lambda r: r.fitness)
     reportQueue.put((-42, -42, -42)) # poison pill
 
-    save_best_fitness.append(theBest.fitness)
+    #plottingData.save_best_fitness.append(theBest.fitness)
 
     '''Show off with best Factory'''
     theBestPositions = theBest.DNA
@@ -222,6 +257,8 @@ def optimizePositions(factoryGenerator):
         sys.stdout.write("|\n")
     sys.stdout.write("+" + "-" * (constants.FIELD_SIZE * 3) + "+\n")
     sys.stdout.flush()
+
+    return plottingDataQueue
 
 
 def calculateDiversity(individuals):
@@ -251,38 +288,37 @@ def diversityTest(individual, individuals):
     #result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
     return result
 
-"""
-def drawPlots():
+def drawPlots(plottingDataQueue):
     #plot with best, worst and mean indiv per generation
-    x = range(len(save_best_fitness))
-    save_worst_fitness.append(save_worst_fitness[len(save_worst_fitness) - 1])
-    save_mean.append(save_mean[len(save_mean) - 1])
+    plottingDatas = []
+    for i in range(constants.CPU_CORES):
+        plottingDatas.append(plottingDataQueue.get())
+    plottingData = PlottingData.combine(plottingDatas)
+    x = range(len(plottingData.save_best_fitness))
     plt.xlabel('Time')
     plt.ylabel('Fitness')
     plt.title('best vs. worst individuals')
-    plt.plot(x, save_best_fitness, label='best', color='g')
-    plt.plot(x, save_mean, label='mean', color='b')
-    plt.plot(x, save_worst_fitness, label='worst', color='r')
+    plt.plot(x, plottingData.save_best_fitness, label='best', color='g')
+    plt.plot(x, plottingData.save_mean, label='mean', color='b')
+    plt.plot(x, plottingData.save_worst_fitness, label='worst', color='r')
     plt.legend()
     plt.show()
 
     #plot with frequency of best fitness
-    ypos = range(len(save_best_frequency))
-    plt.plot(ypos, save_best_frequency, color='g')
+    ypos = range(len(plottingData.save_best_frequency))
+    plt.plot(ypos, plottingData.save_best_frequency, color='g')
     plt.ylabel('Frequency')
     plt.xlabel('Time')
     plt.title('number of individuals with same best fitness per generation')
     plt.show()
-"""
+
+
 
 if __name__ == '__main__':
+
     matplotlib.use("TkAgg")
 
-    save_best_fitness = []
-    save_worst_fitness = []
-    save_mean = []
-    save_best_frequency = []
 
     factoryGenerator = FactoryGenerator(constants.PRODUCT_JSON, constants.WORKSTATION_JSON)
-    optimizePositions(factoryGenerator)
-    # drawPlots()
+    plottingDataQueue = optimizePositions(factoryGenerator)
+    drawPlots(plottingDataQueue)
