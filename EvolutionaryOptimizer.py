@@ -9,7 +9,7 @@ import numpy
 import constants
 import math
 import json
-import copy
+from multiprocessing import Pool
 
 import matplotlib
 
@@ -70,6 +70,7 @@ def individualSelection(individuals):
 def optimizePositions(populationSize, cycles):
     individuals = []
     theBest = None
+    pool = Pool(None) # Makes a worker thread for every cpu
 
     for i in range(populationSize):
         positionList = factoryGenerator.generateRandomWorkstations(constants.FIELD_SIZE - 1)
@@ -84,17 +85,7 @@ def optimizePositions(populationSize, cycles):
             productsGenerationFitness.append(0)
 
         '''Evaluation'''
-        for individual in individuals:
-            fitness = 0
-            for evilProductIndex in range(constants.LISTS_PER_GENERATION):
-                # todo Random select productList from productsGeneration
-                #print(productsGeneration[evilProductIndex])
-                singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[evilProductIndex].DNA)
-                fitness += singleFitness
-                # set product list fitness in productsGenerationFitness
-                productsGenerationFitness[evilProductIndex] += singleFitness
-            fitness = round(fitness/len(productsGeneration))
-            individual.setFitness(fitness)
+        individuals = pool.map(evalIndividual, map(lambda i: (i, productsGeneration,productsGenerationFitness), individuals))
 
         for i in range(constants.LISTS_PER_GENERATION):
             productsGenerationFitness[i] /= constants.POPULATION_SIZE
@@ -173,6 +164,24 @@ def optimizePositions(populationSize, cycles):
     sys.stdout.flush()
     print(the_best_products[0].DNA)
 
+
+def evalIndividual(inputTupel):
+    individual = inputTupel[0]
+    productsGeneration = inputTupel[1]
+    productsGenerationFitness = inputTupel[2]
+    fitness = 0
+    for evilProductIndex in range(constants.LISTS_PER_GENERATION):
+        # todo Random select productList from productsGeneration
+        # print(productsGeneration[evilProductIndex])
+        singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[evilProductIndex].DNA)
+        fitness += singleFitness
+        # set product list fitness in productsGenerationFitness
+        productsGenerationFitness[evilProductIndex] += singleFitness
+    fitness = round(fitness / len(productsGeneration))
+    individual.setFitness(fitness)
+    return individual
+
+
 def calculateDivergences(individuals):
     result = []
     for individual in individuals:
@@ -219,13 +228,13 @@ def drawPlots():
     plt.title('number of individuals with same best fitness per generation')
     plt.show()
 
+if __name__ == '__main__':
+    with open(constants.WORKSTATION_JSON) as jsonFile:
+        workstationsJson = json.load(jsonFile)
 
-with open(constants.WORKSTATION_JSON) as jsonFile:
-    workstationsJson = json.load(jsonFile)
+    factoryGenerator = FactoryGenerator(workstationsJson)
+    productOptimizer = ProductOptimizer(workstationsJson)
 
-factoryGenerator = FactoryGenerator(workstationsJson)
-productOptimizer = ProductOptimizer(workstationsJson)
+    optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
 
-optimizePositions(constants.POPULATION_SIZE, constants.EVOLUTION_CYCLES)
-
-drawPlots()
+    drawPlots()
