@@ -76,13 +76,31 @@ class EvolutionaryOptimizer:
 
         mutationlist.sort(key= lambda i: i[0])
         scala = 1/(len(mutationlist)*2)
+
+        min_div = divergences[0][0]
+        half_max_div = round(divergences[len(divergences) - 1][0] / 2)
+        median = divergences[round(len(divergences) / 2)][0]
+        factor = 0
+        if (half_max_div >= median):
+            factor = 0.75
+        else:
+            factor = 0.3
+
         for individual in range(len(mutationlist)-1):
             tempindiv = mutationlist[individual][1]
             scalaproindiv = (individual +1) * scala + 0.5
-            #if (scalaproindiv) < 0.2:
-                #scalaproindiv = 0.2
             mutationf = constants.MUTATION_FACTOR * scalaproindiv
             tempindiv.mutate(mutationf)
+            if (divergences[round((len(divergences) - 1) * factor)][0] < mutationlist[individual][0]):
+                if (numpy.random.random() < 0.5):
+                    tempindiv.mutate_all(mutationf)
+                else:
+                    tempindiv.mutate(mutationf)
+            else:
+                if (numpy.random.random() < 0.4):
+                    tempindiv.mutate_all(mutationf)
+                else:
+                    tempindiv.mutate(mutationf)
 
         # for individual in individuals:
         #    individual.mutate(constants.MUTATION_FACTOR)
