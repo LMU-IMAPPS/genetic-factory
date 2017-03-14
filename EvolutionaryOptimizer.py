@@ -118,10 +118,10 @@ def work(factoryGenerator, interProcessCommunication, id, resultOutput, reportQu
             reportQueue.put((id, cycle, theBest.fitness))
 
         '''Mutation'''
-        divergences = calculateDivergences(individuals)
+        diversity = calculateDiversity(individuals)
         mutationlist = []
 
-        for individual in divergences:
+        for individual in diversity:
             indifit = individual[1].fitness
             indidiv = individual[0] + 1
             mutationfactor = indifit/(indidiv*100000)
@@ -130,10 +130,9 @@ def work(factoryGenerator, interProcessCommunication, id, resultOutput, reportQu
         mutationlist.sort(key= lambda i: i[0])
         scala = 1/(len(mutationlist)*2)
 
-        min_div = divergences[0][0]
-        half_max_div = round(divergences[len(divergences) - 1][0] / 2)
-        median = divergences[round(len(divergences) / 2)][0]
-        factor = 0
+        half_max_div = round(diversity[len(diversity) - 1][0] / 2)
+        median = diversity[round(len(diversity) / 2)][0]
+
         if (half_max_div >= median):
             factor = 0.75
         else:
@@ -144,7 +143,7 @@ def work(factoryGenerator, interProcessCommunication, id, resultOutput, reportQu
             scalaproindiv = (individual +1) * scala + 0.5
             mutationf = constants.MUTATION_FACTOR * scalaproindiv
             tempindiv.mutate(mutationf)
-            if (divergences[round((len(divergences) - 1) * factor)][0] < mutationlist[individual][0]):
+            if (diversity[round((len(diversity) - 1) * factor)][0] < mutationlist[individual][0]):
                 if (numpy.random.random() < 0.5):
                     tempindiv.mutate_all(mutationf)
                 else:
@@ -159,9 +158,9 @@ def work(factoryGenerator, interProcessCommunication, id, resultOutput, reportQu
         #    individual.mutate(constants.MUTATION_FACTOR)
         '''Recombination'''
         for i in range(int(constants.RECOMBINATION_FACTOR * populationSize)):
-            ancestorsIndex1 = exponetialDistrubution(len(divergences))
-            ancestorsIndex2 = len(divergences) - exponetialDistrubution(len(divergences)) - 1
-            individuals.append(Individual.recombine(divergences[ancestorsIndex1][1], divergences[ancestorsIndex2][1]))
+            ancestorsIndex1 = exponetialDistrubution(len(diversity))
+            ancestorsIndex2 = len(diversity) - exponetialDistrubution(len(diversity)) - 1
+            individuals.append(Individual.recombine(diversity[ancestorsIndex1][1], diversity[ancestorsIndex2][1]))
 
         '''Reinsert best individual'''
         individuals.append(theBest)
@@ -225,10 +224,10 @@ def optimizePositions(factoryGenerator):
     sys.stdout.flush()
 
 
-def calculateDivergences(individuals):
+def calculateDiversity(individuals):
     result = []
     for individual in individuals:
-        divergence = divergenceTest(individual, individuals)
+        divergence = diversityTest(individual, individuals)
         result.append((divergence, individual))
     result.sort(key=lambda i: i[0])
     return result
@@ -242,7 +241,7 @@ def exponetialDistrubution(max):
     return 0
 
 
-def divergenceTest(individual, individuals):
+def diversityTest(individual, individuals):
     result = 0
     result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
     result += individual.divergence(individuals[numpy.random.randint(len(individuals))])
