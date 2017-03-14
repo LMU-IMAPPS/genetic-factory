@@ -5,7 +5,6 @@ import constants
 import json
 from multiprocessing import Pool
 from WorkstationView import WorkstationView
-from matplotlib import pyplot as plt
 
 from FactoryGenerator import FactoryGenerator
 from ProductsOptimizer import ProductOptimizer
@@ -13,6 +12,7 @@ from EvolutionaryOptimizer import EvolutionaryOptimizer
 
 import matplotlib
 matplotlib.use("TkAgg")
+from matplotlib import pyplot as plt
 
 
 def optimizePositions():
@@ -96,7 +96,7 @@ def evaluate(inputTupel):
 def drawPlots():
     # plot with best, worst and mean indiv per generation
     x = range(len(evolutionaryOptimizer.save_best_fitness))
-    save_worst_fitness.append(save_worst_fitness[len(save_worst_fitness) - 1])
+    evolutionaryOptimizer.save_worst_fitness.append(evolutionaryOptimizer.save_worst_fitness[len(evolutionaryOptimizer.save_worst_fitness) - 1])
     evolutionaryOptimizer.save_mean.append(evolutionaryOptimizer.save_mean[len(evolutionaryOptimizer.save_mean) - 1])
     plt.xlabel('Time')
     plt.ylabel('Fitness')
@@ -119,9 +119,6 @@ def drawPlots():
 if __name__ == '__main__':
     with open(constants.WORKSTATION_JSON) as jsonFile:
         workstationsJson = json.load(jsonFile)
-
-    save_best_fitness = []
-    save_worst_fitness = []
 
     factoryGenerator = FactoryGenerator(workstationsJson)
     evolutionaryOptimizer = EvolutionaryOptimizer(factoryGenerator)
