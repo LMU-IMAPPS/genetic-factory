@@ -84,11 +84,10 @@ def optimizePositions(populationSize, cycles):
 
         '''Evaluation'''
         dataFromMultiprocessing = pool.map(evalIndividual, map(lambda i: (i, productsGeneration), individuals))
-        individuals = []
-        for dfm in dataFromMultiprocessing:
-            individuals.append(dfm[0])
+        for dfmIndex in range(len(dataFromMultiprocessing)):
+            individuals[dfmIndex].setFitness(dataFromMultiprocessing[dfmIndex][0])
             for i in range(constants.LISTS_PER_GENERATION):
-                productsGenerationFitness[i] += dfm[1][i]
+                productsGenerationFitness[i] += dataFromMultiprocessing[dfmIndex][1][i]
 
         for i in range(constants.LISTS_PER_GENERATION):
             productsGenerationFitness[i] /= constants.POPULATION_SIZE
@@ -180,8 +179,7 @@ def evalIndividual(inputTupel):
         # set product list fitness in productsGenerationFitness
         productsGenerationFitness.append(singleFitness)
     fitness = round(fitness / len(productsGeneration))
-    individual.setFitness(fitness)
-    return (individual, productsGenerationFitness)
+    return (fitness, productsGenerationFitness)
 
 
 def calculateDivergences(individuals):
