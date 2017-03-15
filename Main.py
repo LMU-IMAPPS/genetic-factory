@@ -26,7 +26,7 @@ def optimizePositions():
 
         dataFromMultiprocessing = []
         '''Evaluation'''
-        if True: #os.name == "nt":
+        if os.name == "nt":
             for indv in evolutionaryOptimizer.getIndividuals():
                 dataFromMultiprocessing.append(evaluate((indv, productsGeneration, productsGenerationFitness)))
         else:

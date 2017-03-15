@@ -30,6 +30,14 @@ class WorkstationWaitTimesContainer:
         else:
             self.additionalWaitTimes[increaseKey] = 2
 
+    def toList(self):
+        result = []
+        for k in self.additionalWaitTimes.keys():
+            for i in range(self.additionalWaitTimes[k]):
+                result.append(k)
+
+        return result
+
 
 class EvilProducts:
     def __init__(self, DNA, additionalWaitTimes, initalFitness = None):
@@ -62,7 +70,7 @@ class EvilProducts:
 
     @staticmethod
     def recombine(ancestor1, ancestor2):
-        new_Evil_Products = EvilProducts(list(ancestor1.DNA))
+        new_Evil_Products = EvilProducts(list(ancestor1.DNA), ancestor1.workstationWaitTimes.toList())
         for i in range(len(new_Evil_Products.DNA)):
             if np.random.random() < 0.5:
                 new_Evil_Products.setFitness(0)
