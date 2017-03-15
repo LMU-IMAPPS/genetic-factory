@@ -148,8 +148,10 @@ class EvolutionaryOptimizer:
 
     def divergenceTest(self, individual):
         result = 0
-        result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
-        result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
-        result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
+        for i in range(constants.DIVERGENCE_COMPARISON_COUNT):
+            result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
+        result /= constants.DIVERGENCE_COMPARISON_COUNT
+        result /= 2 * constants.FIELD_SIZE
+        result /= len(individual.DNA)
         return result
 
