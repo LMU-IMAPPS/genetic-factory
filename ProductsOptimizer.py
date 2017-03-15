@@ -6,7 +6,7 @@ class ProductOptimizer:
 
     def evilProductsSelection(self):
         '''Sort'''
-        self.generation.sort(key=lambda y: y.fitness)
+        self.generation.sort(key=lambda y: y.fitness, reverse=True)
 
         ''' Return sublist with best <SELECTION_FACTOR> from generation '''
         nextGeneration = []
