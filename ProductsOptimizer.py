@@ -29,7 +29,7 @@ class ProductOptimizer:
             # TODO randomize
 
     def generateEvilProduct(self, productList):
-        return EvilProducts(productList, self.generateAdditionalWaitTimesList())
+        return EvilProducts(productList)
 
     def __init__(self, workstationsJson, factoryGenerator):
         self.workstationsJson = workstationsJson
@@ -43,11 +43,6 @@ class ProductOptimizer:
             positionList = self.factoryGenerator.generateRandomProducts(constants.PRODUCTS_PER_LIST, constants.PRODUCTS_PATH_LENGTH)
             self.generation.append(self.generateEvilProduct(positionList))
 
-    def generateAdditionalWaitTimesList(self):
-        result = []
-        for i in range(constants.ADDITIONAL_WAIT_TIMES_COUNT):
-            result.append(self.workstationsTypes[numpy.random.randint(0, len(self.workstationsTypes))])
-        return result
 
 
     def getGeneration(self):

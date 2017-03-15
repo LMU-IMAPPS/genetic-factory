@@ -34,8 +34,8 @@ class FactoryGenerator:
         return productList
 
 
-    def generateFactory(self, workstationPositions, visibilityType, products, workstationWaitTimesContainer):
-        ws = self.set_position_for_workstations(workstationPositions, workstationWaitTimesContainer)
+    def generateFactory(self, workstationPositions, visibilityType, products):
+        ws = self.set_position_for_workstations(workstationPositions)
         p = self.generateProducts(ws, products)
         cfs = self.initFieldStatus()
         factory = Factory(ws, p, cfs, visibilityType)
@@ -58,17 +58,20 @@ class FactoryGenerator:
             count += len(item)
         return count
 
-    def set_position_for_workstations(self, workstation_positions, workstationWaitTimesContainer):
+    def set_position_for_workstations(self, workstation_positions):
         """ Update workstation positions with Tupel (Type, x, y) - typically from evolutionary algorithm """
         workStations = {}
         # Iterate over Workstation positions given
+        workStationsWaitTimes = dict()
+        for ws in self.workstationJson['workStations']:
+            workStationsWaitTimes[ws['type']] = ws['time_at_ws']
         for item in workstation_positions:
             if not item[0] in workStations:
                 workStations.update({item[0]: []})
             # Create new Worstation object
             ws = Workstation(item[0], item[1], item[2])
             # Add time at ws constraint to ws
-            ws.setTimeAtWs(workstationWaitTimesContainer.get(item[0]))
+            ws.setTimeAtWs(workStationsWaitTimes[item[0]])
             workStations[item[0]].append(ws)
         self.checkWorkstationConstrait(workStations)
         return workStations

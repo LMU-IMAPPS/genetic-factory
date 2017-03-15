@@ -16,10 +16,10 @@ class Individual:
             return False
         return True
 
-    def evaluateFitness(self, factoryGenerator, products, workstationWaitTimesContainer, vizType=visibilityStatus.NONE):
+    def evaluateFitness(self, factoryGenerator, products, vizType=visibilityStatus.NONE):
         #if (self.fitness is None) or (vizType != visibilityStatus.NONE):
             #if self.workstationOnDifferentPlacesTest():
-        return factoryGenerator.generateFactory(self.DNA, vizType, products, workstationWaitTimesContainer).run()
+        return factoryGenerator.generateFactory(self.DNA, vizType, products).run()
 
     def setFitness(self, fitness):
         self.fitness = fitness
