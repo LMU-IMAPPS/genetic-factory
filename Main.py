@@ -62,6 +62,8 @@ def optimizePositions():
     evolutionaryOptimizer.save_best_fitness.append(evolutionaryOptimizer.theBest.fitness)
     the_best_products = productOptimizer.getGeneration()
 
+    '''Save Best as JSON to /optimizedSettings'''
+
     '''Show off with best Factory'''
     theBestPositions = evolutionaryOptimizer.theBest.DNA
     # TODO from Products Optimization
@@ -135,7 +137,7 @@ if __name__ == '__main__':
 
     factoryGenerator = FactoryGenerator(workstationsJson)
     evolutionaryOptimizer = EvolutionaryOptimizer(factoryGenerator)
-    productOptimizer = ProductOptimizer(workstationsJson)
+    productOptimizer = ProductOptimizer(workstationsJson, factoryGenerator)
 
     optimizePositions()
 
