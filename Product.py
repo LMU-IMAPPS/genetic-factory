@@ -82,10 +82,12 @@ class Product:
                 self.blockedLastRound = True
                 return StepResult.BLOCKED
         nextDir = self.findDirection()
+        '''Field i want to go to is not blocked'''
         if (self.positionX + nextDir.xAxis(), self.positionY + nextDir.yAxis()) not in currentFieldStatus:
             self.blockedLastRound = False
             return self.makeStep(currentFieldStatus, nextDir)
         else:
+            ''' TODO: check if bloked is target Workstation'''
             nextDir = nextDir.alt1()
             if self.blockedLastRound and (self.positionX + nextDir.xAxis(), self.positionY + nextDir.yAxis()) not in currentFieldStatus:
                 self.blockedLastRound = False
@@ -101,7 +103,7 @@ class Product:
         self.blockedLastRound = True
         return StepResult.BLOCKED
 
-    def makeStep(self, currentFieldStatus,nextDir):
+    def makeStep(self, currentFieldStatus, nextDir):
         #moving
         currentFieldStatus.remove((self.positionX, self.positionY))
         self.positionX += nextDir.xAxis()

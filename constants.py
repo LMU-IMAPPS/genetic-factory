@@ -1,13 +1,13 @@
 ''' Global Inputs '''
-WORKSTATION_JSON = 'WorkstationsMid.json'
+WORKSTATION_JSON = 'Workstations.json'
 EVOLUTION_CYCLES = 100
-FIELD_SIZE = 20
+FIELD_SIZE = 30
 DRAW_EVERY_CYCLE = False
-SHOW_PRODUCT_PATH = False
+SHOW_PRODUCT_PATH = True
 TIME_PER_STEP = 0
 
 ''' Evolutionary Optimizer Constants '''
-POPULATION_SIZE = 20
+POPULATION_SIZE = 10
 SELECTION_FACTOR = 0.2  # Linear probability of distribution
 MUTATION_FACTOR = 0.4
 RECOMBINATION_FACTOR = 0.1

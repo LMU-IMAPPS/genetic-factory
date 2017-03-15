@@ -37,7 +37,7 @@ class FactoryGenerator:
     def generateFactory(self, workstationPositions, visibilityType, products):
         ws = self.set_position_for_workstations(workstationPositions)
         p = self.generateProducts(ws, products)
-        cfs = self.initFieldStatus()
+        cfs = self.initFieldStatus(ws)
         factory = Factory(ws, p, cfs, visibilityType)
         return factory
 
@@ -48,8 +48,12 @@ class FactoryGenerator:
             products.append(Product(product[0], product[1], product[2], workStations))
         return products
 
-    def initFieldStatus(self):
-        return set()
+    def initFieldStatus(self, ws):
+        cfs = set()
+        for w_v in ws.values():
+            for w in w_v:
+                cfs.add((w.positionX, w.positionY))
+        return cfs
 
     def count_workstations(self):
         """ Counts the workstations saved in FactorySimulator """
