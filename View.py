@@ -62,6 +62,7 @@ class View(Frame):
         self.button1.pack_forget()
         self.pathButton.pack_forget()
         self.factory.productReset()
+
         self.factory.run()
 
     def initUI(self):
@@ -97,8 +98,6 @@ class View(Frame):
             self.size = 1000.0 / self.width
         else:
             self.size = 600.0 / self.height
-
-        #return size
                 
     def drawWorkstations(self, works, size):
         for w_v in works.values():
@@ -107,31 +106,30 @@ class View(Frame):
                 View.canvas.create_text((w.positionX * size + (size / 2), w.positionY * size + (size / 2)), text=w.type)
         pass
 
+    allProductList = []
     def drawProduct(self, products, size):
         counter = 1
         View.list_old.clear()
+        theOld = []
         for p in products:
             if not p.isDone:
-                View.canvas.create_oval(p.positionX * size + 3, p.positionY * size + 3, p.positionX * size - 3 + size, p.positionY * size - 3 + size, outline="white", fill="#3F51B5", width=0)
-                View.canvas.create_text((p.positionX * size + (size / 2), p.positionY * size + (size / 2)), text=str(counter), fill="#E8EAF6")
+                self.allProductList.append(View.canvas.create_oval(p.positionX * size + 3, p.positionY * size + 3, p.positionX * size - 3 + size, p.positionY * size - 3 + size, outline="white", fill="#3F51B5", width=0))
+                self.allProductList.append(View.canvas.create_text((p.positionX * size + (size / 2), p.positionY * size + (size / 2)), text=str(counter), fill="#E8EAF6"))
                 counter+=1
             View.list_old.append((p.positionX, p.positionY))
-        pass
+        return theOld
 
-    def updateProducts(self, products, size, works):
+    def updateProducts(self, products, size):
         if constants.SHOW_PRODUCT_PATH and not self.havePathAlready:
             self.savePath.append(list(self.list_old))
-        for p in View.list_old:
-            View.canvas.create_oval(p[0] * size + 1, p[1] * size + 1, p[0] * size - 1 + size, p[1] * size - 1 + size, outline="gray", fill="#37474F", width=0)
-        self.drawWorkstations(works, size)
         self.drawProduct(products, size)
-
         pass
 
     def nextTimeStep(self, listP, listW):
-        #size = self.getSize(listW)
-        self.updateProducts(listP, self.size, listW)
-        #self.canvas.create_rectangle(0, 0, 100, 100, fill = "red", activestipple="gray25")
+        for p in self.allProductList:
+            self.canvas.delete(p)
+        self.allProductList.clear()
+        self.updateProducts(listP, self.size)
 
     def drawPath(self):
         for i in range(len(self.savePath)-1):
