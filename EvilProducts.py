@@ -27,16 +27,11 @@ class EvilProducts:
 
     @staticmethod
     def recombine(ancestor1, ancestor2):
-        newIndividual = Individual(list(ancestor1.DNA))
-        for i in range(len(newIndividual.DNA)):
+        new_Evil_Products = EvilProducts(list(ancestor1.DNA))
+        for i in range(len(new_Evil_Products.DNA)):
             if np.random.random() < 0.5:
-                newIndividual.DNA[i] = ancestor2.DNA[i]
-        return newIndividual
+                new_Evil_Products.setFitness(0)
+                new_Evil_Products.DNA[i] = (new_Evil_Products.DNA[i][0], new_Evil_Products.DNA[i][1], ancestor2.DNA[i][2])
+        return new_Evil_Products
 
-    def diversity(self, other):
-        result = 0
-        for i in range(len(self.DNA)):
-            result += abs(self.DNA[i][1] - other.DNA[i][1])
-            result += abs(self.DNA[i][2] - other.DNA[i][2])
-        return result
 

@@ -81,7 +81,7 @@ class Individual:
                 newIndividual.DNA[i] = ancestor2.DNA[i]
         return newIndividual
 
-    def divergence(self, other):
+    def diversity(self, other):
         result = 0
         for i in range(len(self.DNA)):
             result += abs(self.DNA[i][1] - other.DNA[i][1])

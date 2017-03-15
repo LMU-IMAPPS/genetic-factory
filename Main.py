@@ -62,6 +62,8 @@ def optimizePositions():
     evolutionaryOptimizer.save_best_fitness.append(evolutionaryOptimizer.theBest.fitness)
     the_best_products = productOptimizer.getGeneration()
 
+    '''Save Best as JSON to /optimizedSettings'''
+
     '''Show off with best Factory'''
     theBestPositions = evolutionaryOptimizer.theBest.DNA
     # TODO from Products Optimization
@@ -119,6 +121,13 @@ def drawPlots():
     plt.title('number of individuals with same best fitness per generation')
     plt.show()
 
+    #diversity plot
+    ypos = range(len(evolutionaryOptimizer.save_diversity_plot))
+    plt.plot(ypos, evolutionaryOptimizer.save_diversity_plot, color='g')
+    plt.ylabel('Diversity')
+    plt.xlabel('Time')
+    plt.title('diversity of best individuals')
+    plt.show()
 
 
 
@@ -128,7 +137,7 @@ if __name__ == '__main__':
 
     factoryGenerator = FactoryGenerator(workstationsJson)
     evolutionaryOptimizer = EvolutionaryOptimizer(factoryGenerator)
-    productOptimizer = ProductOptimizer(workstationsJson)
+    productOptimizer = ProductOptimizer(workstationsJson, factoryGenerator)
 
     optimizePositions()
 

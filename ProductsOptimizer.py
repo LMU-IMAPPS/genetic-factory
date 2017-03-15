@@ -1,6 +1,7 @@
 import numpy
 import constants
 from EvilProducts import EvilProducts
+import math
 
 class ProductOptimizer:
 
@@ -17,28 +18,22 @@ class ProductOptimizer:
         return nextGeneration
 
     ''' Generate inital random EvilProducs individual '''
-    def generateEvilProducts(self):
-        productList = []
-        for i in range(constants.PRODUCTS_PER_LIST):
-            path = ""
-            for j in range(constants.PRODUCTS_PATH_LENGTH):
-                workstationTypeIndex = numpy.random.randint(len(self.workstationsJson['workStations']))
-                path += self.workstationsJson['workStations'][workstationTypeIndex]['type']
-            productList.append((0, 0, path))
-            # TODO randomize
-
+    def generateEvilProduct(self, productList):
         return EvilProducts(productList)
 
-    def __init__(self, workstationsJson):
+    def __init__(self, workstationsJson, factoryGenerator):
         self.workstationsJson = workstationsJson
+        self.factoryGenerator = factoryGenerator
         ''' Initialize random EvilProducts population '''
         self.generation = []
         for i in range(constants.LISTS_PER_GENERATION):
-            self.generation.append(self.generateEvilProducts())
+            positionList = self.factoryGenerator.generateRandomProducts(constants.PRODUCTS_PER_LIST, constants.PRODUCTS_PATH_LENGTH)
+            self.generation.append(self.generateEvilProduct(positionList))
 
     def getGeneration(self):
         return self.generation
 
+#-----------------------------------------------------------------------------------------
     def evaluateGeneration(self):
         '''Select'''
         self.generation = self.evilProductsSelection()
@@ -48,17 +43,19 @@ class ProductOptimizer:
             evilProduct.mutate(constants.PRODUCTS_MUTATION_FACTOR, self.workstationsJson)
 
         '''Recombine'''
-        #for i in range(int(constants.RECOMBINATION_FACTOR*len(self.generation))):
-        #    ancestorIndex1 = 0
-        #    ancestorIndex2 = 0
-        #    while ancestorIndex1 == ancestorIndex2:
-        #        ancestorIndex1 = numpy.random.randint(0, len(self.generation))
-        #        ancestorIndex2 = numpy.random.randint(0, len(self.generation))
-        #    self.generation.append(EvilProducts.recombine(self.generation[ancestorIndex1], self.generation[ancestorIndex2]))
+
+        for i in range(int(constants.PRODUCTS_RECOMBINATION_FACTOR*len(self.generation))):
+            ancestorIndex1 = 0
+            ancestorIndex2 = 0
+            while ancestorIndex1 == ancestorIndex2:
+                ancestorIndex1 = numpy.random.randint(0, len(self.generation))
+                ancestorIndex2 = numpy.random.randint(0, len(self.generation))
+            self.generation.append(EvilProducts.recombine(self.generation[ancestorIndex1], self.generation[ancestorIndex2]))
 
         '''Fill-up'''
         while len(self.generation) < constants.LISTS_PER_GENERATION:
-            self.generation.append(self.generateEvilProducts())
+            positionList = self.factoryGenerator.generateRandomProducts(constants.PRODUCTS_PER_LIST, constants.PRODUCTS_PATH_LENGTH)
+            self.generation.append(self.generateEvilProduct(positionList))
 
 
 
