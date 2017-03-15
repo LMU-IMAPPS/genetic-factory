@@ -11,6 +11,52 @@ from FactoryGenerator import FactoryGenerator
 from ProductsOptimizer import ProductOptimizer
 from EvolutionaryOptimizer import EvolutionaryOptimizer
 
+import tempfile
+import itertools as IT
+import os
+
+#  O-----o  #
+#   O---o   #
+#    O-o    #
+#     O     #
+#    o-O    #
+#   o---O   #
+#  o-----O  #
+#  O-----0  #
+#   O---o   #
+#    O-o    #
+#     O     #
+#    o-O    #
+#   o---O   #
+#  o-----O  #
+#  O-----o  #
+#   O---o   #
+#    O-o    #
+#     O     #
+#    o-O    #
+#   o---O   #
+#  o-----O  #
+
+
+def uniquify(path, sep='_'):
+    def name_sequence():
+        count = IT.count()
+        yield ''
+        while True:
+            nxt = next(count)
+            nc = (str(nxt))if (nxt > 9) else ('0'+str(nxt))
+            yield '{s}{n}'.format(s=sep, n=nc)
+    orig = tempfile._name_sequence
+    with tempfile._once_lock:
+        tempfile._name_sequence = name_sequence()
+        path = os.path.normpath(path)
+        dirname, basename = os.path.split(path)
+        filename, ext = os.path.splitext(basename)
+        fd, filename = tempfile.mkstemp(dir=dirname, prefix=filename, suffix=ext)
+        tempfile._name_sequence = orig
+    return filename
+
+
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
@@ -83,6 +129,15 @@ def optimizePositions():
     sys.stdout.flush()
     print(the_best_products[0].DNA)
 
+    '''Concat information to single dict'''
+    data = {"constants": {"EVOLUTION_CYCLES": 100}}
+    '''Write result to JSON File'''
+
+    path = uniquify('optimizedSettings/factory_run.json')
+    with open(path, 'w') as outfile:
+        json.dump(data, outfile)
+        json.dump({"products": the_best_products[0].DNA, }, outfile)
+
 
 def evaluate(inputTupel):
     individual = inputTupel[0]
@@ -120,8 +175,6 @@ def drawPlots():
     plt.xlabel('Time')
     plt.title('number of individuals with same best fitness per generation')
     plt.show()
-
-
 
 
 if __name__ == '__main__':
