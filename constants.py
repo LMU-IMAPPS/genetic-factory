@@ -5,6 +5,7 @@ FIELD_SIZE = 30
 DRAW_EVERY_CYCLE = False
 SHOW_PRODUCT_PATH = False
 TIME_PER_STEP = 0
+FADE = False
 
 ''' Evolutionary Optimizer Constants '''
 POPULATION_SIZE = 20
