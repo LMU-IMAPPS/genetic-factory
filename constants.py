@@ -1,22 +1,23 @@
-'''Global Genetic Factors'''
-SELECTION_FACTOR = 0.2  # Linear probability of distribution
-MUTATION_FACTOR = 0.4
-RECOMBINATION_FACTOR = 0.1
-
-
-POPULATION_SIZE = 20
+''' Global Inputs '''
+WORKSTATION_JSON = 'WorkstationsMid.json'
 EVOLUTION_CYCLES = 100
 FIELD_SIZE = 20
 DRAW_EVERY_CYCLE = False
 SHOW_PRODUCT_PATH = False
+TIME_PER_STEP = 0
 
-#PRODUCT_JSON = 'ProductsBig.json'
-WORKSTATION_JSON = 'WorkstationsMid.json'
+''' Evolutionary Optimizer Constants '''
+POPULATION_SIZE = 20
+SELECTION_FACTOR = 0.2  # Linear probability of distribution
+MUTATION_FACTOR = 0.4
+RECOMBINATION_FACTOR = 0.1
+DIVERGENCE_COMPARISON_COUNT = 3
 
-# Product Optimizer Constants
-LISTS_PER_GENERATION = 5
+''' Product Optimizer Constants '''
+COEVOLUTION_ON = False
 PRODUCTS_PER_LIST = 10
 PRODUCTS_PATH_LENGTH = 5
+LISTS_PER_GENERATION = 5
 PRODUCTS_SELECTION_FACTOR= 0.2
 PRODUCTS_MUTATION_FACTOR = 0.2
 WAIT_TIMES_MUTATION_FACTOR = 0.1
