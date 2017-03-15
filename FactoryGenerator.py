@@ -1,4 +1,4 @@
-import json
+from EvilProducts import WorkstationWaitTimesContainer
 from Product import Product
 from Workstation import Workstation
 from Factory import Factory, visibilityStatus
@@ -22,8 +22,8 @@ class FactoryGenerator:
                 result.append((type, random.randint(0, maxPosition), random.randint(0,maxPosition)))
         return result
 
-    def generateFactory(self, workstationPositions, visibilityType, products):
-        ws = self.set_position_for_workstations(workstationPositions)
+    def generateFactory(self, workstationPositions, visibilityType, products, workstationWaitTimesContainer):
+        ws = self.set_position_for_workstations(workstationPositions, workstationWaitTimesContainer)
         p = self.generateProducts(ws, products)
         cfs = self.initFieldStatus()
         factory = Factory(ws, p, cfs, visibilityType)
@@ -46,7 +46,7 @@ class FactoryGenerator:
             count += len(item)
         return count
 
-    def set_position_for_workstations(self, workstation_positions):
+    def set_position_for_workstations(self, workstation_positions, workstationWaitTimesContainer):
         """ Update workstation positions with Tupel (Type, x, y) - typically from evolutionary algorithm """
         workStations = {}
         # Iterate over Workstation positions given
@@ -56,9 +56,7 @@ class FactoryGenerator:
             # Create new Worstation object
             ws = Workstation(item[0], item[1], item[2])
             # Add time at ws constraint to ws
-            for typeDef in self.workstationJson['workStations']:
-                if typeDef['type'] == item[0]:
-                    ws.setTimeAtWs(typeDef['time_at_ws'])
+            ws.setTimeAtWs(workstationWaitTimesContainer.get(item[0]))
             workStations[item[0]].append(ws)
         self.checkWorkstationConstrait(workStations)
         return workStations

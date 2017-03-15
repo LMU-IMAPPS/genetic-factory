@@ -23,18 +23,28 @@ class ProductOptimizer:
             path = ""
             for j in range(constants.PRODUCTS_PATH_LENGTH):
                 workstationTypeIndex = numpy.random.randint(len(self.workstationsJson['workStations']))
-                path += self.workstationsJson['workStations'][workstationTypeIndex]['type']
+                path += self.workstationsTypes[workstationTypeIndex]
             productList.append((0, 0, path))
             # TODO randomize
 
-        return EvilProducts(productList)
+        return EvilProducts(productList, self.generateAdditionalWaitTimesList())
 
     def __init__(self, workstationsJson):
         self.workstationsJson = workstationsJson
+        self.workstationsTypes = []
+        for ws in workstationsJson['workStations']:
+            self.workstationsTypes.append(ws['type'])
         ''' Initialize random EvilProducts population '''
         self.generation = []
         for i in range(constants.LISTS_PER_GENERATION):
             self.generation.append(self.generateEvilProducts())
+
+    def generateAdditionalWaitTimesList(self):
+        result = []
+        for i in range(constants.ADDITIONAL_WAIT_TIMES_COUNT):
+            result.append(self.workstationsTypes[numpy.random.randint(0, len(self.workstationsTypes))])
+        return result
+
 
     def getGeneration(self):
         return self.generation
@@ -45,7 +55,7 @@ class ProductOptimizer:
 
         '''Mutate'''
         for evilProduct in self.generation:
-            evilProduct.mutate(constants.PRODUCTS_MUTATION_FACTOR, self.workstationsJson)
+            evilProduct.mutate(constants.PRODUCTS_MUTATION_FACTOR, self.workstationsJson, self.workstationsTypes)
 
         '''Recombine'''
         #for i in range(int(constants.RECOMBINATION_FACTOR*len(self.generation))):

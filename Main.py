@@ -26,7 +26,7 @@ def optimizePositions():
 
         dataFromMultiprocessing = []
         '''Evaluation'''
-        if os.name == "nt":
+        if True: #os.name == "nt":
             for indv in evolutionaryOptimizer.getIndividuals():
                 dataFromMultiprocessing.append(evaluate((indv, productsGeneration, productsGenerationFitness)))
         else:
@@ -66,7 +66,8 @@ def optimizePositions():
     theBestPositions = evolutionaryOptimizer.theBest.DNA
     # TODO from Products Optimization
     theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL,
-                                                      the_best_products[0].DNA)
+                                                      the_best_products[0].DNA,
+                                                      the_best_products[0].getWorkstationWaitTimes())
     theBestFactory.run()
     fieldToPrint = [["☐" for i in range(constants.FIELD_SIZE)] for j in range(constants.FIELD_SIZE)]
     for pos in theBestPositions:
@@ -90,7 +91,8 @@ def evaluate(inputTupel):
     for evilProductIndex in range(constants.LISTS_PER_GENERATION):
         # todo Random select productList from productsGeneration
         # print(productsGeneration[evilProductIndex])
-        singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[evilProductIndex].DNA)
+        singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[evilProductIndex].DNA,
+                                                                     productsGeneration[evilProductIndex].getWorkstationWaitTimes())
         fitness += singleFitness
         # set product list fitness in productsGenerationFitness
         productsGenerationFitness.append(singleFitness)
