@@ -33,10 +33,22 @@ class WorkstationWaitTimesContainer:
     def toList(self):
         result = []
         for k in self.additionalWaitTimes.keys():
-            for i in range(self.additionalWaitTimes[k]):
+            for i in range(self.additionalWaitTimes[k] - 1):
                 result.append(k)
 
         return result
+
+    @staticmethod
+    def recombine(wwtcList1, wwtcList2):
+        if len(wwtcList1) > len(wwtcList2):
+            return WorkstationWaitTimesContainer.recombine(wwtcList2,wwtcList1)
+        wwtcList1.sort()
+        wwtcList2.sort()
+        for i in range(len(wwtcList1)):
+            if numpy.random.random() < 0.5:
+                wwtcList2[i] = wwtcList1[i]
+        return WorkstationWaitTimesContainer(wwtcList2)
+
 
 
 class EvilProducts:
@@ -70,11 +82,16 @@ class EvilProducts:
 
     @staticmethod
     def recombine(ancestor1, ancestor2):
-        new_Evil_Products = EvilProducts(list(ancestor1.DNA), ancestor1.workstationWaitTimes.toList())
+        ancestor1WaitTimeList = ancestor1.workstationWaitTimes.toList()
+        ancestor2WaitTimeList = ancestor2.workstationWaitTimes.toList()
+        new_Evil_Products = EvilProducts(list(ancestor1.DNA), ancestor1WaitTimeList)
         for i in range(len(new_Evil_Products.DNA)):
             if np.random.random() < 0.5:
                 new_Evil_Products.setFitness(0)
                 new_Evil_Products.DNA[i] = (new_Evil_Products.DNA[i][0], new_Evil_Products.DNA[i][1], ancestor2.DNA[i][2])
+
+        new_Evil_Products.workstationWaitTimes = WorkstationWaitTimesContainer.recombine(ancestor1WaitTimeList,
+                                                                                         ancestor2WaitTimeList)
         return new_Evil_Products
 
 
