@@ -17,24 +17,17 @@ class ProductOptimizer:
         return nextGeneration
 
     ''' Generate inital random EvilProducs individual '''
-    def generateEvilProducts(self):
-        productList = []
-        for i in range(constants.PRODUCTS_PER_LIST):
-            path = ""
-            for j in range(constants.PRODUCTS_PATH_LENGTH):
-                workstationTypeIndex = numpy.random.randint(len(self.workstationsJson['workStations']))
-                path += self.workstationsJson['workStations'][workstationTypeIndex]['type']
-            productList.append((0, 0, path))
-            # TODO randomize
-
+    def generateEvilProduct(self, productList):
         return EvilProducts(productList)
 
-    def __init__(self, workstationsJson):
+    def __init__(self, workstationsJson, factoryGenerator):
         self.workstationsJson = workstationsJson
+        self.factoryGenerator = factoryGenerator
         ''' Initialize random EvilProducts population '''
         self.generation = []
         for i in range(constants.LISTS_PER_GENERATION):
-            self.generation.append(self.generateEvilProducts())
+            positionList = self.factoryGenerator.generateRandomProducts(constants.PRODUCTS_PER_LIST, constants.PRODUCTS_PATH_LENGTH)
+            self.generation.append(self.generateEvilProduct(positionList))
 
     def getGeneration(self):
         return self.generation
@@ -58,7 +51,8 @@ class ProductOptimizer:
 
         '''Fill-up'''
         while len(self.generation) < constants.LISTS_PER_GENERATION:
-            self.generation.append(self.generateEvilProducts())
+            positionList = self.factoryGenerator.generateRandomProducts(constants.PRODUCTS_PER_LIST, constants.PRODUCTS_PATH_LENGTH)
+            self.generation.append(self.generateEvilProduct(positionList))
 
 
 

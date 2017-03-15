@@ -3,6 +3,7 @@ from Product import Product
 from Workstation import Workstation
 from Factory import Factory, visibilityStatus
 import random
+import numpy
 
 
 class FactoryGenerator:
@@ -21,6 +22,17 @@ class FactoryGenerator:
             for i in range(0, item['count']):
                 result.append((type, random.randint(0, maxPosition), random.randint(0,maxPosition)))
         return result
+
+    def generateRandomProducts(self, productsCount, pathLenght):
+        productList = []
+        for i in range(productsCount):
+            path = ""
+            for j in range(pathLenght):
+                workstationTypeIndex = numpy.random.randint(len(self.workstationJson['workStations']))
+                path += self.workstationJson['workStations'][workstationTypeIndex]['type']
+            productList.append((0, 0, path))
+        return productList
+
 
     def generateFactory(self, workstationPositions, visibilityType, products):
         ws = self.set_position_for_workstations(workstationPositions)
