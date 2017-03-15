@@ -50,7 +50,6 @@ class Factory:
                     self.View.nextTimeStep(self.products, self.workStations)
 
                     self.viewRoot.update()
-                    if constants.SHOW_PRODUCT_PATH: self.View.drawPath()
                     self.View.showButton()
                     pprint("Done in "+str(counter) + ' steps.')
                 return counter  # * 100000 + totalMoves
@@ -61,7 +60,7 @@ class Factory:
             if vs == visibilityStatus.ALL:
                 self.View.nextTimeStep(self.products, self.workStations)
                 self.viewRoot.update()
-                time.sleep(0.1)
+                time.sleep(constants.TIME_PER_STEP)
 
     def run(self):
         returnVal = None
