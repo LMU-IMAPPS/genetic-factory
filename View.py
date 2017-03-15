@@ -39,7 +39,7 @@ class View(Frame):
         self.parent.call('wm', 'attributes', '.', '-topmost', True)
         self.parent.after_idle(self.parent.call, 'wm', 'attributes', '.', '-topmost', False)
         self.pack(fill=BOTH, expand=1)
-        View.canvas = Canvas(self, bg="white")
+        View.canvas = Canvas(self, bg="#263238")
         View.canvas.pack(fill=BOTH, expand=1)
 
     def drawGrid(self, size):
@@ -47,7 +47,7 @@ class View(Frame):
         tY = 0
         for i in range(self.width):
             for j in range(self.height):
-                self.canvas.create_rectangle(i*size + tX, j*size+tY, (i*size)+size+tY, (j*size)+size+tY)
+                self.canvas.create_rectangle(i*size + tX, j*size+tY, (i*size)+size+tY, (j*size)+size+tY, fill="#37474F", outline="#455A64")
 
     def getSize(self, works):
 
@@ -75,7 +75,7 @@ class View(Frame):
     def drawWorkstations(self, works, size):
         for w_v in works.values():
             for w in w_v:
-                View.canvas.create_rectangle(w.positionX * size, w.positionY * size, w.positionX * size + size, w.positionY * size + size, fill="pink")
+                View.canvas.create_rectangle(w.positionX * size, w.positionY * size, w.positionX * size + size, w.positionY * size + size, fill="#B0BEC5", outline="#607D8B")
                 View.canvas.create_text((w.positionX * size + (size / 2), w.positionY * size + (size / 2)), text=w.type)
         pass
 
@@ -84,8 +84,8 @@ class View(Frame):
         View.list_old.clear()
         for p in products:
             if not p.isDone:
-                View.canvas.create_oval(p.positionX * size + 3, p.positionY * size + 3, p.positionX * size - 3 + size, p.positionY * size - 3 + size, outline="white", fill="blue", width=0)
-                View.canvas.create_text((p.positionX * size + (size / 2), p.positionY * size + (size / 2)), text=str(counter), fill="white")
+                View.canvas.create_oval(p.positionX * size + 3, p.positionY * size + 3, p.positionX * size - 3 + size, p.positionY * size - 3 + size, outline="white", fill="#3F51B5", width=0)
+                View.canvas.create_text((p.positionX * size + (size / 2), p.positionY * size + (size / 2)), text=str(counter), fill="#E8EAF6")
                 counter+=1
             View.list_old.append((p.positionX, p.positionY))
         pass
@@ -95,7 +95,7 @@ class View(Frame):
             self.savePath.append(list(self.list_old))
         #print(self.savePath)
         for p in View.list_old:
-            View.canvas.create_oval(p[0] * size + 1, p[1] * size + 1, p[0] * size - 1 + size, p[1] * size - 1 + size, outline="gray", fill="white", width=0)
+            View.canvas.create_oval(p[0] * size + 1, p[1] * size + 1, p[0] * size - 1 + size, p[1] * size - 1 + size, outline="gray", fill="#37474F", width=0)
         self.drawWorkstations(works, size)
         self.drawProduct(products, size)
 
