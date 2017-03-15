@@ -66,8 +66,8 @@ class Direction(Enum):
 class Product:
 
     def run(self, currentFieldStatus):
+        self.blockedLastRound = False
         if self.isDone:
-            self.blockedLastRound = False
             # Done doing nothing
             return StepResult.DONE
         if not self.isInitialized:
@@ -76,30 +76,19 @@ class Product:
                 self.findTarget()
                 currentFieldStatus.add((self.positionX, self.positionY))
                 self.isInitialized = True
-                self.blockedLastRound = False
                 return StepResult.MOVED
             else:
                 self.blockedLastRound = True
                 return StepResult.BLOCKED
         nextDir = self.findDirection()
         if (self.positionX + nextDir.xAxis(), self.positionY + nextDir.yAxis()) not in currentFieldStatus:
-            self.blockedLastRound = False
             return self.makeStep(currentFieldStatus, nextDir)
         else:
             nextDir = nextDir.alt1()
             if self.blockedLastRound and (self.positionX + nextDir.xAxis(), self.positionY + nextDir.yAxis()) not in currentFieldStatus:
-                self.blockedLastRound = False
                 return self.makeStep(currentFieldStatus, nextDir)
-        if (self.positionY == self.targetY) & (self.positionX == self.targetX):
-            self.findTarget()
-            if self.isDone:
-                currentFieldStatus.remove((self.positionX, self.positionY))
-                self.blockedLastRound = False
-                return StepResult.FIRSTDONE
-            self.blockedLastRound = False
-            return StepResult.MOVED
-        self.blockedLastRound = True
-        return StepResult.BLOCKED
+        return self.afterStepEvaluation(currentFieldStatus, True)
+
 
     def makeStep(self, currentFieldStatus,nextDir):
         #moving
@@ -107,13 +96,23 @@ class Product:
         self.positionX += nextDir.xAxis()
         self.positionY += nextDir.yAxis()
         currentFieldStatus.add((self.positionX, self.positionY))
+        return self.afterStepEvaluation(currentFieldStatus, False)
+
+    def afterStepEvaluation(self, currentFieldStatus, isDefaultBlocked):
         if (self.positionY == self.targetY) & (self.positionX == self.targetX):
-            self.findTarget()
-            if self.isDone:
-                #removing myself from the simulation, when I am done
-                currentFieldStatus.remove((self.positionX, self.positionY))
-                return StepResult.FIRSTDONE
-            return StepResult.MOVED
+            if self.timeAtNextWorkstation == 0:
+                self.findTarget()
+                if self.isDone:
+                    # removing myself from the simulation, when I am done
+                    currentFieldStatus.remove((self.positionX, self.positionY))
+                    return StepResult.FIRSTDONE
+                return StepResult.MOVED
+            else:
+                self.timeAtNextWorkstation -= 1
+                return StepResult.MOVED
+        if isDefaultBlocked:
+            self.blockedLastRound = True
+            return StepResult.BLOCKED
         return StepResult.MOVED
 
     def reset(self):
@@ -154,6 +153,7 @@ class Product:
         self.isDone = False
         self.targetX = -1
         self.targetY = -1
+        self.timeAtNextWorkstation = 0
         self.blockedLastRound = False
 
     def findTarget(self):
@@ -165,6 +165,7 @@ class Product:
         nextTarget = self.findClosest(self.workStations[nextTarget])
         self.targetX = nextTarget.positionX
         self.targetY = nextTarget.positionY
+        self.timeAtNextWorkstation = nextTarget.timeAtWs
 
     def findClosest(self, workStationList):
         closestWorkstion = None
