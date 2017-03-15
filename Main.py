@@ -68,8 +68,7 @@ def optimizePositions():
     theBestPositions = evolutionaryOptimizer.theBest.DNA
     # TODO from Products Optimization
     theBestFactory = factoryGenerator.generateFactory(theBestPositions, visibilityStatus.ALL,
-                                                      the_best_products[0].DNA,
-                                                      the_best_products[0].getWorkstationWaitTimes())
+                                                      the_best_products[0].DNA)
     theBestFactory.run()
     fieldToPrint = [["☐" for i in range(constants.FIELD_SIZE)] for j in range(constants.FIELD_SIZE)]
     for pos in theBestPositions:
@@ -93,8 +92,7 @@ def evaluate(inputTupel):
     for evilProductIndex in range(constants.LISTS_PER_GENERATION):
         # todo Random select productList from productsGeneration
         # print(productsGeneration[evilProductIndex])
-        singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[evilProductIndex].DNA,
-                                                                     productsGeneration[evilProductIndex].getWorkstationWaitTimes())
+        singleFitness = individual.evaluateFitness(factoryGenerator, productsGeneration[evilProductIndex].DNA)
         fitness += singleFitness
         # set product list fitness in productsGenerationFitness
         productsGenerationFitness.append(singleFitness)
