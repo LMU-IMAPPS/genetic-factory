@@ -30,7 +30,8 @@ class EvilProducts:
         new_Evil_Products = EvilProducts(list(ancestor1.DNA))
         for i in range(len(new_Evil_Products.DNA)):
             if np.random.random() < 0.5:
-                new_Evil_Products.DNA[i][2] = ancestor2.DNA[i][2]
+                new_Evil_Products.setFitness(0)
+                new_Evil_Products.DNA[i] = (new_Evil_Products.DNA[i][0], new_Evil_Products.DNA[i][1], ancestor2.DNA[i][2])
         return new_Evil_Products
 
 

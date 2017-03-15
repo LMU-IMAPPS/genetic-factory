@@ -51,13 +51,13 @@ class ProductOptimizer:
 
         '''Recombine'''
 
-        #for i in range(int(constants.RECOMBINATION_FACTOR*len(self.generation))):
-        #    ancestorIndex1 = 0
-        #    ancestorIndex2 = 0
-        #    while ancestorIndex1 == ancestorIndex2:
-        #        ancestorIndex1 = numpy.random.randint(0, len(self.generation))
-        #        ancestorIndex2 = numpy.random.randint(0, len(self.generation))
-        #    self.generation.append(EvilProducts.recombine(self.generation[ancestorIndex1], self.generation[ancestorIndex2]))
+        for i in range(int(constants.PRODUCTS_RECOMBINATION_FACTOR*len(self.generation))):
+            ancestorIndex1 = 0
+            ancestorIndex2 = 0
+            while ancestorIndex1 == ancestorIndex2:
+                ancestorIndex1 = numpy.random.randint(0, len(self.generation))
+                ancestorIndex2 = numpy.random.randint(0, len(self.generation))
+            self.generation.append(EvilProducts.recombine(self.generation[ancestorIndex1], self.generation[ancestorIndex2]))
 
         '''Fill-up'''
         while len(self.generation) < constants.LISTS_PER_GENERATION:
