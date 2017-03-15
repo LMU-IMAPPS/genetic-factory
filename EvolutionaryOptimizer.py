@@ -10,6 +10,7 @@ class EvolutionaryOptimizer:
     save_worst_fitness = []
     save_mean = []
     save_best_frequency = []
+    save_diversity_plot = []
 
     def generateIndividual(self, positionList):
         return Individual(positionList)
@@ -66,6 +67,9 @@ class EvolutionaryOptimizer:
 
         '''Mutation'''
         diversity = self.calculateDiversity()
+        plotdiversity = list(diversity)
+        plotdiversity.sort(key= lambda i: i[1].fitness)
+        self.save_diversity_plot.append(plotdiversity[0][0])
         mutationlist = []
 
         for individual in diversity:

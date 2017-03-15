@@ -119,6 +119,13 @@ def drawPlots():
     plt.title('number of individuals with same best fitness per generation')
     plt.show()
 
+    #diversity plot
+    ypos = range(len(evolutionaryOptimizer.save_diversity_plot))
+    plt.plot(ypos, evolutionaryOptimizer.save_diversity_plot, color='g')
+    plt.ylabel('Diversity')
+    plt.xlabel('Time')
+    plt.title('diversity of best individuals')
+    plt.show()
 
 
 
