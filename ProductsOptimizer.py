@@ -1,6 +1,7 @@
 import numpy
 import constants
 from EvilProducts import EvilProducts
+import math
 
 class ProductOptimizer:
 
@@ -39,6 +40,7 @@ class ProductOptimizer:
     def getGeneration(self):
         return self.generation
 
+#-----------------------------------------------------------------------------------------
     def evaluateGeneration(self):
         '''Select'''
         self.generation = self.evilProductsSelection()
@@ -48,6 +50,7 @@ class ProductOptimizer:
             evilProduct.mutate(constants.PRODUCTS_MUTATION_FACTOR, self.workstationsJson)
 
         '''Recombine'''
+
         #for i in range(int(constants.RECOMBINATION_FACTOR*len(self.generation))):
         #    ancestorIndex1 = 0
         #    ancestorIndex2 = 0

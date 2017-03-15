@@ -65,10 +65,10 @@ class EvolutionaryOptimizer:
         self.theBest = Individual(list(self.individuals[0].DNA), initalFitness=self.individuals[0].fitness)
 
         '''Mutation'''
-        divergences = self.calculateDivergences()
+        diversity = self.calculateDiversity()
         mutationlist = []
 
-        for individual in divergences:
+        for individual in diversity:
             indifit = individual[1].fitness
             indidiv = individual[0] + 1
             mutationfactor = indifit/(indidiv*100000)
@@ -77,9 +77,9 @@ class EvolutionaryOptimizer:
         mutationlist.sort(key= lambda i: i[0])
         scala = 1/(len(mutationlist)*2)
 
-        min_div = divergences[0][0]
-        half_max_div = round(divergences[len(divergences) - 1][0] / 2)
-        median = divergences[round(len(divergences) / 2)][0]
+        min_div = diversity[0][0]
+        half_max_div = round(diversity[len(diversity) - 1][0] / 2)
+        median = diversity[round(len(diversity) / 2)][0]
         factor = 0
         if (half_max_div >= median):
             factor = 0.75
@@ -91,7 +91,7 @@ class EvolutionaryOptimizer:
             scalaproindiv = (individual +1) * scala + 0.5
             mutationf = constants.MUTATION_FACTOR * scalaproindiv
             tempindiv.mutate(mutationf)
-            if (divergences[round((len(divergences) - 1) * factor)][0] < mutationlist[individual][0]):
+            if (diversity[round((len(diversity) - 1) * factor)][0] < mutationlist[individual][0]):
                 if (numpy.random.random() < 0.5):
                     tempindiv.mutate_all(mutationf)
                 else:
@@ -106,9 +106,9 @@ class EvolutionaryOptimizer:
         #    individual.mutate(constants.MUTATION_FACTOR)
         '''Recombination'''
         for i in range(int(constants.RECOMBINATION_FACTOR * constants.POPULATION_SIZE)):
-            ancestorsIndex1 = self.exponentialDistribution(len(divergences))
-            ancestorsIndex2 = len(divergences) - self.exponentialDistribution(len(divergences)) - 1
-            self.individuals.append(Individual.recombine(divergences[ancestorsIndex1][1], divergences[ancestorsIndex2][1]))
+            ancestorsIndex1 = self.exponentialDistribution(len(diversity))
+            ancestorsIndex2 = len(diversity) - self.exponentialDistribution(len(diversity)) - 1
+            self.individuals.append(Individual.recombine(diversity[ancestorsIndex1][1], diversity[ancestorsIndex2][1]))
 
         '''Reinsert best individual'''
         self.individuals.append(self.theBest)
@@ -132,11 +132,11 @@ class EvolutionaryOptimizer:
     def setIndividuals(self, individuals):
         self.individuals = individuals
 
-    def calculateDivergences(self):
+    def calculateDiversity(self):
         result = []
         for individual in self.individuals:
-            divergence = self.divergenceTest(individual)
-            result.append((divergence, individual))
+            diversity = self.diversityTest(individual)
+            result.append((diversity, individual))
         result.sort(key=lambda i: i[0])
         return result
 
@@ -146,10 +146,10 @@ class EvolutionaryOptimizer:
                 return i
         return 0
 
-    def divergenceTest(self, individual):
+    def diversityTest(self, individual):
         result = 0
-        result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
-        result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
-        result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
+        result += individual.diversity(self.individuals[numpy.random.randint(len(self.individuals))])
+        result += individual.diversity(self.individuals[numpy.random.randint(len(self.individuals))])
+        result += individual.diversity(self.individuals[numpy.random.randint(len(self.individuals))])
         return result
 
