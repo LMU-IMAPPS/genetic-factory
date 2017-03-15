@@ -1,3 +1,4 @@
+import os
 from tkinter import Tk
 from Factory import visibilityStatus
 import sys
@@ -23,8 +24,13 @@ def optimizePositions():
         productsGeneration = productOptimizer.getGeneration()  # [[(1,1,"ABAC"),..],[(1,1,"ADC"),..],..]
         productsGenerationFitness = [0] * constants.LISTS_PER_GENERATION
 
+        dataFromMultiprocessing = []
         '''Evaluation'''
-        dataFromMultiprocessing = pool.map(evaluate, map(lambda i: (i, productsGeneration, productsGenerationFitness), evolutionaryOptimizer.getIndividuals()))
+        if os.name == "nt":
+            for indv in evolutionaryOptimizer.getIndividuals():
+                dataFromMultiprocessing.append(evaluate((indv, productsGeneration, productsGenerationFitness)))
+        else:
+            dataFromMultiprocessing = pool.map(evaluate, map(lambda i: (i, productsGeneration, productsGenerationFitness), evolutionaryOptimizer.getIndividuals()))
         for dfmIndex in range(len(dataFromMultiprocessing)):
             evolutionaryOptimizer.getIndividuals()[dfmIndex].setFitness(dataFromMultiprocessing[dfmIndex][0])
             for i in range(constants.LISTS_PER_GENERATION):
