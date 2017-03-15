@@ -49,6 +49,30 @@ class Individual:
 
         return self
 
+    def mutate_all(self, mutationRate):
+        if np.random.random() < mutationRate:
+            self.fitness = None
+            newX_random = np.random.randint(-1, 2)
+            newY_random = np.random.randint(-1, 2)
+            for i in range(len(self.DNA)):
+                wsPositionTmp = self.DNA[i]
+                newX = wsPositionTmp[1]
+                newY = wsPositionTmp[2]
+                #while newX == wsPositionTmp[1] and newY == wsPositionTmp[2]:
+                newX = wsPositionTmp[1] + newX_random
+                newY = wsPositionTmp[2] + newY_random
+                if newX < 0:
+                    newX = 0
+                if newY < 0:
+                    newY = 0
+                if newX >= constants.FIELD_SIZE:
+                    newX = constants.FIELD_SIZE - 1
+                if newY >= constants.FIELD_SIZE:
+                    newY = constants.FIELD_SIZE - 1
+                self.DNA[i] = (wsPositionTmp[0], newX, newY)
+
+        return self
+
     @staticmethod
     def recombine(ancestor1, ancestor2):
         newIndividual = Individual(list(ancestor1.DNA))

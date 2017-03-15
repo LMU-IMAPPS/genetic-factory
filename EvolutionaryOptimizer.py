@@ -42,6 +42,12 @@ class EvolutionaryOptimizer:
         if self.save_best_fitness[0] == sys.maxsize:
             self.save_worst_fitness.append(sys.maxsize)
             self.save_mean.append(sys.maxsize)
+        else:
+            # save worst indiv except blocked ones
+            self.save_worst_fitness.append(save_mean_current[0])
+            # save mean of generation
+            mean_value = numpy.mean(save_mean_current)
+            self.save_mean.append(mean_value)
 
         # Return Sublist with best <SELECTION_FACTOR> from Individuals
         nextIndividuals = []
@@ -59,11 +65,46 @@ class EvolutionaryOptimizer:
         self.theBest = Individual(list(self.individuals[0].DNA), initalFitness=self.individuals[0].fitness)
 
         '''Mutation'''
-        for individual in self.individuals:
-            individual.mutate(constants.MUTATION_FACTOR)
-
-        '''Recombination'''
         divergences = self.calculateDivergences()
+        mutationlist = []
+
+        for individual in divergences:
+            indifit = individual[1].fitness
+            indidiv = individual[0] + 1
+            mutationfactor = indifit/(indidiv*100000)
+            mutationlist.append((mutationfactor,individual[1]))
+
+        mutationlist.sort(key= lambda i: i[0])
+        scala = 1/(len(mutationlist)*2)
+
+        min_div = divergences[0][0]
+        half_max_div = round(divergences[len(divergences) - 1][0] / 2)
+        median = divergences[round(len(divergences) / 2)][0]
+        factor = 0
+        if (half_max_div >= median):
+            factor = 0.75
+        else:
+            factor = 0.3
+
+        for individual in range(len(mutationlist)-1):
+            tempindiv = mutationlist[individual][1]
+            scalaproindiv = (individual +1) * scala + 0.5
+            mutationf = constants.MUTATION_FACTOR * scalaproindiv
+            tempindiv.mutate(mutationf)
+            if (divergences[round((len(divergences) - 1) * factor)][0] < mutationlist[individual][0]):
+                if (numpy.random.random() < 0.5):
+                    tempindiv.mutate_all(mutationf)
+                else:
+                    tempindiv.mutate(mutationf)
+            else:
+                if (numpy.random.random() < 0.4):
+                    tempindiv.mutate_all(mutationf)
+                else:
+                    tempindiv.mutate(mutationf)
+
+        # for individual in individuals:
+        #    individual.mutate(constants.MUTATION_FACTOR)
+        '''Recombination'''
         for i in range(int(constants.RECOMBINATION_FACTOR * constants.POPULATION_SIZE)):
             ancestorsIndex1 = self.exponentialDistribution(len(divergences))
             ancestorsIndex2 = len(divergences) - self.exponentialDistribution(len(divergences)) - 1
@@ -107,8 +148,10 @@ class EvolutionaryOptimizer:
 
     def divergenceTest(self, individual):
         result = 0
-        result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
-        result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
-        result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
+        for i in range(constants.DIVERGENCE_COMPARISON_COUNT):
+            result += individual.divergence(self.individuals[numpy.random.randint(len(self.individuals))])
+        result /= constants.DIVERGENCE_COMPARISON_COUNT
+        result /= 2 * constants.FIELD_SIZE
+        result /= len(individual.DNA)
         return result
 
