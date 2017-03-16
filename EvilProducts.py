@@ -28,7 +28,7 @@ class EvilProducts:
 
     @staticmethod
     def recombine(ancestor1, ancestor2):
-        new_Evil_Products = EvilProducts(list(ancestor1.DNA), ancestor1WaitTimeList)
+        new_Evil_Products = EvilProducts(list(ancestor1.DNA))
         for i in range(len(new_Evil_Products.DNA)):
             if np.random.random() < 0.5:
                 new_Evil_Products.setFitness(0)
