@@ -4,6 +4,7 @@ import json
 from Factory import visibilityStatus
 
 import matplotlib
+
 matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 
@@ -27,29 +28,71 @@ class TSuite:
     def runTest(self, products):
         fitness = []
         for p in products:
-            factory = self.factoryGenerator.generateFactory(self.factorySetting,
-                                                        visibilityStatus.NONE, p)
+            factory = self.factoryGenerator.generateFactory(self.factorySetting, visibilityStatus.NONE, p)
             fitness.append(factory.run())
         medianFitness = numpy.median(fitness)
-        self.plotStats(medianFitness)
+        lowerBound = numpy.percentile(fitness, 25)
+        upperBound = numpy.percentile(fitness, 75)
+        self.plotStats(medianFitness, lowerBound, upperBound)
         print(fitness)
         print(medianFitness)
 
-
-    def plotStats(self, medianFitness):
-        # plot with best indiv per generation
+    def plotStats(self, medianFitness, lowerBound, upperBound):
+        # plot best individual per generation
+        blockedFitness = 1_844_674_407_370_955_264
+        worst = 0
+        for i in range(len(self.factory_run['plotData'])):
+            if (self.factory_run['plotData'][i] != blockedFitness) and (self.factory_run['plotData'][i] > worst):
+                worst = self.factory_run['plotData'][i]
+        blocked = worst + 5
+        for i in range(len(self.factory_run['plotData'])):
+            if self.factory_run['plotData'][i] == blockedFitness:
+                self.factory_run['plotData'][i] = blocked
+        threshold = [worst + 5.2] * len(self.factory_run['plotData'])
         x = range(len(self.factory_run['plotData']))
         plt.xlabel('Time')
         plt.ylabel('Fitness')
         plt.title('Best individual over time')
         plt.plot(x, self.factory_run['plotData'], label='best', color='g')
+
+        # draw line for blocked value
+        plt.plot(x, threshold, label='blocked', color='r')
+
+        # draw line for test result (median)
+        if medianFitness >= blockedFitness:
+            medianFitness = blocked
         plt.plot((0, len(self.factory_run['plotData'])), (medianFitness, medianFitness), 'k-', label='median')
+
+        # draw line for upper and lower bound of test result
+        if lowerBound >= blockedFitness:
+            lowerBound = blocked
+        plt.plot((0, len(self.factory_run['plotData'])), (lowerBound, lowerBound), 'k-')
+        if upperBound >= blockedFitness:
+            upperBound = blocked
+        plt.plot((0, len(self.factory_run['plotData'])), (upperBound, upperBound), 'k-')
+
         plt.legend()
         plt.show()
 
+        # plot diversity of best individual per generation
+        ypos = range(len(self.factory_run['plotDiversity']))
+        plt.plot(ypos, self.factory_run['plotDiversity'], color='g')
+        plt.ylabel('Diversity')
+        plt.xlabel('Time')
+        plt.title('Diversity of best individual over time')
+        plt.show()
 
-testSuiteCoev = TSuite("optimizedSettings/factory_run_00.json")
+
+''' TEST: Coevolution vs. No Coevolution '''
+testSuiteCoev = TSuite("optimizedSettings/factory_run_01.json")
+testSuiteNoCoev = TSuite("optimizedSettings/factory_run_02.json")
 randProducts = []
-for i in range(10):
-    randProducts.append(testSuiteCoev.factoryGenerator.generateRandomProducts(10, 5))
+product_path_length = testSuiteCoev.factory_run['constants']['PRODUCTS_PATH_LENGTH']
+products_per_list = testSuiteCoev.factory_run['constants']['PRODUCTS_PER_LIST']
+
+for i in range(20):
+    randProducts.append(testSuiteCoev.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
 testSuiteCoev.runTest(randProducts)
+testSuiteNoCoev.runTest(randProducts)
+
+''' TEST: XXX '''

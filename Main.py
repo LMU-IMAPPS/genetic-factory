@@ -128,11 +128,13 @@ def optimizePositions(factoryGenerator):
     consts = constants.getConstantsDict()
     # TODO add last Generation of evil-products
     # best fitness over cycles
-    plotData = evolutionaryOptimizer.save_best_fitness
+    bestFitness = evolutionaryOptimizer.save_best_fitness
+    diversityOfBest = evolutionaryOptimizer.save_diversity_plot
 
     data = {"constants": consts,
             "factorySetting": theBestPositions,
-            "plotData": plotData}
+            "plotData": bestFitness,
+            "plotDiversity": diversityOfBest}
     '''Write result to JSON File'''
 
     path = uniquify('optimizedSettings/factory_run.json')
@@ -155,47 +157,7 @@ def evaluate(inputTupel):
         productsGenerationFitness.append(singleFitness)
     fitness = round(fitness / len(productsGeneration))
 
-    return (fitness, productsGenerationFitness)
-
-
-def drawPlots():
-    # plot with best, worst and mean indiv per generation
-    blockedfitness = 1_844_674_407_370_955_264
-    worst = 0
-    for i in range(len(evolutionaryOptimizer.save_best_fitness)):
-        if (evolutionaryOptimizer.save_best_fitness[i] != blockedfitness) and (evolutionaryOptimizer.save_best_fitness[i] > worst) :
-            worst = evolutionaryOptimizer.save_best_fitness[i]
-    blocked = worst + 5
-    for i in range(len(evolutionaryOptimizer.save_best_fitness)):
-        if (evolutionaryOptimizer.save_best_fitness[i] == blockedfitness):
-            evolutionaryOptimizer.save_best_fitness[i] = blocked
-    threshold = [worst+1]*len(evolutionaryOptimizer.save_best_fitness)
-    x = range(len(evolutionaryOptimizer.save_best_fitness))
-    evolutionaryOptimizer.save_worst_fitness.append(evolutionaryOptimizer.save_worst_fitness[len(evolutionaryOptimizer.save_worst_fitness) - 1])
-    evolutionaryOptimizer.save_mean.append(evolutionaryOptimizer.save_mean[len(evolutionaryOptimizer.save_mean) - 1])
-    plt.xlabel('Time')
-    plt.ylabel('Fitness')
-    plt.title('best vs. worst individuals')
-    plt.plot(x, threshold, label='blocked-threshold', color='r')
-    plt.plot(x, evolutionaryOptimizer.save_best_fitness, label='best', color='g')
-    plt.legend()
-    plt.show()
-
-    # plot with frequency of best fitness
-    ypos = range(len(evolutionaryOptimizer.save_best_frequency))
-    plt.plot(ypos, evolutionaryOptimizer.save_best_frequency, color='g')
-    plt.ylabel('Frequency')
-    plt.xlabel('Time')
-    plt.title('number of individuals with same best fitness per generation')
-    plt.show()
-
-    #diversity plot
-    ypos = range(len(evolutionaryOptimizer.save_diversity_plot))
-    plt.plot(ypos, evolutionaryOptimizer.save_diversity_plot, color='g')
-    plt.ylabel('Diversity')
-    plt.xlabel('Time')
-    plt.title('diversity of best individuals')
-    plt.show()
+    return fitness, productsGenerationFitness
 
 
 if __name__ == '__main__':
@@ -207,5 +169,3 @@ if __name__ == '__main__':
     productOptimizer = ProductOptimizer(workstationsJson, factoryGenerator)
 
     optimizePositions(factoryGenerator)
-
-    drawPlots()
