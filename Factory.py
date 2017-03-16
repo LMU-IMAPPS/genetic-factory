@@ -44,6 +44,7 @@ class Factory:
                 if result == StepResult.BLOCKED:
                     isDone = False
                 if result == StepResult.FIRSTDONE:
+                    madeChange = True
                     totalMoves += counter
             if isDone:
                 if vs != visibilityStatus.NONE:

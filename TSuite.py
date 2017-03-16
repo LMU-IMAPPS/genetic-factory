@@ -3,7 +3,6 @@ import numpy
 import json
 from Factory import visibilityStatus
 
-
 import matplotlib
 
 matplotlib.use("TkAgg")
@@ -43,11 +42,11 @@ class TSuite:
         blockedFitness = 1_844_674_407_370_955_264
         worst = 0
         for i in range(len(self.factory_run['plotData'])):
-            if (self.factory_run['plotData'][i] != blockedFitness) and (self.factory_run['plotData'][i] > worst):
+            if (self.factory_run['plotData'][i] < blockedFitness) and (self.factory_run['plotData'][i] > worst):
                 worst = self.factory_run['plotData'][i]
         blocked = worst + 5
         for i in range(len(self.factory_run['plotData'])):
-            if self.factory_run['plotData'][i] == blockedFitness:
+            if self.factory_run['plotData'][i] >= blockedFitness:
                 self.factory_run['plotData'][i] = blocked
         threshold = [worst + 5.2] * len(self.factory_run['plotData'])
         x = range(len(self.factory_run['plotData']))
@@ -74,15 +73,15 @@ class TSuite:
         plt.plot(x, threshold, label='blocked', color='#F44336')
 
         # draw line for test result (median)
-        if medianFitness >= blockedFitness:
+        if medianFitness >= blocked:
             medianFitness = blocked
         plt.plot((0, len(self.factory_run['plotData'])), (medianFitness, medianFitness), 'k-', label='median', color='#ECEFF1')
 
         # draw line for upper and lower bound of test result
-        if lowerBound >= blockedFitness:
+        if lowerBound >= blocked:
             lowerBound = blocked
         plt.plot((0, len(self.factory_run['plotData'])), (lowerBound, lowerBound), 'k-', color='#607D8B')
-        if upperBound >= blockedFitness:
+        if upperBound >= blocked:
             upperBound = blocked
         plt.plot((0, len(self.factory_run['plotData'])), (upperBound, upperBound), 'k-', color='#607D8B')
 
@@ -90,29 +89,50 @@ class TSuite:
         plt.show()
 
         # plot diversity of best individual per generation
-        '''ypos = range(len(self.factory_run['plotDiversity']))
+        ypos = range(len(self.factory_run['plotDiversity']))
+        mean = numpy.mean(self.factory_run['plotDiversity'])
         plt.plot(ypos, self.factory_run['plotDiversity'], color='g')
+        plt.plot((0, len(self.factory_run['plotDiversity'])), (mean, mean), 'k-', label='mean')
         plt.ylabel('Diversity')
         plt.xlabel('Time')
         plt.title('Diversity of best individual over time')
-        plt.show()'''
-
-        '''figure = Figure()
-        canvas = FigureCanvas(figure)
-        axes = figure.add_subplot(1, 1, 1, axisbg='red')
-        axes.plot([1, 2, 3])'''''
+        plt.show()
 
 
-''' TEST: Coevolution vs. No Coevolution '''
+''' TEST: coevolution vs. no coevolution '''
 testSuiteCoev = TSuite("optimizedSettings/factory_run_01.json")
 testSuiteNoCoev = TSuite("optimizedSettings/factory_run_02.json")
 randProducts = []
 product_path_length = testSuiteCoev.factory_run['constants']['PRODUCTS_PATH_LENGTH']
 products_per_list = testSuiteCoev.factory_run['constants']['PRODUCTS_PER_LIST']
-
-for i in range(20):
+for i in range(1000):
     randProducts.append(testSuiteCoev.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
 testSuiteCoev.runTest(randProducts)
 testSuiteNoCoev.runTest(randProducts)
 
-''' TEST: XXX '''
+''' TEST: different mutation rates 0.1 0.5 0.9 '''
+testSuiteMut01 = TSuite("optimizedSettings/factory_run_03.json")
+testSuiteMut05 = TSuite("optimizedSettings/factory_run_04.json")
+testSuiteMut09 = TSuite("optimizedSettings/factory_run_05.json")
+randProducts = []
+product_path_length = testSuiteMut01.factory_run['constants']['PRODUCTS_PATH_LENGTH']
+products_per_list = testSuiteMut01.factory_run['constants']['PRODUCTS_PER_LIST']
+for i in range(100):
+    randProducts.append(testSuiteMut01.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
+#testSuiteMut01.runTest(randProducts)
+#testSuiteMut05.runTest(randProducts)
+#testSuiteMut09.runTest(randProducts)
+
+
+testSuite10 = TSuite("optimizedSettings/factory_run_06.json")
+testSuite100 = TSuite("optimizedSettings/factory_run_07.json")
+testSuite250 = TSuite("optimizedSettings/factory_run_08.json")
+
+randProducts = []
+product_path_length = testSuite10.factory_run['constants']['PRODUCTS_PATH_LENGTH']
+products_per_list = testSuite10.factory_run['constants']['PRODUCTS_PER_LIST']
+for i in range(10):
+    randProducts.append(testSuite10.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
+#testSuite10.runTest(randProducts)
+#testSuite100.runTest(randProducts)
+#testSuite250.runTest(randProducts)

@@ -114,7 +114,7 @@ class View(Frame):
         for p in products:
             if not p.isDone:
                 self.allProductList.append(View.canvas.create_oval(p.positionX * size + 3, p.positionY * size + 3, p.positionX * size - 3 + size, p.positionY * size - 3 + size, outline="white", fill="#3F51B5", width=0))
-                self.allProductList.append(View.canvas.create_text((p.positionX * size + (size / 2), p.positionY * size + (size / 2)), text=str(counter), fill="#E8EAF6"))
+                self.allProductList.append(View.canvas.create_text((p.positionX * size + (size / 2), p.positionY * size + (size / 2)), text=p.findDirection().value, fill="#E8EAF6"))
                 counter+=1
             View.list_old.append((p.positionX, p.positionY))
         return theOld
