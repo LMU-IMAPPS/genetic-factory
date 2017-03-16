@@ -134,10 +134,12 @@ def optimizePositions():
     '''Concat information to single dict'''
     consts = constants.getConstantsDict()
     # TODO add last Generation of evil-products
-    # TODO add plot data
+    # best fitness over cycles
+    plotData = evolutionaryOptimizer.save_best_fitness
 
     data = {"constants": consts,
-            "factorySetting": theBestPositions}
+            "factorySetting": theBestPositions,
+            "plotData": plotData}
     '''Write result to JSON File'''
 
     path = uniquify('optimizedSettings/factory_run.json')

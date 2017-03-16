@@ -33,7 +33,6 @@ class FactoryGenerator:
             productList.append((0, 0, path))
         return productList
 
-
     def generateFactory(self, workstationPositions, visibilityType, products):
         ws = self.set_position_for_workstations(workstationPositions)
         p = self.generateProducts(ws, products)
