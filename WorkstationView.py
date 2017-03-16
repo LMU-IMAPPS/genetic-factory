@@ -60,30 +60,10 @@ class WorkstationView(Frame):
         if constants.FADE:
             if len(self.saves) >= 1:
                 for w in self.saves[len(self.saves)-1]:
-                    self.canvas.itemconfig(w[0], fill='#74838a')
-                    self.canvas.itemconfig(w[1], fill='#1b233d')
-                pass
-            if len(self.saves) >= 2:
-                for w in self.saves[len(self.saves)-2]:
-                    self.canvas.itemconfig(w[0], fill='#67777e')
-                    self.canvas.itemconfig(w[1], fill='#212b41')
-                pass
-            if len(self.saves) >= 3:
-                for w in self.saves[len(self.saves)-3]:
-                    self.canvas.itemconfig(w[0], fill='#5c6b73')
-                    self.canvas.itemconfig(w[1], fill='#263244')
-                pass
-            if len(self.saves) >= 4:
-                for w in self.saves[len(self.saves)-4]:
                     self.canvas.itemconfig(w[0], fill='#5c6b73')
                     self.canvas.itemconfig(w[1], fill='#2c3948')
                 pass
-            if len(self.saves) >= 5:
-                for w in self.saves[len(self.saves)-5]:
-                    self.canvas.itemconfig(w[0], fill='#43535b')
-                    self.canvas.itemconfig(w[1], fill='#31404b')
-                pass
-            if len(self.saves) == 6:
+            if len(self.saves) == 2:
                 toDel = self.saves.pop(0)
                 for d in toDel:
                     self.canvas.delete(d[0])
