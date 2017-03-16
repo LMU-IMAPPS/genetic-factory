@@ -11,9 +11,56 @@ from FactoryGenerator import FactoryGenerator
 from ProductsOptimizer import ProductOptimizer
 from EvolutionaryOptimizer import EvolutionaryOptimizer
 
+import tempfile
+import itertools as IT
+import os
+
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
+
+
+
+#  O-----o  #
+#   O---o   #
+#    O-o    #
+#     O     #
+#    o-O    #
+#   o---O   #
+#  o-----O  #
+#  O-----0  #
+#   O---o   #
+#    O-o    #
+#     O     #
+#    o-O    #
+#   o---O   #
+#  o-----O  #
+#  O-----o  #
+#   O---o   #
+#    O-o    #
+#     O     #
+#    o-O    #
+#   o---O   #
+#  o-----O  #
+
+
+def uniquify(path, sep='_'):
+    def name_sequence():
+        count = IT.count()
+        yield ''
+        while True:
+            nxt = next(count)
+            nc = (str(nxt))if (nxt > 9) else ('0'+str(nxt))
+            yield '{s}{n}'.format(s=sep, n=nc)
+    orig = tempfile._name_sequence
+    with tempfile._once_lock:
+        tempfile._name_sequence = name_sequence()
+        path = os.path.normpath(path)
+        dirname, basename = os.path.split(path)
+        filename, ext = os.path.splitext(basename)
+        fd, filename = tempfile.mkstemp(dir=dirname, prefix=filename, suffix=ext)
+        tempfile._name_sequence = orig
+    return filename
 
 
 def optimizePositions(factoryGenerator):
@@ -77,6 +124,21 @@ def optimizePositions(factoryGenerator):
     sys.stdout.flush()
     print(the_best_products[0].DNA)
 
+    '''Concat information to single dict'''
+    consts = constants.getConstantsDict()
+    # TODO add last Generation of evil-products
+    # best fitness over cycles
+    plotData = evolutionaryOptimizer.save_best_fitness
+
+    data = {"constants": consts,
+            "factorySetting": theBestPositions,
+            "plotData": plotData}
+    '''Write result to JSON File'''
+
+    path = uniquify('optimizedSettings/factory_run.json')
+    with open(path, 'w') as outfile:
+        json.dump(data, outfile)
+
 
 def evaluate(inputTupel):
     individual = inputTupel[0]
@@ -134,7 +196,6 @@ def drawPlots():
     plt.xlabel('Time')
     plt.title('diversity of best individuals')
     plt.show()
-
 
 
 if __name__ == '__main__':
