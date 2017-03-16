@@ -117,8 +117,8 @@ print(
     "##############################################################################################################################################################\n"
     "TEST: coevolution vs. no coevolution\n"
     "##############################################################################################################################################################\n")
-testSuiteCoev = TSuite("optimizedSettings/factory_run_01.json")
-testSuiteNoCoev = TSuite("optimizedSettings/factory_run_02.json")
+testSuiteCoev = TSuite("optimizedSettings/.factory_run_01.json")
+testSuiteNoCoev = TSuite("optimizedSettings/.factory_run_02.json")
 randProducts = []
 product_path_length = testSuiteCoev.factory_run['constants']['PRODUCTS_PATH_LENGTH']
 products_per_list = testSuiteCoev.factory_run['constants']['PRODUCTS_PER_LIST']
@@ -134,9 +134,9 @@ print(
     "##############################################################################################################################################################\n"
     "TEST: different mutation rates 0.1 0.5 0.9\n"
     "##############################################################################################################################################################\n")
-testSuiteMut01 = TSuite("optimizedSettings/factory_run_03.json")
-testSuiteMut05 = TSuite("optimizedSettings/factory_run_04.json")
-testSuiteMut09 = TSuite("optimizedSettings/factory_run_05.json")
+testSuiteMut01 = TSuite("optimizedSettings/.factory_run_03.json")
+testSuiteMut05 = TSuite("optimizedSettings/.factory_run_04.json")
+testSuiteMut09 = TSuite("optimizedSettings/.factory_run_05.json")
 randProducts = []
 product_path_length = testSuiteMut01.factory_run['constants']['PRODUCTS_PATH_LENGTH']
 products_per_list = testSuiteMut01.factory_run['constants']['PRODUCTS_PER_LIST']
@@ -148,13 +148,14 @@ testSuiteMut09.runTest(randProducts, Plot.NONE)
 
 
 # TEST: different evolution cycles for optimization with no coevolution
+
 print(
     "##############################################################################################################################################################\n"
     "TEST: different evolution cycles for optimization with no coevolution 10 100 250\n"
     "##############################################################################################################################################################\n")
-testSuite10 = TSuite("optimizedSettings/factory_run_06.json")
-testSuite100 = TSuite("optimizedSettings/factory_run_07.json")
-testSuite250 = TSuite("optimizedSettings/factory_run_08.json")
+testSuite10 = TSuite("optimizedSettings/.factory_run_06.json")
+testSuite100 = TSuite("optimizedSettings/.factory_run_07.json")
+testSuite250 = TSuite("optimizedSettings/.factory_run_08.json")
 
 randProducts = []
 product_path_length = testSuite10.factory_run['constants']['PRODUCTS_PATH_LENGTH']
@@ -164,3 +165,38 @@ for i in range(10):
 testSuite10.runTest(randProducts, Plot.NONE)
 testSuite100.runTest(randProducts, Plot.NONE)
 testSuite250.runTest(randProducts, Plot.NONE)
+
+
+# TEST: median test result for multiple optimization with and without coevolution
+
+print(
+    "##############################################################################################################################################################\n"
+    "TEST: median test result for multiple optimization with and without coevolution\n"
+    "##############################################################################################################################################################\n")
+medianResultsNoCoev = []
+medianResultsCoev = []
+randProducts = []
+testSuiteM = TSuite("optimizedSettings/.factory_run_00.json")
+product_path_length = testSuiteM.factory_run['constants']['PRODUCTS_PATH_LENGTH']
+products_per_list = testSuiteM.factory_run['constants']['PRODUCTS_PER_LIST']
+for j in range(10):
+    randProducts.append(testSuiteM.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
+# Test optimization without coevolution
+for i in range(14):
+    if i < 10:
+        name = "optimizedSettings/factory_run_0" + str(i) + ".json"
+    else:
+        name = "optimizedSettings/factory_run_" + str(i) + ".json"
+    testSuiteM = TSuite(name)
+    medianResultsNoCoev.append(testSuiteM.runTest(randProducts, Plot.NONE)[1])
+# Test optimizations with coevolution
+#for i in range(15, 30):
+#    name = "optimizedSettings/.factory_run_" + str(i) + ".json"
+#    testSuiteM = TSuite(name)
+#    medianResultsCoev.append(testSuiteM.runTest(randProducts, Plot.NONE)[1])
+print("Coevolution OFF:")
+print("  Result: ", medianResultsNoCoev)
+print("  Median: ", numpy.median(medianResultsNoCoev))
+print("Coevolution ON:")
+print("  Result: ", medianResultsCoev)
+#print("  Median: ", numpy.median(medianResultsCoev))
