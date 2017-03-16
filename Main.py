@@ -103,12 +103,23 @@ def evaluate(inputTupel):
 
 def drawPlots():
     # plot with best, worst and mean indiv per generation
+    blockedfitness = 1_844_674_407_370_955_264
+    worst = 0
+    for i in range(len(evolutionaryOptimizer.save_best_fitness)):
+        if (evolutionaryOptimizer.save_best_fitness[i] != blockedfitness) and (evolutionaryOptimizer.save_best_fitness[i] > worst) :
+            worst = evolutionaryOptimizer.save_best_fitness[i]
+    blocked = worst + 5
+    for i in range(len(evolutionaryOptimizer.save_best_fitness)):
+        if (evolutionaryOptimizer.save_best_fitness[i] == blockedfitness):
+            evolutionaryOptimizer.save_best_fitness[i] = blocked
+    threshold = [worst+1]*len(evolutionaryOptimizer.save_best_fitness)
     x = range(len(evolutionaryOptimizer.save_best_fitness))
     evolutionaryOptimizer.save_worst_fitness.append(evolutionaryOptimizer.save_worst_fitness[len(evolutionaryOptimizer.save_worst_fitness) - 1])
     evolutionaryOptimizer.save_mean.append(evolutionaryOptimizer.save_mean[len(evolutionaryOptimizer.save_mean) - 1])
     plt.xlabel('Time')
     plt.ylabel('Fitness')
     plt.title('best vs. worst individuals')
+    plt.plot(x, threshold, label='blocked-threshold', color='r')
     plt.plot(x, evolutionaryOptimizer.save_best_fitness, label='best', color='g')
     plt.legend()
     plt.show()
