@@ -44,6 +44,7 @@ class Direction(Enum):
             return Direction.UPLEFT
         if self == Direction.UPLEFT:
             return Direction.UP
+        return Direction.STAY
 
     def alt2(self):
         if self == Direction.UP:
@@ -66,9 +67,9 @@ class Direction(Enum):
 class Product:
 
     def run(self, currentFieldStatus):
-        self.blockedLastRound = False
         if self.isDone:
             # Done doing nothing
+            self.blockedLastRound = False
             return StepResult.DONE
         if not self.isInitialized:
             # Trying to move into starting position
@@ -76,30 +77,36 @@ class Product:
                 self.findTarget()
                 currentFieldStatus.add((self.positionX, self.positionY))
                 self.isInitialized = True
+                self.blockedLastRound = False
                 return StepResult.MOVED
             else:
                 self.blockedLastRound = True
                 return StepResult.BLOCKED
         nextDir = self.findDirection()
         if (self.positionX + nextDir.xAxis(), self.positionY + nextDir.yAxis()) not in currentFieldStatus:
-            return self.makeStep(currentFieldStatus, nextDir, StepResult.MOVED)
+            return self.makeStep(currentFieldStatus, nextDir)
         else:
-            nextDir = nextDir.alt1()
-            if self.blockedLastRound and (self.positionX + nextDir.xAxis(), self.positionY + nextDir.yAxis()) not in currentFieldStatus:
-                return self.makeStep(currentFieldStatus, nextDir, StepResult.BLOCKED)
-        return self.afterStepEvaluation(currentFieldStatus, True, StepResult.MOVED)
+            if self.blockedLastRound:
+                nextDir = nextDir.alt1()
+                if (self.positionX + nextDir.xAxis(), self.positionY + nextDir.yAxis()) not in currentFieldStatus:
+                    return self.makeStep(currentFieldStatus, nextDir)
+            else:
+                self.blockedLastRound = True
+                return StepResult.MOVED
+        return self.afterStepEvaluation(currentFieldStatus, True)
 
 
-    def makeStep(self, currentFieldStatus,nextDir, afterStepBlockResult):
+    def makeStep(self, currentFieldStatus,nextDir):
         #moving
         currentFieldStatus.remove((self.positionX, self.positionY))
         self.positionX += nextDir.xAxis()
         self.positionY += nextDir.yAxis()
         currentFieldStatus.add((self.positionX, self.positionY))
-        return self.afterStepEvaluation(currentFieldStatus, False, afterStepBlockResult)
+        return self.afterStepEvaluation(currentFieldStatus, False)
 
-    def afterStepEvaluation(self, currentFieldStatus, isDefaultBlocked, afterBlockedStepResult):
+    def afterStepEvaluation(self, currentFieldStatus, isDefaultBlocked):
         if (self.positionY == self.targetY) & (self.positionX == self.targetX):
+            self.blockedLastRound = False
             if self.timeAtNextWorkstation == 0:
                 self.findTarget()
                 if self.isDone:
@@ -112,7 +119,7 @@ class Product:
                 return StepResult.MOVED
         if isDefaultBlocked:
             self.blockedLastRound = True
-            return afterBlockedStepResult
+            return StepResult.BLOCKED
         return StepResult.MOVED
 
     def reset(self):
