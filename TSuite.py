@@ -1,12 +1,19 @@
 from FactoryGenerator import FactoryGenerator
 import numpy
 import json
+from enum import Enum
 from Factory import visibilityStatus
 
 import matplotlib
 
-matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
+
+
+class Plot(Enum):
+    NONE = 0
+    FITNESS = 1
+    DIVERSITY = 2
+    ALL = 3
 
 
 class TSuite:
@@ -25,7 +32,7 @@ class TSuite:
             tmp = self.factory_run['factorySetting'].pop(0)
             self.factorySetting.append((tmp[0], tmp[1], tmp[2]))
 
-    def runTest(self, products):
+    def runTest(self, products, plot):
         fitness = []
         for p in products:
             factory = self.factoryGenerator.generateFactory(self.factorySetting, visibilityStatus.NONE, p)
@@ -33,9 +40,12 @@ class TSuite:
         medianFitness = numpy.median(fitness)
         lowerBound = numpy.percentile(fitness, 25)
         upperBound = numpy.percentile(fitness, 75)
-        self.plotStats(medianFitness, lowerBound, upperBound)
 
-        ''' Output result in console'''
+        '''Draw plots '''
+        if plot == Plot.ALL:
+            self.plotStats(medianFitness, lowerBound, upperBound)
+
+        '''Output result in console'''
         print("     Fitness: ", fitness)
         print("     Median:  ", medianFitness)
         print("    ----------------------------------------------------------------------------------------------------------------------------------------------------------")
@@ -65,9 +75,6 @@ class TSuite:
         matplotlib.rc('lines', color='#B0BEC5')
         matplotlib.rc('text', color='#B0BEC5')
         matplotlib.rc('grid', color='#B0BEC5')
-
-        # Draw Horizontal line
-        #plt.axhline(linewidth=4, color='r')
 
         plt.xlabel('Cycle')
         plt.ylabel('Fitness')
@@ -115,10 +122,10 @@ testSuiteNoCoev = TSuite("optimizedSettings/factory_run_02.json")
 randProducts = []
 product_path_length = testSuiteCoev.factory_run['constants']['PRODUCTS_PATH_LENGTH']
 products_per_list = testSuiteCoev.factory_run['constants']['PRODUCTS_PER_LIST']
-for i in range(1000):
+for i in range(10):
     randProducts.append(testSuiteCoev.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
-testSuiteCoev.runTest(randProducts)
-testSuiteNoCoev.runTest(randProducts)
+testSuiteCoev.runTest(randProducts, Plot.NONE)
+testSuiteNoCoev.runTest(randProducts, Plot.NONE)
 
 
 # TEST: different mutation rates 0.1 0.5 0.9
@@ -133,11 +140,11 @@ testSuiteMut09 = TSuite("optimizedSettings/factory_run_05.json")
 randProducts = []
 product_path_length = testSuiteMut01.factory_run['constants']['PRODUCTS_PATH_LENGTH']
 products_per_list = testSuiteMut01.factory_run['constants']['PRODUCTS_PER_LIST']
-for i in range(100):
+for i in range(10):
     randProducts.append(testSuiteMut01.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
-testSuiteMut01.runTest(randProducts)
-testSuiteMut05.runTest(randProducts)
-testSuiteMut09.runTest(randProducts)
+testSuiteMut01.runTest(randProducts, Plot.NONE)
+testSuiteMut05.runTest(randProducts, Plot.NONE)
+testSuiteMut09.runTest(randProducts, Plot.NONE)
 
 
 # TEST: different evolution cycles for optimization with no coevolution
@@ -154,6 +161,6 @@ product_path_length = testSuite10.factory_run['constants']['PRODUCTS_PATH_LENGTH
 products_per_list = testSuite10.factory_run['constants']['PRODUCTS_PER_LIST']
 for i in range(10):
     randProducts.append(testSuite10.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
-testSuite10.runTest(randProducts)
-testSuite100.runTest(randProducts)
-testSuite250.runTest(randProducts)
+testSuite10.runTest(randProducts, Plot.NONE)
+testSuite100.runTest(randProducts, Plot.NONE)
+testSuite250.runTest(randProducts, Plot.NONE)
