@@ -120,6 +120,7 @@ class Product:
         if isDefaultBlocked:
             self.blockedLastRound = True
             return StepResult.BLOCKED
+        self.blockedLastRound = False
         return StepResult.MOVED
 
     def reset(self):
