@@ -8,7 +8,6 @@ class ProductOptimizer:
     def evilProductsSelection(self):
         '''Sort'''
         self.generation.sort(key=lambda y: y.fitness, reverse=True)
-
         ''' Return sublist with best <SELECTION_FACTOR> from generation '''
         nextGeneration = []
         lenGeneration = len(self.generation)
@@ -17,15 +16,15 @@ class ProductOptimizer:
                 nextGeneration.append(self.generation[i])
         return nextGeneration
 
-    ''' Generate inital random EvilProducs individual '''
-    def generateEvilProducts(self):
-        productList = []
-        for i in range(constants.PRODUCTS_PER_LIST):
-            path = ""
-            for j in range(constants.PRODUCTS_PATH_LENGTH):
-                workstationTypeIndex = numpy.random.randint(len(self.workstationsJson['workStations']))
-                path += self.workstationsTypes[workstationTypeIndex]
-            productList.append((0, 0, path))
+    ''' Generate inital random EvilProducts individual '''
+    #def generateEvilProducts(self):
+    #    productList = []
+    #    for i in range(constants.PRODUCTS_PER_LIST):
+    #        path = ""
+    #        for j in range(constants.PRODUCTS_PATH_LENGTH):
+    #            workstationTypeIndex = numpy.random.randint(len(self.workstationsJson['workStations']))
+    #            path += self.workstationsTypes[workstationTypeIndex]
+    #        productList.append((0, 0, path))
             # TODO randomize
 
     def generateEvilProduct(self, productList):
@@ -48,7 +47,6 @@ class ProductOptimizer:
     def getGeneration(self):
         return self.generation
 
-#-----------------------------------------------------------------------------------------
     def evaluateGeneration(self):
         '''Select'''
         self.generation = self.evilProductsSelection()
@@ -58,7 +56,6 @@ class ProductOptimizer:
             evilProduct.mutate(constants.PRODUCTS_MUTATION_FACTOR, self.workstationsJson, self.workstationsTypes)
 
         '''Recombine'''
-
         for i in range(int(constants.PRODUCTS_RECOMBINATION_FACTOR*len(self.generation))):
             ancestorIndex1 = 0
             ancestorIndex2 = 0
@@ -71,6 +68,10 @@ class ProductOptimizer:
         while len(self.generation) < constants.LISTS_PER_GENERATION:
             positionList = self.factoryGenerator.generateRandomProducts(constants.PRODUCTS_PER_LIST, constants.PRODUCTS_PATH_LENGTH)
             self.generation.append(self.generateEvilProduct(positionList))
+
+        '''Remove excess'''
+        while len(self.generation) > constants.LISTS_PER_GENERATION:
+            self.generation.pop()
 
 
 
