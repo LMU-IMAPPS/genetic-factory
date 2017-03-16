@@ -1,6 +1,6 @@
 ''' Global Inputs '''
 WORKSTATION_JSON = 'WorkstationsMid.json'
-EVOLUTION_CYCLES = 10
+EVOLUTION_CYCLES = 200
 FIELD_SIZE = 20
 DRAW_EVERY_CYCLE = False
 SHOW_PRODUCT_PATH = False
@@ -27,6 +27,14 @@ if not COEVOLUTION_ON:
     PRODUCTS_SELECTION_FACTOR= 1
     PRODUCTS_MUTATION_FACTOR = 0
 
+'''Helper function putting all consts into a dict'''
+def getConstantsDict():
+    constantNames = ['WORKSTATION_JSON', 'EVOLUTION_CYCLES', 'FIELD_SIZE',
+                     'POPULATION_SIZE', 'SELECTION_FACTOR', 'MUTATION_FACTOR',
+                     'RECOMBINATION_FACTOR', 'DIVERGENCE_COMPARISON_COUNT', 'COEVOLUTION_ON',
+                     'PRODUCTS_PER_LIST', 'PRODUCTS_PATH_LENGTH', 'LISTS_PER_GENERATION', 'PRODUCTS_SELECTION_FACTOR',
+                     'PRODUCTS_MUTATION_FACTOR', 'PRODUCTS_RECOMBINATION_FACTOR']
+    return dict((name, eval(name)) for name in constantNames)
 
 
 

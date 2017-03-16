@@ -15,6 +15,12 @@ import tempfile
 import itertools as IT
 import os
 
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib import pyplot as plt
+
+
+
 #  O-----o  #
 #   O---o   #
 #    O-o    #
@@ -56,10 +62,6 @@ def uniquify(path, sep='_'):
         tempfile._name_sequence = orig
     return filename
 
-
-import matplotlib
-matplotlib.use("TkAgg")
-from matplotlib import pyplot as plt
 
 
 def optimizePositions():
@@ -130,13 +132,17 @@ def optimizePositions():
     print(the_best_products[0].DNA)
 
     '''Concat information to single dict'''
-    data = {"constants": {"EVOLUTION_CYCLES": 100}}
+    consts = constants.getConstantsDict()
+    # TODO add last Generation of evil-products
+    # TODO add plot data
+
+    data = {"constants": consts,
+            "factorySetting": theBestPositions}
     '''Write result to JSON File'''
 
     path = uniquify('optimizedSettings/factory_run.json')
     with open(path, 'w') as outfile:
         json.dump(data, outfile)
-        json.dump({"products": the_best_products[0].DNA, }, outfile)
 
 
 def evaluate(inputTupel):
