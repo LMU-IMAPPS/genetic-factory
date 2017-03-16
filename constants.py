@@ -1,5 +1,5 @@
 ''' Global Inputs '''
-WORKSTATION_JSON = 'WorkstationsMid.json'
+WORKSTATION_JSON = 'Workstations075.json'
 EVOLUTION_CYCLES = 1000
 FIELD_SIZE = 30
 DRAW_EVERY_CYCLE = False
