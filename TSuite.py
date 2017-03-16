@@ -37,6 +37,8 @@ class TSuite:
         print(fitness)
         print(medianFitness)
 
+        return fitness, medianFitness
+
     def plotStats(self, medianFitness, lowerBound, upperBound):
         # plot best individual per generation
         blockedFitness = 1_844_674_407_370_955_264
