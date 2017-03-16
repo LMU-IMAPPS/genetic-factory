@@ -28,7 +28,7 @@ class TSuite:
     def runTest(self, products):
         fitness = []
         for p in products:
-            factory = self.factoryGenerator.generateFactory(self.factorySetting, visibilityStatus.NONE, p)
+            factory = self.factoryGenerator.generateFactory(self.factorySetting, visibilityStatus.ALL, p)
             fitness.append(factory.run())
         medianFitness = numpy.median(fitness)
         lowerBound = numpy.percentile(fitness, 25)
@@ -92,8 +92,8 @@ product_path_length = testSuiteCoev.factory_run['constants']['PRODUCTS_PATH_LENG
 products_per_list = testSuiteCoev.factory_run['constants']['PRODUCTS_PER_LIST']
 for i in range(20):
     randProducts.append(testSuiteCoev.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
-testSuiteCoev.runTest(randProducts)
-testSuiteNoCoev.runTest(randProducts)
+#testSuiteCoev.runTest(randProducts)
+#testSuiteNoCoev.runTest(randProducts)
 
 ''' TEST: different mutation rates 0.1 0.5 0.9 '''
 testSuiteMut01 = TSuite("optimizedSettings/factory_run_03.json")
@@ -104,8 +104,20 @@ product_path_length = testSuiteMut01.factory_run['constants']['PRODUCTS_PATH_LEN
 products_per_list = testSuiteMut01.factory_run['constants']['PRODUCTS_PER_LIST']
 for i in range(100):
     randProducts.append(testSuiteMut01.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
-testSuiteMut01.runTest(randProducts)
-testSuiteMut05.runTest(randProducts)
-testSuiteMut09.runTest(randProducts)
+#testSuiteMut01.runTest(randProducts)
+#testSuiteMut05.runTest(randProducts)
+#testSuiteMut09.runTest(randProducts)
 
 
+testSuite10 = TSuite("optimizedSettings/factory_run_06.json")
+testSuite100 = TSuite("optimizedSettings/factory_run_07.json")
+testSuite250 = TSuite("optimizedSettings/factory_run_08.json")
+
+randProducts = []
+product_path_length = testSuite10.factory_run['constants']['PRODUCTS_PATH_LENGTH']
+products_per_list = testSuite10.factory_run['constants']['PRODUCTS_PER_LIST']
+for i in range(10):
+    randProducts.append(testSuite10.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
+testSuite10.runTest(randProducts)
+#testSuite100.runTest(randProducts)
+#testSuite250.runTest(randProducts)
