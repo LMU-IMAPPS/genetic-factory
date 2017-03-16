@@ -3,6 +3,7 @@ import numpy
 import json
 from Factory import visibilityStatus
 
+
 import matplotlib
 
 matplotlib.use("TkAgg")
@@ -50,37 +51,56 @@ class TSuite:
                 self.factory_run['plotData'][i] = blocked
         threshold = [worst + 5.2] * len(self.factory_run['plotData'])
         x = range(len(self.factory_run['plotData']))
-        plt.xlabel('Time')
+
+        matplotlib.rc('axes', facecolor='#263238', edgecolor='#B0BEC5', labelcolor='#CFD8DC')
+        matplotlib.rc('figure', facecolor='#37474F', edgecolor='#B0BEC5')
+        matplotlib.rc('savefig', facecolor='#37474F', edgecolor='#B0BEC5')
+        matplotlib.rc('patch', edgecolor='#B0BEC5')
+        matplotlib.rc('xtick', color='#B0BEC5')
+        matplotlib.rc('ytick', color='#B0BEC5')
+        matplotlib.rc('lines', color='#B0BEC5')
+        matplotlib.rc('text', color='#B0BEC5')
+        matplotlib.rc('grid', color='#B0BEC5')
+
+        # Draw Horizontal line
+        #plt.axhline(linewidth=4, color='r')
+
+        plt.xlabel('Cycle')
         plt.ylabel('Fitness')
         plt.title('Best individual over time')
-        plt.plot(x, self.factory_run['plotData'], label='best', color='g')
+        plt.plot(x, self.factory_run['plotData'], label='best', color='#3F51B5')
 
         # draw line for blocked value
-        plt.plot(x, threshold, label='blocked', color='r')
+        plt.plot(x, threshold, label='blocked', color='#F44336')
 
         # draw line for test result (median)
         if medianFitness >= blockedFitness:
             medianFitness = blocked
-        plt.plot((0, len(self.factory_run['plotData'])), (medianFitness, medianFitness), 'k-', label='median')
+        plt.plot((0, len(self.factory_run['plotData'])), (medianFitness, medianFitness), 'k-', label='median', color='#ECEFF1')
 
         # draw line for upper and lower bound of test result
         if lowerBound >= blockedFitness:
             lowerBound = blocked
-        plt.plot((0, len(self.factory_run['plotData'])), (lowerBound, lowerBound), 'k-')
+        plt.plot((0, len(self.factory_run['plotData'])), (lowerBound, lowerBound), 'k-', color='#607D8B')
         if upperBound >= blockedFitness:
             upperBound = blocked
-        plt.plot((0, len(self.factory_run['plotData'])), (upperBound, upperBound), 'k-')
+        plt.plot((0, len(self.factory_run['plotData'])), (upperBound, upperBound), 'k-', color='#607D8B')
 
         plt.legend()
         plt.show()
 
         # plot diversity of best individual per generation
-        ypos = range(len(self.factory_run['plotDiversity']))
+        '''ypos = range(len(self.factory_run['plotDiversity']))
         plt.plot(ypos, self.factory_run['plotDiversity'], color='g')
         plt.ylabel('Diversity')
         plt.xlabel('Time')
         plt.title('Diversity of best individual over time')
-        plt.show()
+        plt.show()'''
+
+        '''figure = Figure()
+        canvas = FigureCanvas(figure)
+        axes = figure.add_subplot(1, 1, 1, axisbg='red')
+        axes.plot([1, 2, 3])'''''
 
 
 ''' TEST: Coevolution vs. No Coevolution '''
