@@ -34,8 +34,11 @@ class TSuite:
         lowerBound = numpy.percentile(fitness, 25)
         upperBound = numpy.percentile(fitness, 75)
         self.plotStats(medianFitness, lowerBound, upperBound)
-        print(fitness)
-        print(medianFitness)
+
+        ''' Output result in console'''
+        print("     Fitness: ", fitness)
+        print("     Median:  ", medianFitness)
+        print("    ----------------------------------------------------------------------------------------------------------------------------------------------------------")
 
         return fitness, medianFitness
 
@@ -101,7 +104,12 @@ class TSuite:
         plt.show()
 
 
-''' TEST: coevolution vs. no coevolution '''
+# TEST: coevolution vs. no coevolution
+
+print(
+    "##############################################################################################################################################################\n"
+    "TEST: coevolution vs. no coevolution\n"
+    "##############################################################################################################################################################\n")
 testSuiteCoev = TSuite("optimizedSettings/factory_run_01.json")
 testSuiteNoCoev = TSuite("optimizedSettings/factory_run_02.json")
 randProducts = []
@@ -112,7 +120,13 @@ for i in range(1000):
 testSuiteCoev.runTest(randProducts)
 testSuiteNoCoev.runTest(randProducts)
 
-''' TEST: different mutation rates 0.1 0.5 0.9 '''
+
+# TEST: different mutation rates 0.1 0.5 0.9
+
+print(
+    "##############################################################################################################################################################\n"
+    "TEST: different mutation rates 0.1 0.5 0.9\n"
+    "##############################################################################################################################################################\n")
 testSuiteMut01 = TSuite("optimizedSettings/factory_run_03.json")
 testSuiteMut05 = TSuite("optimizedSettings/factory_run_04.json")
 testSuiteMut09 = TSuite("optimizedSettings/factory_run_05.json")
@@ -121,11 +135,16 @@ product_path_length = testSuiteMut01.factory_run['constants']['PRODUCTS_PATH_LEN
 products_per_list = testSuiteMut01.factory_run['constants']['PRODUCTS_PER_LIST']
 for i in range(100):
     randProducts.append(testSuiteMut01.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
-#testSuiteMut01.runTest(randProducts)
-#testSuiteMut05.runTest(randProducts)
-#testSuiteMut09.runTest(randProducts)
+testSuiteMut01.runTest(randProducts)
+testSuiteMut05.runTest(randProducts)
+testSuiteMut09.runTest(randProducts)
 
 
+# TEST: different evolution cycles for optimization with no coevolution
+print(
+    "##############################################################################################################################################################\n"
+    "TEST: different evolution cycles for optimization with no coevolution 10 100 250\n"
+    "##############################################################################################################################################################\n")
 testSuite10 = TSuite("optimizedSettings/factory_run_06.json")
 testSuite100 = TSuite("optimizedSettings/factory_run_07.json")
 testSuite250 = TSuite("optimizedSettings/factory_run_08.json")
@@ -135,6 +154,6 @@ product_path_length = testSuite10.factory_run['constants']['PRODUCTS_PATH_LENGTH
 products_per_list = testSuite10.factory_run['constants']['PRODUCTS_PER_LIST']
 for i in range(10):
     randProducts.append(testSuite10.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
-#testSuite10.runTest(randProducts)
-#testSuite100.runTest(randProducts)
-#testSuite250.runTest(randProducts)
+testSuite10.runTest(randProducts)
+testSuite100.runTest(randProducts)
+testSuite250.runTest(randProducts)
