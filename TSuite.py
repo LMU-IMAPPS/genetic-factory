@@ -51,13 +51,13 @@ class TSuite:
         '''Draw plots '''
         if plot == Plot.ALL:
             self.plotStats(self.factory_run['plotData'], medianFitness, lowerBound, upperBound, "Cycles", "Fitness",
-                           "Best individual over time", PlotType.PLOT)
-            self.plotDiversity()
+                           "Best individual over time", PlotType.PLOT, self.factory_run['constants'])
+            self.plotDiversity(self.factory_run['constants'])
         if plot == Plot.DIVERSITY:
             self.plotStats(self.factory_run['plotData'], medianFitness, lowerBound, upperBound, "Cycles", "Fitness",
-                           "Best individual over time", PlotType.PLOT)
+                           "Best individual over time", PlotType.PLOT, self.factory_run['constants'])
         if plot == Plot.DIVERSITY:
-            self.plotDiversity()
+            self.plotDiversity(self.factory_run['constants'])
 
         # '''Output result in console'''
         # print("     Fitness: ", fitness)
@@ -66,7 +66,7 @@ class TSuite:
 
         return fitness, medianFitness
 
-    def plotStats(self, fitness, medianFitness, lowerBound, upperBound, xlable, ylable, title, plotType):
+    def plotStats(self, fitness, medianFitness, lowerBound, upperBound, xlable, ylable, title, plotType, constants):
         # plot best individual per generation
         blockedFitness = 1_844_674_407_370_955_264
         worst = 0
@@ -91,7 +91,8 @@ class TSuite:
 
         plt.xlabel(xlable)
         plt.ylabel(ylable)
-        plt.title(title)
+        text = title + "\n"
+        plt.title(text)
 
         plotType(x, fitness, label='best', color='#3F51B5')
 
@@ -111,18 +112,36 @@ class TSuite:
             upperBound = blocked
         plt.plot((0, len(fitness)), (upperBound, upperBound), 'k-', color='#607D8B')
 
-        plt.legend()
+        # write constants into graph
+        text = "Cycles = " + str(constants['EVOLUTION_CYCLES']) + "\nCoevolution = " + str(constants['COEVOLUTION_ON']) + "\nPopulation = " + str(constants['POPULATION_SIZE']) + "\nSelection = " + str(constants['SELECTION_FACTOR']) + "\nMutation = " + str(constants['MUTATION_FACTOR']) + "\nRecombination = " + str(constants['RECOMBINATION_FACTOR'])
+        plt.annotate(text, xy=(1.05, 0.5), xycoords='axes fraction', bbox=dict(boxstyle="round", fc='#263238'))
+
+        plt.legend(loc="center left", bbox_to_anchor=(0, -0.12), ncol=3)
+
+        plt.subplots_adjust(left=0.1, bottom=0.15, right=0.79, top=0.9, wspace=0.2, hspace=0.2)
         plt.show()
 
-    def plotDiversity(self):
+    def plotDiversity(self, constants):
         # plot diversity of best individual per generation
         ypos = range(len(self.factory_run['plotDiversity']))
         mean = numpy.mean(self.factory_run['plotDiversity'])
-        plt.plot(ypos, self.factory_run['plotDiversity'], color='g')
+        plt.plot(ypos, self.factory_run['plotDiversity'], label='diversity', color='g')
         plt.plot((0, len(self.factory_run['plotDiversity'])), (mean, mean), 'k-', label='mean', color='#ECEFF1')
         plt.ylabel('Diversity')
         plt.xlabel('Time')
         plt.title('Diversity of best individual over time')
+
+        # write constants into graph
+        text = "Cycles = " + str(constants['EVOLUTION_CYCLES']) + "\nCoevolution = " + str(
+            constants['COEVOLUTION_ON']) + "\nPopulation = " + str(
+            constants['POPULATION_SIZE']) + "\nSelection = " + str(
+            constants['SELECTION_FACTOR']) + "\nMutation = " + str(
+            constants['MUTATION_FACTOR']) + "\nRecombination = " + str(constants['RECOMBINATION_FACTOR'])
+        plt.annotate(text, xy=(1.05, 0.5), xycoords='axes fraction', bbox=dict(boxstyle="round", fc='#263238'))
+
+        plt.legend(loc="center left", bbox_to_anchor=(0, -0.12), ncol=3)
+
+        plt.subplots_adjust(left=0.1, bottom=0.15, right=0.79, top=0.9, wspace=0.2, hspace=0.2)
         plt.show()
 
 
@@ -175,11 +194,11 @@ testSuite250 = TSuite("optimizedSettings/.factory_run_08.json")
 randProducts = []
 product_path_length = testSuite10.factory_run['constants']['PRODUCTS_PATH_LENGTH']
 products_per_list = testSuite10.factory_run['constants']['PRODUCTS_PER_LIST']
-for i in range(1000):
+for i in range(10):
     randProducts.append(testSuite10.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
-# testSuite10.runTest(randProducts, Plot.ALL)
-# testSuite100.runTest(randProducts, Plot.NONE)
-# testSuite250.runTest(randProducts, Plot.NONE)
+testSuite10.runTest(randProducts, Plot.ALL)
+testSuite100.runTest(randProducts, Plot.ALL)
+testSuite250.runTest(randProducts, Plot.ALL)
 
 
 # TEST: median test result for multiple optimization with and without coevolution
@@ -221,8 +240,8 @@ for i in range(184):
         name = "optimizedSettings/factoryRuns/withCoevolution/factory_run_0" + str(i) + ".json"
     else:
         name = "optimizedSettings/factoryRuns/withCoevolution/factory_run_" + str(i) + ".json"
-    testSuiteM = TSuite(name)
-    medianResultsCoev.append(testSuiteM.runTest(randProducts, Plot.NONE)[1])
+    testSuiteN = TSuite(name)
+    medianResultsCoev.append(testSuiteN.runTest(randProducts, Plot.NONE)[1])
 
     '''See whats going on in the console'''
     percentage = round(i / 185 * 100)
@@ -242,10 +261,10 @@ print("  Result: ", medianResultsCoev)
 print("  Median: ", medianCoev)
 
 testSuiteM.plotStats(medianResultsNoCoev, medianNoCoev, lowerBoundNoCoev, upperBoundNoCoev, "Run", "Result",
-                     "Results of multiple test runs without coevolution", PlotType.BAR)
-testSuiteM.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCoev, "Run", "Result",
-                     "Results of multiple test runs coevolution", PlotType.BAR)
+                     "Results of multiple test runs without coevolution", PlotType.BAR, testSuiteM.factory_run['constants'])
+testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCoev, "Run", "Result",
+                     "Results of multiple test runs with coevolution", PlotType.BAR, testSuiteN.factory_run['constants'])
 testSuiteM.plotStats(medianResultsNoCoev, medianNoCoev, lowerBoundNoCoev, upperBoundNoCoev, "Run", "Result",
-                     "Results of multiple test runs without coevolution", PlotType.SCATTER)
-testSuiteM.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCoev, "Run", "Result",
-                     "Results of multiple test runs coevolution", PlotType.SCATTER)
+                     "Results of multiple test runs without coevolution", PlotType.SCATTER, testSuiteM.factory_run['constants'])
+testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCoev, "Run", "Result",
+                     "Results of multiple test runs with coevolution", PlotType.SCATTER, testSuiteN.factory_run['constants'])
