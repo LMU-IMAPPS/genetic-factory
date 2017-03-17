@@ -112,6 +112,11 @@ class TSuite:
             upperBound = blocked
         plt.plot((0, len(fitness)), (upperBound, upperBound), 'k-', color='#607D8B')
 
+        # draw line for test result (median)
+        if medianFitness >= blocked:
+            medianFitness = blocked
+        plt.plot((0, len(fitness)), (medianFitness, medianFitness), 'k-', label='median', color='#ECEFF1')
+
         # write constants into graph
         text = "Cycles = " + str(constants['EVOLUTION_CYCLES']) + "\nCoevolution = " + str(constants['COEVOLUTION_ON']) + "\nPopulation = " + str(constants['POPULATION_SIZE']) + "\nSelection = " + str(constants['SELECTION_FACTOR']) + "\nMutation = " + str(constants['MUTATION_FACTOR']) + "\nRecombination = " + str(constants['RECOMBINATION_FACTOR'])
         plt.annotate(text, xy=(1.05, 0.5), xycoords='axes fraction', bbox=dict(boxstyle="round", fc='#263238'))
@@ -201,7 +206,7 @@ for i in range(10):
 #testSuite250.runTest(randProducts, Plot.ALL)
 
 
-# TEST: median test result for multiple optimization with and without coevolution
+''''# TEST: median test result for multiple optimization with and without coevolution
 
 print(
     "##############################################################################################################################################################\n"
@@ -224,7 +229,7 @@ for i in range(200):
     testSuiteM = TSuite(name)
     medianResultsNoCoev.append(testSuiteM.runTest(randProducts, Plot.NONE)[1])
 
-    '''See whats going on in the console'''
+    #See whats going on in the console
     percentage = round(i / 200 * 100)
     bar = "[" + "=" * round(percentage / 2) + "-" * round(50 - (percentage / 2)) + "]"
     sys.stdout.write("Progress: \r%d%% Done \t %s \tMedian test result for current workstation %i" % (percentage, bar, medianResultsNoCoev[i]))
@@ -234,7 +239,7 @@ medianNoCoev = numpy.median(medianResultsNoCoev)
 lowerBoundNoCoev = numpy.percentile(medianResultsNoCoev, 25)
 upperBoundNoCoev = numpy.percentile(medianResultsNoCoev, 75)
 
-# Test optimizations with coevolution
+    # Test optimizations with coevolution
 for i in range(200):
     if i < 10:
         name = "optimizedSettings/factoryRuns/withCoevolution/factory_run_0" + str(i) + ".json"
@@ -243,7 +248,7 @@ for i in range(200):
     testSuiteN = TSuite(name)
     medianResultsCoev.append(testSuiteN.runTest(randProducts, Plot.NONE)[1])
 
-    '''See whats going on in the console'''
+    #See whats going on in the console
     percentage = round(i / 200 * 100)
     bar = "[" + "=" * round(percentage / 2) + "-" * round(50 - (percentage / 2)) + "]"
     sys.stdout.write("Progress: \r%d%% Done \t %s \tMedian test result for current workstation %i" % (percentage, bar, medianResultsCoev[i]))
@@ -259,6 +264,39 @@ print("  Median: ", medianNoCoev)
 print("Coevolution ON:")
 print("  Result: ", medianResultsCoev)
 print("  Median: ", medianCoev)
+
+testSuiteM.plotStats(medianResultsNoCoev, medianNoCoev, lowerBoundNoCoev, upperBoundNoCoev, "Run", "Result",
+                     "Results of multiple test runs without coevolution", PlotType.BAR, testSuiteM.factory_run['constants'])
+testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCoev, "Run", "Result",
+                     "Results of multiple test runs with coevolution", PlotType.BAR, testSuiteN.factory_run['constants'])
+testSuiteM.plotStats(medianResultsNoCoev, medianNoCoev, lowerBoundNoCoev, upperBoundNoCoev, "Run", "Result",
+                     "Results of multiple test runs without coevolution", PlotType.SCATTER, testSuiteM.factory_run['constants'])
+testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCoev, "Run", "Result",
+                     "Results of multiple test runs with coevolution", PlotType.SCATTER, testSuiteN.factory_run['constants'])
+'''
+
+# TEST: median test result for multiple optimization with and without coevolution
+
+print(
+    "##############################################################################################################################################################\n"
+    "TEST: median test result for multiple optimization with and without coevolution\n"
+    "##############################################################################################################################################################\n")
+testSuiteM = TSuite("optimizedSettings/factoryRuns/withoutCoevolution/factory_run_00.json")
+testSuiteN = TSuite("optimizedSettings/factoryRuns/withCoevolution/factory_run_00.json")
+product_path_length = testSuiteM.factory_run['constants']['PRODUCTS_PATH_LENGTH']
+products_per_list = testSuiteM.factory_run['constants']['PRODUCTS_PER_LIST']
+
+medianResultsNoCoev =  [105.0, 99.0, 106.0, 108.0, 103.0, 96.0, 105.0, 100.0, 100.0, 106.0, 111.0, 113.0, 9.2233720368547758e+18, 121.0, 99.0, 103.0, 103.0, 111.0, 105.0, 111.0, 103.0, 134.0, 115.0, 102.0, 112.0, 103.0, 101.0, 99.0, 113.0, 108.0, 108.0, 111.0, 108.0, 103.0, 107.0, 98.0, 116.0, 110.0, 96.0, 113.0, 102.0, 111.0, 102.0, 106.0, 103.0, 109.0, 100.0, 102.5, 105.0, 121.0, 103.0, 119.0, 105.0, 102.0, 98.0, 111.0, 105.0, 104.0, 103.0, 9.2233720368547758e+18, 114.0, 100.0, 99.0, 102.0, 105.0, 102.0, 109.0, 113.0, 116.0, 117.0, 101.0, 101.0, 108.0, 111.0, 103.0, 99.0, 108.0, 118.0, 99.0, 103.0, 111.0, 135.0, 117.0, 102.0, 9.2233720368547758e+18, 110.0, 105.0, 9.2233720368547758e+18, 102.0, 105.0, 106.0, 109.0, 105.0, 114.0, 100.0, 109.0, 106.0, 111.0, 123.0, 105.0, 106.0, 108.0, 109.0, 106.0, 119.0, 131.5, 99.0, 127.0, 101.0, 136.0, 104.0, 101.0, 9.2233720368547758e+18, 117.0, 105.0, 98.0, 9.2233720368547758e+18, 103.0, 101.0, 100.0, 103.0, 101.0, 98.0, 116.0, 99.0, 108.0, 111.0, 110.0, 108.0, 102.0, 111.0, 104.0, 106.0, 101.0, 138.0, 108.0, 110.0, 98.0, 121.0, 101.0, 110.0, 110.0, 107.0, 115.0, 102.0, 103.0, 106.0, 114.0, 109.0, 119.5, 111.0, 100.0, 9.2233720368547758e+18, 106.0, 106.0, 98.0, 111.5, 99.0, 102.0, 111.0, 106.0, 102.0, 102.0, 106.0, 111.0, 114.0, 114.5, 104.5, 119.0, 100.0, 114.5, 113.0, 100.0, 99.0, 109.0, 109.0, 9.2233720368547758e+18, 103.0, 117.0, 101.0, 109.0, 101.0, 97.5, 99.0, 111.0, 118.0, 102.0, 98.0, 9.2233720368547758e+18, 104.0, 9.2233720368547758e+18, 9.2233720368547758e+18, 106.0, 111.0, 108.0, 98.0, 101.0, 104.0, 9.2233720368547758e+18, 108.5]
+medianNoCoev = 106.0
+lowerBoundNoCoev = numpy.percentile(medianResultsNoCoev, 25)
+upperBoundNoCoev = numpy.percentile(medianResultsNoCoev, 75)
+
+medianResultsCoev = [101.0, 101.0, 110.0, 105.5, 105.0, 106.0, 98.0, 100.0, 105.0, 109.0, 106.0, 100.0, 104.0, 102.0, 101.0, 113.0, 103.0, 101.0, 104.0, 102.0, 108.0, 100.0, 103.0, 107.0, 99.0, 101.0, 109.0, 102.0, 109.0, 99.0, 102.0, 103.0, 99.0, 111.0, 107.0, 115.0, 105.0, 104.0, 100.0, 100.0, 106.0, 110.0, 99.0, 106.0, 104.0, 105.0, 104.0, 102.0, 108.0, 103.0, 103.0, 106.0, 104.0, 102.0, 101.5, 105.0, 104.0, 101.0, 113.0, 99.0, 98.0, 102.0, 99.0, 103.0, 108.0, 99.0, 105.0, 109.0, 106.0, 104.0, 110.0, 107.0, 101.0, 102.0, 104.0, 106.5, 109.0, 107.0, 109.0, 101.0, 111.0, 102.0, 110.0, 99.0, 102.0, 109.0, 105.0, 103.0, 103.0, 102.0, 103.0, 102.0, 108.0, 107.5, 104.0, 105.0, 99.0, 110.0, 105.0, 107.0, 108.0, 106.0, 108.0, 101.0, 110.0, 112.0, 105.0, 103.0, 104.0, 104.5, 107.0, 114.0, 100.0, 104.0, 114.0, 106.0, 100.0, 105.0, 98.0, 111.0, 103.0, 105.0, 105.0, 99.0, 105.5, 107.0, 107.0, 100.0, 102.0, 102.0, 104.0, 105.0, 111.0, 106.0, 105.0, 99.0, 112.0, 114.0, 109.0, 104.0, 103.0, 102.0, 103.0, 104.5, 108.0, 112.0, 103.5, 101.0, 101.0, 100.0, 100.0, 105.0, 103.0, 105.0, 102.0, 102.0, 103.0, 102.0, 103.0, 100.0, 107.0, 104.0, 101.0, 107.0, 104.0, 140.0, 106.0, 103.0, 103.0, 99.0, 102.0, 104.0, 109.0, 102.0, 102.0, 100.0, 105.0, 100.0, 103.0, 102.0, 106.0, 103.0, 101.0, 107.0, 106.0, 101.0, 104.0, 106.0, 110.0, 108.0, 101.0, 103.0, 104.0, 109.0, 105.0, 106.0, 103.0, 103.0, 102.0, 99.0]
+medianCoev = 102.0
+lowerBoundCoev = numpy.percentile(medianResultsCoev, 25)
+print(lowerBoundCoev)
+upperBoundCoev = numpy.percentile(medianResultsCoev, 75)
+print(upperBoundCoev)
 
 testSuiteM.plotStats(medianResultsNoCoev, medianNoCoev, lowerBoundNoCoev, upperBoundNoCoev, "Run", "Result",
                      "Results of multiple test runs without coevolution", PlotType.BAR, testSuiteM.factory_run['constants'])
