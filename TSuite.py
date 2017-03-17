@@ -196,9 +196,9 @@ product_path_length = testSuite10.factory_run['constants']['PRODUCTS_PATH_LENGTH
 products_per_list = testSuite10.factory_run['constants']['PRODUCTS_PER_LIST']
 for i in range(10):
     randProducts.append(testSuite10.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
-testSuite10.runTest(randProducts, Plot.ALL)
-testSuite100.runTest(randProducts, Plot.ALL)
-testSuite250.runTest(randProducts, Plot.ALL)
+#testSuite10.runTest(randProducts, Plot.ALL)
+#testSuite100.runTest(randProducts, Plot.ALL)
+#testSuite250.runTest(randProducts, Plot.ALL)
 
 
 # TEST: median test result for multiple optimization with and without coevolution
@@ -213,10 +213,10 @@ randProducts = []
 testSuiteM = TSuite("optimizedSettings/.factory_run_00.json")
 product_path_length = testSuiteM.factory_run['constants']['PRODUCTS_PATH_LENGTH']
 products_per_list = testSuiteM.factory_run['constants']['PRODUCTS_PER_LIST']
-for j in range(10):
+for j in range(1000):
     randProducts.append(testSuiteM.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
 # Test optimization without coevolution
-for i in range(184):
+for i in range(200):
     if i < 10:
         name = "optimizedSettings/factoryRuns/withoutCoevolution/factory_run_0" + str(i) + ".json"
     else:
@@ -235,7 +235,7 @@ lowerBoundNoCoev = numpy.percentile(medianResultsNoCoev, 25)
 upperBoundNoCoev = numpy.percentile(medianResultsNoCoev, 75)
 
 # Test optimizations with coevolution
-for i in range(184):
+for i in range(200):
     if i < 10:
         name = "optimizedSettings/factoryRuns/withCoevolution/factory_run_0" + str(i) + ".json"
     else:
