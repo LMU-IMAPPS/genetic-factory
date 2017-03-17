@@ -267,3 +267,4 @@ testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCo
 testSuiteM.plotStats(medianResultsNoCoev, medianNoCoev, lowerBoundNoCoev, upperBoundNoCoev, "Run", "Result",
                      "Results of multiple test runs without coevolution", PlotType.SCATTER, testSuiteM.factory_run['constants'])
 testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCoev, "Run", "Result",
+                     "Results of multiple test runs with coevolution", PlotType.SCATTER, testSuiteN.factory_run['constants'])
