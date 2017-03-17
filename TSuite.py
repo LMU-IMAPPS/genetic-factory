@@ -225,7 +225,7 @@ for i in range(200):
     medianResultsNoCoev.append(testSuiteM.runTest(randProducts, Plot.NONE)[1])
 
     '''See whats going on in the console'''
-    percentage = round(i / 185 * 100)
+    percentage = round(i / 200 * 100)
     bar = "[" + "=" * round(percentage / 2) + "-" * round(50 - (percentage / 2)) + "]"
     sys.stdout.write("Progress: \r%d%% Done \t %s \tMedian test result for current workstation %i" % (percentage, bar, medianResultsNoCoev[i]))
     sys.stdout.flush()
@@ -244,7 +244,7 @@ for i in range(200):
     medianResultsCoev.append(testSuiteN.runTest(randProducts, Plot.NONE)[1])
 
     '''See whats going on in the console'''
-    percentage = round(i / 185 * 100)
+    percentage = round(i / 200 * 100)
     bar = "[" + "=" * round(percentage / 2) + "-" * round(50 - (percentage / 2)) + "]"
     sys.stdout.write("Progress: \r%d%% Done \t %s \tMedian test result for current workstation %i" % (percentage, bar, medianResultsCoev[i]))
     sys.stdout.flush()
