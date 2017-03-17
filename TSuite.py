@@ -53,16 +53,16 @@ class TSuite:
             self.plotStats(self.factory_run['plotData'], medianFitness, lowerBound, upperBound, "Cycles", "Fitness",
                            "Best individual over time", PlotType.PLOT, self.factory_run['constants'])
             self.plotDiversity(self.factory_run['constants'])
-        if plot == Plot.DIVERSITY:
+        if plot == Plot.FITNESS:
             self.plotStats(self.factory_run['plotData'], medianFitness, lowerBound, upperBound, "Cycles", "Fitness",
                            "Best individual over time", PlotType.PLOT, self.factory_run['constants'])
         if plot == Plot.DIVERSITY:
             self.plotDiversity(self.factory_run['constants'])
 
-        # '''Output result in console'''
-        # print("     Fitness: ", fitness)
-        # print("     Median:  ", medianFitness)
-        # print("    ----------------------------------------------------------------------------------------------------------------------------------------------------------")
+        '''Output result in console'''
+        print("     Fitness: ", fitness)
+        print("     Median:  ", medianFitness)
+        print("    ----------------------------------------------------------------------------------------------------------------------------------------------------------")
 
         return fitness, medianFitness
 
@@ -111,11 +111,6 @@ class TSuite:
         if upperBound >= blocked:
             upperBound = blocked
         plt.plot((0, len(fitness)), (upperBound, upperBound), 'k-', color='#607D8B')
-
-        # draw line for test result (median)
-        if medianFitness >= blocked:
-            medianFitness = blocked
-        plt.plot((0, len(fitness)), (medianFitness, medianFitness), 'k-', label='median', color='#ECEFF1')
 
         # write constants into graph
         text = "Cycles = " + str(constants['EVOLUTION_CYCLES']) + "\nCoevolution = " + str(constants['COEVOLUTION_ON']) + "\nPopulation = " + str(constants['POPULATION_SIZE']) + "\nSelection = " + str(constants['SELECTION_FACTOR']) + "\nMutation = " + str(constants['MUTATION_FACTOR']) + "\nRecombination = " + str(constants['RECOMBINATION_FACTOR'])
@@ -206,9 +201,9 @@ for i in range(10):
 #testSuite250.runTest(randProducts, Plot.ALL)
 
 
-''''# TEST: median test result for multiple optimization with and without coevolution
+# TEST: median test result for multiple optimization with and without coevolution
 
-print(
+'''print(
     "##############################################################################################################################################################\n"
     "TEST: median test result for multiple optimization with and without coevolution\n"
     "##############################################################################################################################################################\n")
@@ -277,7 +272,7 @@ testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCo
 
 # TEST: median test result for multiple optimization with and without coevolution
 
-print(
+'''print(
     "##############################################################################################################################################################\n"
     "TEST: median test result for multiple optimization with and without coevolution\n"
     "##############################################################################################################################################################\n")
@@ -305,4 +300,4 @@ testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCo
 testSuiteM.plotStats(medianResultsNoCoev, medianNoCoev, lowerBoundNoCoev, upperBoundNoCoev, "Run", "Result",
                      "Results of multiple test runs without coevolution", PlotType.SCATTER, testSuiteM.factory_run['constants'])
 testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCoev, "Run", "Result",
-                     "Results of multiple test runs with coevolution", PlotType.SCATTER, testSuiteN.factory_run['constants'])
+                     "Results of multiple test runs with coevolution", PlotType.SCATTER, testSuiteN.factory_run['constants'])'''
