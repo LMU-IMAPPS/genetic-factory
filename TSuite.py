@@ -210,7 +210,7 @@ print(
 medianResultsNoCoev = []
 medianResultsCoev = []
 randProducts = []
-testSuiteM = TSuite("optimizedSettings/.factory_run_00.json")
+testSuiteM = TSuite("optimizedSettings/factoryRuns/withoutCoevolution/factory_run_00.json")
 product_path_length = testSuiteM.factory_run['constants']['PRODUCTS_PATH_LENGTH']
 products_per_list = testSuiteM.factory_run['constants']['PRODUCTS_PER_LIST']
 for j in range(1000):
@@ -267,4 +267,3 @@ testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCo
 testSuiteM.plotStats(medianResultsNoCoev, medianNoCoev, lowerBoundNoCoev, upperBoundNoCoev, "Run", "Result",
                      "Results of multiple test runs without coevolution", PlotType.SCATTER, testSuiteM.factory_run['constants'])
 testSuiteN.plotStats(medianResultsCoev, medianCoev, lowerBoundCoev, upperBoundCoev, "Run", "Result",
-                     "Results of multiple test runs with coevolution", PlotType.SCATTER, testSuiteN.factory_run['constants'])
