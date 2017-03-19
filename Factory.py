@@ -52,10 +52,11 @@ class Factory:
 
                     self.viewRoot.update()
                     self.View.showButton()
-                    pprint("Done in "+str(counter) + ' steps.')
+                    pprint("Done in " + str(counter) + ' steps.')
                 return counter  # * 100000 + totalMoves
             if not madeChange:
-                if vs != visibilityStatus.NONE:pprint("Blocked")
+                if vs != visibilityStatus.NONE:
+                    pprint("Blocked")
                 return sys.maxsize
             counter += 1
             if vs == visibilityStatus.ALL:
@@ -69,7 +70,6 @@ class Factory:
         def innerRun():
             nonlocal returnVal
             returnVal = self.privateRun(self.vs)
-
         if self.vs != visibilityStatus.NONE:
             self.viewRoot.after(1000, innerRun)
             self.viewRoot.mainloop()

@@ -1,10 +1,9 @@
-from tkinter import Canvas, Frame, BOTH, Button
+from tkinter import Canvas, Frame, BOTH
 import constants
-import time
 
 
 class WorkstationView(Frame):
-    #list_old = []
+    # list_old = []
     width = 0
     height = 0
 
@@ -45,21 +44,20 @@ class WorkstationView(Frame):
 
     saves = []
 
-
     def drawWorkstations(self, idv, size):
         saveDraw = []
         for i in idv.DNA:
-            ws = WorkstationView.canvas.create_rectangle(i[1] *size, i[2] *size, i[1] *size + size, i[2] *size + size, fill="#B0BEC5", outline="#607D8B")
-            #self.canvas.itemconfig(ws, fill='#74838a')
-            ts = WorkstationView.canvas.create_text((i[1] *size + (size / 2), i[2] *size + (size / 2)), text=i[0])
-            saveDraw.append((ws,ts))
+            ws = WorkstationView.canvas.create_rectangle(i[1] * size, i[2] * size, i[1] * size + size, i[2] * size + size, fill="#B0BEC5", outline="#607D8B")
+            # self.canvas.itemconfig(ws, fill='#74838a')
+            ts = WorkstationView.canvas.create_text((i[1] * size + (size / 2), i[2] * size + (size / 2)), text=i[0])
+            saveDraw.append((ws, ts))
         self.saves.append(saveDraw)
         pass
 
     def updateWorkstation(self, size, works):
         if constants.FADE:
             if len(self.saves) >= 1:
-                for w in self.saves[len(self.saves)-1]:
+                for w in self.saves[len(self.saves) - 1]:
                     self.canvas.itemconfig(w[0], fill='#5c6b73')
                     self.canvas.itemconfig(w[1], fill='#2c3948')
                 pass
@@ -80,4 +78,3 @@ class WorkstationView(Frame):
 
     def nextTimeStep(self, idv):
         self.updateWorkstation(self.size, idv)
-

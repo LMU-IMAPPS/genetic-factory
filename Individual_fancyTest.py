@@ -8,9 +8,7 @@ class Individual:
     def __init__(self, DNA, initalFitness=None):
         self.DNA = DNA
         self.fitness = initalFitness
-        self.DNA.sort(key=lambda individual: ord(individual[0][0]) *
-                                             1000000 + (individual[1] *
-                                                        individual[2]))
+        self.DNA.sort(key=lambda individual: ord(individual[0][0]) * 1000000 + (individual[1] * individual[2]))
 
     def workstationOnDifferentPlacesTest(self):
         setOfWorkstationPostion = set(map(lambda d: (d[1], d[2]), self.DNA))
@@ -20,8 +18,6 @@ class Individual:
         return True
 
     def evaluateFitness(self, factoryGenerator, products, vizType=visibilityStatus.NONE):
-        # if (self.fitness is None) or (vizType != visibilityStatus.NONE):
-        # if self.workstationOnDifferentPlacesTest():
         return factoryGenerator.generateFactory(self.DNA, vizType, products).run()
 
     def setFitness(self, fitness):
@@ -61,7 +57,6 @@ class Individual:
                 wsPositionTmp = self.DNA[i]
                 newX = wsPositionTmp[1]
                 newY = wsPositionTmp[2]
-                # while newX == wsPositionTmp[1] and newY == wsPositionTmp[2]:
                 newX = wsPositionTmp[1] + newX_random
                 newY = wsPositionTmp[2] + newY_random
                 if newX < 0:

@@ -1,10 +1,9 @@
 import numpy as np
 import constants
-import numpy
 
 
 class EvilProducts:
-    def __init__(self, DNA, initalFitness = None):
+    def __init__(self, DNA, initalFitness=None):
         self.DNA = DNA
         self.fitness = initalFitness
 
@@ -21,7 +20,7 @@ class EvilProducts:
             workstationTypeIndex = np.random.randint(len(workstationsJson['workStations']))
             first = self.DNA[p][2][:i]
             change = workstationsJson['workStations'][workstationTypeIndex]['type']
-            last = self.DNA[p][2][i+1:]
+            last = self.DNA[p][2][i + 1:]
             self.DNA[p] = (self.DNA[p][0], self.DNA[p][1], first + change + last)
 
         return self
@@ -34,5 +33,3 @@ class EvilProducts:
                 new_Evil_Products.setFitness(0)
                 new_Evil_Products.DNA[i] = (new_Evil_Products.DNA[i][0], new_Evil_Products.DNA[i][1], ancestor2.DNA[i][2])
         return new_Evil_Products
-
-

@@ -10,7 +10,6 @@ for f in onlyfiles:
     with open('inputFolder/' + f) as jsonFile:
         factoryJson = json.load(jsonFile)
     if factoryJson['constants']["COEVOLUTION_ON"]:
-        os.rename('inputFolder/'+ f, Main.uniquify('outputFolder/withCoevolution/factory_run.json'))
+        os.rename('inputFolder/' + f, Main.uniquify('outputFolder/withCoevolution/factory_run.json'))
     else:
-        os.rename('inputFolder/'+ f, Main.uniquify('outputFolder/withoutCoevolution/factory_run.json'))
-
+        os.rename('inputFolder/' + f, Main.uniquify('outputFolder/withoutCoevolution/factory_run.json'))

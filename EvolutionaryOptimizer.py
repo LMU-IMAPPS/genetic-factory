@@ -5,6 +5,7 @@ import math
 from Individual import Individual
 import constants
 
+
 class EvolutionaryOptimizer:
     save_best_fitness = []
     save_worst_fitness = []
@@ -68,20 +69,19 @@ class EvolutionaryOptimizer:
         '''Mutation'''
         diversity = self.calculateDiversity()
         plotdiversity = list(diversity)
-        plotdiversity.sort(key= lambda i: i[1].fitness)
+        plotdiversity.sort(key=lambda i: i[1].fitness)
         self.save_diversity_plot.append(plotdiversity[0][0])
         mutationlist = []
 
         for individual in diversity:
             indifit = individual[1].fitness
             indidiv = individual[0] + 1
-            mutationfactor = indifit/(indidiv*100000)
-            mutationlist.append((mutationfactor,individual[1]))
+            mutationfactor = indifit / (indidiv * 100000)
+            mutationlist.append((mutationfactor, individual[1]))
 
-        mutationlist.sort(key= lambda i: i[0])
-        scala = 1/(len(mutationlist)*2)
+        mutationlist.sort(key=lambda i: i[0])
+        scala = 1 / (len(mutationlist) * 2)
 
-        min_div = diversity[0][0]
         half_max_div = round(diversity[len(diversity) - 1][0] / 2)
         median = diversity[round(len(diversity) / 2)][0]
         factor = 0
@@ -90,9 +90,9 @@ class EvolutionaryOptimizer:
         else:
             factor = 0.3
 
-        for individual in range(len(mutationlist)-1):
+        for individual in range(len(mutationlist) - 1):
             tempindiv = mutationlist[individual][1]
-            scalaproindiv = (individual +1) * scala + 0.5
+            scalaproindiv = (individual + 1) * scala + 0.5
             mutationf = constants.MUTATION_FACTOR * scalaproindiv
             tempindiv.mutate(mutationf)
             if (diversity[round((len(diversity) - 1) * factor)][0] < mutationlist[individual][0]):
@@ -158,4 +158,3 @@ class EvolutionaryOptimizer:
         result /= 2 * constants.FIELD_SIZE
         result /= len(individual.DNA)
         return result
-

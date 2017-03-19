@@ -13,12 +13,9 @@ from EvolutionaryOptimizer import EvolutionaryOptimizer
 
 import tempfile
 import itertools as IT
-import os
 
 import matplotlib
 matplotlib.use("TkAgg")
-from matplotlib import pyplot as plt
-
 
 
 #  O-----o  #
@@ -50,7 +47,7 @@ def uniquify(path, sep='_'):
         yield ''
         while True:
             nxt = next(count)
-            nc = (str(nxt))if (nxt > 9) else ('0'+str(nxt))
+            nc = (str(nxt))if (nxt > 9) else ('0' + str(nxt))
             yield '{s}{n}'.format(s=sep, n=nc)
     orig = tempfile._name_sequence
     with tempfile._once_lock:
@@ -64,7 +61,7 @@ def uniquify(path, sep='_'):
 
 
 def optimizePositions(factoryGenerator):
-    pool = Pool(None) # Makes a worker thread for every cpu
+    pool = Pool(None)  # Makes a worker thread for every cpu
 
     for cycle in range(constants.EVOLUTION_CYCLES):
         '''Init products list for generation'''
@@ -76,7 +73,6 @@ def optimizePositions(factoryGenerator):
             evolutionaryOptimizer.getIndividuals()[dfmIndex].setFitness(dataFromMultiprocessing[dfmIndex][0])
             for i in range(constants.LISTS_PER_GENERATION):
                 productsGenerationFitness[i] += dataFromMultiprocessing[dfmIndex][1][i]
-
 
         for i in range(constants.LISTS_PER_GENERATION):
             productsGenerationFitness[i] /= constants.POPULATION_SIZE

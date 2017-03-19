@@ -1,7 +1,7 @@
 import numpy
 import constants
 from EvilProducts import EvilProducts
-import math
+
 
 class ProductOptimizer:
 
@@ -17,7 +17,7 @@ class ProductOptimizer:
         return nextGeneration
 
     ''' Generate inital random EvilProducts individual '''
-    #def generateEvilProducts(self):
+    # def generateEvilProducts(self):
     #    productList = []
     #    for i in range(constants.PRODUCTS_PER_LIST):
     #        path = ""
@@ -25,7 +25,7 @@ class ProductOptimizer:
     #            workstationTypeIndex = numpy.random.randint(len(self.workstationsJson['workStations']))
     #            path += self.workstationsTypes[workstationTypeIndex]
     #        productList.append((0, 0, path))
-            # TODO randomize
+    # TODO randomize
 
     def generateEvilProduct(self, productList):
         return EvilProducts(productList)
@@ -42,8 +42,6 @@ class ProductOptimizer:
             positionList = self.factoryGenerator.generateRandomProducts(constants.PRODUCTS_PER_LIST, constants.PRODUCTS_PATH_LENGTH)
             self.generation.append(self.generateEvilProduct(positionList))
 
-
-
     def getGeneration(self):
         return self.generation
 
@@ -56,7 +54,7 @@ class ProductOptimizer:
             evilProduct.mutate(constants.PRODUCTS_MUTATION_FACTOR, self.workstationsJson, self.workstationsTypes)
 
         '''Recombine'''
-        for i in range(int(constants.PRODUCTS_RECOMBINATION_FACTOR*len(self.generation))):
+        for i in range(int(constants.PRODUCTS_RECOMBINATION_FACTOR * len(self.generation))):
             ancestorIndex1 = 0
             ancestorIndex2 = 0
             while ancestorIndex1 == ancestorIndex2:
@@ -72,6 +70,3 @@ class ProductOptimizer:
         '''Remove excess'''
         while len(self.generation) > constants.LISTS_PER_GENERATION:
             self.generation.pop()
-
-
-

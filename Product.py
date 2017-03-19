@@ -1,6 +1,5 @@
 from enum import Enum
 import sys
-import numpy
 
 
 class StepResult(Enum):
@@ -64,6 +63,7 @@ class Direction(Enum):
         if self == Direction.UPLEFT:
             return Direction.LEFT
 
+
 class Product:
 
     def run(self, currentFieldStatus):
@@ -95,9 +95,8 @@ class Product:
                 return StepResult.MOVED
         return self.afterStepEvaluation(currentFieldStatus, True)
 
-
-    def makeStep(self, currentFieldStatus,nextDir):
-        #moving
+    def makeStep(self, currentFieldStatus, nextDir):
+        # moving
         currentFieldStatus.remove((self.positionX, self.positionY))
         self.positionX += nextDir.xAxis()
         self.positionY += nextDir.yAxis()
@@ -166,7 +165,7 @@ class Product:
 
     def findTarget(self):
         if len(self.workStationRoute) == 0:
-            #no workstations left
+            # no workstations left
             self.isDone = True
             return
         nextTarget = self.workStationRoute.pop(0)

@@ -196,9 +196,9 @@ product_path_length = testSuite10.factory_run['constants']['PRODUCTS_PATH_LENGTH
 products_per_list = testSuite10.factory_run['constants']['PRODUCTS_PER_LIST']
 for i in range(10):
     randProducts.append(testSuite10.factoryGenerator.generateRandomProducts(products_per_list, product_path_length))
-#testSuite10.runTest(randProducts, Plot.ALL)
-#testSuite100.runTest(randProducts, Plot.ALL)
-#testSuite250.runTest(randProducts, Plot.ALL)
+# testSuite10.runTest(randProducts, Plot.ALL)
+# testSuite100.runTest(randProducts, Plot.ALL)
+# testSuite250.runTest(randProducts, Plot.ALL)
 
 
 # TEST: median test result for multiple optimization with and without coevolution

@@ -1,9 +1,6 @@
-import copy
-from random import randint
 from tkinter import Canvas, Frame, BOTH, Button
 import constants
 import colorsys
-
 
 
 class View(Frame):
@@ -25,16 +22,17 @@ class View(Frame):
         self.save_products = products
         self.factory = Factory
         self.button1 = Button(self.parent, text='Reset', command=self.reset)
-        self.pathButton = Button(self.parent, text = 'show Path', command=self.showPath)
+        self.pathButton = Button(self.parent, text='show Path', command=self.showPath)
 
-        #self.button1.pack()
+        # self.button1.pack()
     pathIsVisible = False
     havePathAlready = False
+
     def showPath(self):
-        if constants.SHOW_PRODUCT_PATH == False:
+        if constants.SHOW_PRODUCT_PATH is False:
             raise Exception('DRAW EVERY CYCLE IS NOT ACTIVATED')
             return
-        if self.pathIsVisible == False:
+        if self.pathIsVisible is False:
             self.drawPath()
             self.save.clear()
             self.havePathAlready = True
@@ -48,14 +46,13 @@ class View(Frame):
             self.pathButton["text"] = "show Path"
             pass
 
-
     def showButton(self):
-        self.button1.pack(side = "left")
-        if constants.SHOW_PRODUCT_PATH == True:
-            self.pathButton.pack(side = "left")
+        self.button1.pack(side="left")
+        if constants.SHOW_PRODUCT_PATH is True:
+            self.pathButton.pack(side="left")
 
     def reset(self):
-        if self.havePathAlready == False:
+        if self.havePathAlready is False:
             self.havePathAlready = True
         if self.pathIsVisible:
             self.showPath()
@@ -79,7 +76,7 @@ class View(Frame):
         tY = 0
         for i in range(self.width):
             for j in range(self.height):
-                self.canvas.create_rectangle(i*size + tX, j*size+tY, (i*size)+size+tY, (j*size)+size+tY, fill="#37474F", outline="#455A64")
+                self.canvas.create_rectangle(i * size + tX, j * size + tY, (i * size) + size + tY, (j * size) + size + tY, fill="#37474F", outline="#455A64")
 
     def getSize(self, works):
         maxX = 0
@@ -94,11 +91,11 @@ class View(Frame):
         self.width = constants.FIELD_SIZE
         self.height = constants.FIELD_SIZE
 
-        if (600.0/self.height) > (1000.0/self.width):
+        if (600.0 / self.height) > (1000.0 / self.width):
             self.size = 1000.0 / self.width
         else:
             self.size = 600.0 / self.height
-                
+
     def drawWorkstations(self, works, size):
         for w_v in works.values():
             for w in w_v:
@@ -107,6 +104,7 @@ class View(Frame):
         pass
 
     allProductList = []
+
     def drawProduct(self, products, size):
         counter = 1
         View.list_old.clear()
@@ -115,7 +113,7 @@ class View(Frame):
             if not p.isDone:
                 self.allProductList.append(View.canvas.create_oval(p.positionX * size + 3, p.positionY * size + 3, p.positionX * size - 3 + size, p.positionY * size - 3 + size, outline="white", fill="#3F51B5", width=0))
                 self.allProductList.append(View.canvas.create_text((p.positionX * size + (size / 2), p.positionY * size + (size / 2)), text=p.findDirection().value, fill="#E8EAF6"))
-                counter+=1
+                counter += 1
             View.list_old.append((p.positionX, p.positionY))
         return theOld
 
@@ -132,27 +130,22 @@ class View(Frame):
         self.updateProducts(listP, self.size)
 
     def drawPath(self):
-        for i in range(len(self.savePath)-1):
+        for i in range(len(self.savePath) - 1):
             for j in range(len(self.savePath[i])):
-                xS = self.savePath[i][j][0]*self.size + self.size / 2
-                yS = self.savePath[i][j][1]*self.size + self.size / 2
-                xE = self.savePath[i+1][j][0] * self.size + self.size / 2
-                yE = self.savePath[i+1][j][1] * self.size + self.size / 2
+                xS = self.savePath[i][j][0] * self.size + self.size / 2
+                yS = self.savePath[i][j][1] * self.size + self.size / 2
+                xE = self.savePath[i + 1][j][0] * self.size + self.size / 2
+                yE = self.savePath[i + 1][j][1] * self.size + self.size / 2
 
                 if (xS, yS) != (xE, yE):
                     if (xS, yS, xE, yE) in self.save:
-                         self.save[(xS, yS, xE, yE)] += 0.5
+                        self.save[(xS, yS, xE, yE)] += 0.5
                     else:
-                        self.save.update({(xS, yS, xE, yE) : 0.5})
-
+                        self.save.update({(xS, yS, xE, yE): 0.5})
 
         maxW = max(self.save.values())
         for i in self.save.keys():
             w = self.save[i]
-            rgb = colorsys.hsv_to_rgb((120 -((120/maxW) * w))/360,100/100,100/100)
-            rgbNew = (round(rgb[0] * 255),round(rgb[1] * 255), round(rgb[2] * 255))
-            View.canvas.create_line(i[0], i[1], i[2], i[3],fill= '#%02x%02x%02x' % (rgbNew[0], rgbNew[1], rgbNew[2]), width=w)
-
-
-
-
+            rgb = colorsys.hsv_to_rgb((120 - ((120 / maxW) * w)) / 360, 100 / 100, 100 / 100)
+            rgbNew = (round(rgb[0] * 255), round(rgb[1] * 255), round(rgb[2] * 255))
+            View.canvas.create_line(i[0], i[1], i[2], i[3], fill='#%02x%02x%02x' % (rgbNew[0], rgbNew[1], rgbNew[2]), width=w)

@@ -1,7 +1,6 @@
-import json
 from Product import Product
 from Workstation import Workstation
-from Factory import Factory, visibilityStatus
+from Factory import Factory
 import random
 import numpy
 
@@ -10,17 +9,12 @@ class FactoryGenerator:
     def __init__(self, workstationsJson):
         self.workstationJson = workstationsJson
 
-        #with open(path_to_workstations_json) as jsonFile:
-        #    self.workstationJson = json.load(jsonFile)
-        #with open(path_to_products_json) as jsonFile:
-        #    self.productsJson = json.load(jsonFile)
-
     def generateRandomWorkstations(self, maxPosition):
         result = []
         for item in self.workstationJson['workStations']:
             type = item['type']
             for i in range(0, item['count']):
-                result.append((type, random.randint(0, maxPosition), random.randint(0,maxPosition)))
+                result.append((type, random.randint(0, maxPosition), random.randint(0, maxPosition)))
         return result
 
     def generateRandomProducts(self, productsCount, pathLenght):
